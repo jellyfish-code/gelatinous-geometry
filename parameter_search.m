@@ -1,5 +1,11 @@
+%{
+======================================================================
+    Master file that runs model with different parameter sets to find viscous/elastic moduli that lead to various solutions
+======================================================================
+%}
 
-    %% A0 going from 10^3 to 10^6 (collagen gels from 5x10^2 to 2x10^4)
+%% Declare Parameters
+% A0 going from 10^3 to 10^6 (collagen gels from 5x10^2 to 2x10^4)
 %Viscosity from 10^4 - 10^7
 %Bulk modulus rubber is around 2x10^6 Pa, water at 2x10^9 Pa
 
@@ -15,6 +21,12 @@ vis_range = [100 500 1000 5000 10000];
 
 params = [0.025 1; 0.025 1.5; 0.05 0.75; 0.05 1; 0.075 0.5; 0.075 0.75; 0.1 0.5; 0.1 0.75; 0.15 0.5; 0.2 0.5; 0.25 0.25; 0.25 0.5];
 
+% Specify datapath of directory to save data in
+datapath = './Data'; % Saves data in current directory inside folder Data. Creates folder Data if not already created.
+
+%% Simulate Processes
+
+% Execute for-loop iterations in parallel processes
 parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params) %a = 
     %a = params_left(bleh);
     %a = params_left(x);
@@ -34,8 +46,21 @@ parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params)
                 muscle_strain = muscle_range(d);
                 %folder_save = ['realtime_021221', num2str(a), '_', num2str(b), num2str(c), num2str(d)]; %, 
                 %realtime_contraction_SLM(elast0, elast1, vis, bulk, muscle_strain, folder_save);
+
+                % Specify subfolder to save data in
                 folder_save1 = ['SLM_off_031921', num2str(a), num2str(b), num2str(c), num2str(d)]; %
-                visco_offset_SLM_newmus(elast0, elast1, vis, bulk, area_range, muscle_strain, contraction_rate, offset, folder_save1);
+                
+                % Simulate jellyfish
+                visco_offset_SLM_newmus(elast0, ...
+                                        elast1, ...
+                                        vis, ...
+                                        bulk, ...
+                                        area_range, ...
+                                        muscle_strain, ...
+                                        contraction_rate, ...
+                                        offset, ...
+                                        folder_save1, ...
+                                        datapath);
                 %folder_save2 = ['SLM_but_031921', num2str(a), num2str(b), num2str(c), num2str(d)]; %
                 %visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk, area_range, muscle_strain, contraction_rate, folder_save2);
             end

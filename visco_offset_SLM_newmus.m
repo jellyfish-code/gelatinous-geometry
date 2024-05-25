@@ -1,4 +1,22 @@
-function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, offset, folder_save)
+% TO DO: complete description and check for accuracy
+%{
+======================================================================
+    Function that simulates jellyfish for a specified set of parameters. 
+======================================================================
+    INPUT:
+        elast0 (scalar):                Elasticity of spring (Pa)
+        elast1 (scalar):                Elasticity of spring in Maxwell Model (Pa)
+        vis (scalar):                   Viscosity of dashpot in Maxwell Model (Pa s)
+        bulk_modulus (scalar):          Bulk modulus of jellyfish (Pa)
+        area0 (scalar):                 Initial area of jellyfish (Pa)
+        muscle_strain (scalar):         Muscle strain of jellyfish
+        contraction_rate (scalar):      Contraction rate of jellyfish (per minute) 
+        offset (scalar):                Offset of jellyfish grafts.
+        folder_save (string):           Name of file for given set of parameters. 
+        datapath (string):              Path of directory in which files will be saved.
+%}
+
+function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, offset, folder_save, datapath)
     %% Set up parameters, everything in Pa(N/m^2) and s
 %     elast0 = 3*10^3; %Pa %This is the spring by itself
 %     elast1 = 4*10^3; %Pa %This is the spring in the Maxwell model
@@ -39,20 +57,20 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 %     offset = 2; %only relevant for offset graft
 
     %% Writing images
-    path0 = '/central/home/mgong/Documents/Model';
+%     datapath = '/central/home/mgong/Documents/Model';
+%     datapath = './Data'; 
     %     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
 
-    if ~isempty(path0)
-        Dr = dir([path0 '/' folder_save]);
+    if ~isempty(datapath)
+        Dr = dir([datapath '/' folder_save]);
         if isempty(Dr)
-            S = mkdir(path0,folder_save);
+            S = mkdir(datapath,folder_save);
             if ~S, disp('Fail to make folder!'); return;  
             end
-        else
         end                        
-        path1 =[path0, '/', folder_save];         % the place to store images
+        path1 =[datapath, '/', folder_save];         % the place to store images
     else
-        path0 = pwd; 
+        datapath = pwd; 
     end
 
 
@@ -207,7 +225,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             cd(path1)
             writematrix(a_r, 'a_r.xlsx');
             writematrix(vel, 'velocity.xlsx');
-            cd(path0)
+            cd(datapath)
             return
         end
         %% Update the current length of edges
@@ -249,7 +267,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
                 cd(path1)
                 writematrix(a_r, 'a_r.xlsx');
                 writematrix(vel, 'velocity.xlsx');
-                cd(path0)
+                cd(datapath)
                 return
             end
         end
@@ -259,7 +277,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             cd(path1)
             writematrix(a_r, 'a_r.xlsx');
             writematrix(vel, 'velocity.xlsx');
-            cd(path0)
+            cd(datapath)
             return
         end
 
@@ -277,7 +295,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             cd(path1);                                                            % write the image data
             i = floor(time/(60/time_step)*10);
             saveas(figure1, [num2str(i) '.jpg'])
-            cd(path0);     
+            cd(datapath);     
             pause(0.001)
         end
         if mod(time, 20) == 0
@@ -303,4 +321,4 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     cd(path1);                                                            % write the image data
     writematrix(a_r, 'a_r.xlsx');
     writematrix(vel, 'velocity.xlsx');
-    cd(path0);  
+    cd(datapath);  
