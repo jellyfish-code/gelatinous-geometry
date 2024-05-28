@@ -139,7 +139,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     [jelly_i, row_start, row_end] = offset_mesh(offset); 
     jelly_off_i = convert_jelly_graph(jelly_i, row_start, row_end);
     jelly_off_i.Nodes.edges = j_edges;
-    [j_area, ~] = area(jelly_off_i);
+
+    % TO DO: had to update usage of the area function below. check for
+    % accuracy
+    % [j_area, ~] = area(jelly_off_i);
+    j_area = area_initial(jelly_off_i, row_start, row_end); % TO DO: still throwing errors
+    
     area_relax = area0*j_area;
     jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
     %before equilibrium is found. So I'm just initializing another offset graft

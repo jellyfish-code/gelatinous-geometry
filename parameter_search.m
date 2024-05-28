@@ -27,7 +27,8 @@ datapath = './Data'; % Saves data in current directory inside folder Data. Creat
 %% Simulate Processes
 
 % Execute for-loop iterations in parallel processes
-parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params) %a = 
+% parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params) %a = 
+for a = 1:length(elast_range)
     %a = params_left(bleh);
     %a = params_left(x);
     %elast = params(a, 1);
