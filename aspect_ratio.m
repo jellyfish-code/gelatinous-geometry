@@ -1,3 +1,13 @@
+% TO DO: complete description and check for accuracy
+%{
+======================================================================
+    Function to calculate aspect ratio of jellyfish.
+======================================================================
+    INPUT:
+        a_r (?):                Last aspect ratio? (dimensionless)                       
+        major_axis (?):         ? (?)
+        minor_axis (?):         ? (?)
+%}
 function [a_r, major_axis, minor_axis] = aspect_ratio(jelly)
 
 [trash, edge_idx] = area(jelly);

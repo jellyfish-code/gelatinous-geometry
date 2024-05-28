@@ -23,19 +23,24 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 %     vis = 600; %Pa*s %This is the dashpot in the Maxwell model
 %     bulk_modulus = 3.2*10^6; %Pa, just using the one for water, 
 
-    %Measured parameters
+    %% Measured parameters
+    % TO DO: What are the parameters below?
     max_dR = 1;
     dR_rate = 0.15;
-    contraction_duration = 0.8; %s
-    contraction_strength = (elast0+elast1)*muscle_strain; %Pa
-    relax_duration = (60-contraction_rate*contraction_duration)/(contraction_rate + 1); %seconds
-    
+
+    % Contraction related paramters
+    contraction_duration = 0.8;                                                         % seconds
+    contraction_strength = (elast0+elast1)*muscle_strain;                               % Pa
     if contraction_rate > 75
         contraction_duration = 60/contraction_rate;
     end
+    
+    % Calculated duration for which jellyfish is relaxed (lower bound set to zero) 
+    relax_duration = (60-contraction_rate*contraction_duration)/(contraction_rate + 1); % seconds
     if relax_duration < 0
         relax_duration = 0;
     end
+
 %     area0 = 1.01;
 %     contraction_rate = 20; %per minute
     
@@ -43,15 +48,18 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     %Stress*Area
     %damping = 0.3; 
 
-    %time
-    time_step = 30; %minutes
-    time_end = 1000; %hours
-    time_steps = time_end*60/time_step;
-    a_r = [];
-    vel = [];
+    % TO DO: Consider making the units of the time step and time end the same.
+    % Time settings
+    time_step = 30;                     % minutes
+    time_end = 1000;                    % hours
+    time_steps = time_end*60/time_step; % Calculate number of steps based on total time and time step duration.
+
+    % TO DO: what are the parameters below?
+    a_r = [];                           % Array to save aspect ratio of jellyfish at different time points.
+    vel = [];                           % Array to save jellyfish velocity at different time points.
+
     %% Calculate the Maxwell relaxation constants
     relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
-
 
     %% Graft geometry
 %     offset = 2; %only relevant for offset graft
@@ -139,9 +147,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
 
-
     outcount = 1;
     incount = 1;
+
     %% Define edges that make up the muscles
     for j = 1:length(muscle_outer)
         for i = 1:numnodes(jelly)
@@ -201,7 +209,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         return
     end
 
-    %% Image the graph
+    %% Plot jellyfish
     figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord);
     hold off
     xlim([0, 11 + offset]);
@@ -239,28 +247,40 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
         jelly = SLM_elastic(jelly, elast0, elast1);
 
-        %% pressure force
-        jelly.Nodes.F_pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
-        F_contract = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure + jelly.Nodes.F_muscle;
-        F_relax = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure;
+        %% Calculate forces 
+        jelly.Nodes.F_pressure = find_f_pressure(jelly, area_relax, bulk_modulus);              % Pressure force to maintain incompressibility of tissue.
+        F_contract = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure + jelly.Nodes.F_muscle;     % Force with muscle contraction.
+        F_relax = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure;                               % Force without muscle contraction.
 
         %% Instead of separating out by contraction and relaxation phases, we are just finding the average F_net over the time step
+        % TO DO: Why is the relaxation term below as such? Particularly,
+        % with the + 1. 
         jelly.Nodes.F_net = (F_contract*contraction_rate*contraction_duration + F_relax*relax_duration*(contraction_rate+1))/60;
 
         %% Update the position of each node
-        jelly.Nodes.velocity = jelly.Nodes.F_net./vis;
-        contraction_displacement = jelly.Nodes.velocity*time_step*60;
-        jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
-        jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
 
+        % STEP 1: Update positions based on current forces acting on each node.
+        % TO DO: Check above comment for correctness. Also, is the below velocity equation because at that scale, reynolds number is very low?
+        jelly.Nodes.velocity = jelly.Nodes.F_net./vis; % Obtain node velocity due to net force.
+
+        contraction_displacement = jelly.Nodes.velocity*time_step*60; % dx = velocity * dt
+        jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1); % update x coordinate
+        jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2); % update y coordinate
+        
+        % TO DO: Check step 2 comment for correctness. Also, why are we
+        % using the maxwell relation here? The paper states usage of
+        % standard linear model.
+        % STEP 2: The edges respond viscoelastically to the change in positions. 
         %Maxwell relaxation
         jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
         
+        % TO DO: What is the purpose of the if loop below?
         if max(jelly.Edges.d_current) > 10
             return
         end
         
         %% Remesh every 10 hours
+        % TO DO: why?
         if mod(time, 20) == 0
             [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length);
             if lim_reached == 1
@@ -308,7 +328,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
     end
 
-    %% final image
+    %% Final 
     figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord);
     hold on
     figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
@@ -317,7 +337,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     ylim([-1, 11]);
     %Calculate aspect ratio
     
-    %% Plot aspect ratio
+    %% Save aspect ratio and velocity
     cd(path1);                                                            % write the image data
     writematrix(a_r, 'a_r.xlsx');
     writematrix(vel, 'velocity.xlsx');

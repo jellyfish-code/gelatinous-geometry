@@ -1,4 +1,13 @@
-%% Remesh
+% TO DO: complete description and check for accuracy
+%{
+======================================================================
+    Function to remesh jellyfish 
+    TO DO: why are we remeshing?
+======================================================================
+    INPUT:
+        jelly (?):                      
+        muscle_length (?):              
+%}
 function [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length)
 lim_reached = 0;
 jelly_temp = jelly;
