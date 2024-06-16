@@ -1,26 +1,22 @@
-function jelly_area = area(jelly, row_start, row_end)
-    a = size(jelly);
-    jelly_area = zeros(a(1), a(2), 2);
-    for i = 1:length(row_start)
-        for j = row_start(i):row_end(i)
-            %a1, upper right diagonal finite element
-            if i<length(row_start) && j<row_end(i) && j+1>=row_start(i+1) && j+1<=row_end(i+1)
-                %then a1 exists, find area with shoelace method
-                %coordinates are (i,j), (i+1, j+1), (i,j+1)
-                a1 = abs(0.5*(jelly(i,j,1)*jelly(i+1,j+1,2) + jelly(i+1,j+1,1)*jelly(i,j+1,2) + jelly(i,j+1,1)*jelly(i,j,2) ...
-                    - jelly(i,j,2)*jelly(i+1,j+1,1) - jelly(i+1,j+1,2)*jelly(i,j+1,1) - jelly(i,j+1,2)*jelly(i,j,1)));
-                jelly_area(i,j,1) = a1;
-            end
-            %a2, lower right diagonal finite element
-            if i>1 && j<row_end(i) && j<=row_end(i-1) && j>=row_start(i-1)
-                %then a2 exists
-                %coordinates are (i,j), (i-1,j), (i,j+1)
-                a2 = abs(0.5*(jelly(i,j,1)*jelly(i-1,j,2) + jelly(i-1,j,1)*jelly(i,j+1,2) + jelly(i,j+1,1)*jelly(i,j,2) ...
-                    - jelly(i,j,2)*jelly(i-1,j,1) - jelly(i-1,j,2)*jelly(i,j+1,1) - jelly(i,j+1,2)*jelly(i,j,1)));
-                jelly_area(i,j,2) = a2;
-            end
+function [jelly_area, edge_idx] = area(jelly)
+    [jelly1, idx] = sortrows(jelly.Nodes, {'edges'});
+    for i = 1:numnodes(jelly)
+        node1 = idx(i);
+        if jelly.Nodes.edges(node1) > 0
+            s = i;
+            break
         end
     end
+    edge_idx = cat(1,idx(s:numnodes(jelly)), idx(s));
+    
+    jelly_area = 0;
+    % Now use the shoelace method
+    for i = 1:length(edge_idx)-1
+        jelly_area = jelly_area + (jelly.Nodes.x_coord(edge_idx(i))*jelly.Nodes.y_coord(edge_idx(i+1))) - (jelly.Nodes.y_coord(edge_idx(i))*jelly.Nodes.x_coord(edge_idx(i+1)));
+    end
+    
+    jelly_area = abs(jelly_area);
+end
     
             
         

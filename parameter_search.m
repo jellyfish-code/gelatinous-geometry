@@ -22,13 +22,15 @@ vis_range = [100 500 1000 5000 10000];
 params = [0.025 1; 0.025 1.5; 0.05 0.75; 0.05 1; 0.075 0.5; 0.075 0.75; 0.1 0.5; 0.1 0.75; 0.15 0.5; 0.2 0.5; 0.25 0.25; 0.25 0.5];
 
 % Specify datapath of directory to save data in
-datapath = './Data'; % Saves data in current directory inside folder Data. Creates folder Data if not already created.
+datapath = pwd; % Set current directory as datapath
 
 %% Simulate Processes
 
 % Execute for-loop iterations in parallel processes
-% parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params) %a = 
-for a = 1:length(elast_range)
+parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params) %a = 
+
+% For debugging , execute for-loop iterations in sequential processes
+% for a = 1:length(elast_range)
     %a = params_left(bleh);
     %a = params_left(x);
     %elast = params(a, 1);
@@ -48,8 +50,8 @@ for a = 1:length(elast_range)
                 %folder_save = ['realtime_021221', num2str(a), '_', num2str(b), num2str(c), num2str(d)]; %, 
                 %realtime_contraction_SLM(elast0, elast1, vis, bulk, muscle_strain, folder_save);
 
-                % Specify subfolder to save data in
-                folder_save1 = ['SLM_off_031921', num2str(a), num2str(b), num2str(c), num2str(d)]; %
+                % Specify subfolder to save data in. Here, data is saved in current directory (datapath) inside folder Data. Creates folder Data if not already created.
+                folder_save1 = ['Data/', 'SLM_off_031921', num2str(a), num2str(b), num2str(c), num2str(d)]; %
                 
                 % Simulate jellyfish
                 visco_offset_SLM_newmus(elast0, ...
