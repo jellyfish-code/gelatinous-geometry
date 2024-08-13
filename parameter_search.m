@@ -1,6 +1,7 @@
 %{
 ======================================================================
-    Master file that runs model with different parameter sets to find viscous/elastic moduli that lead to various solutions
+    Master file that runs model with different parameter sets to find
+    viscous/elastic moduli that lead to various solutions.
 ======================================================================
 %}
 
@@ -10,10 +11,10 @@
 %Bulk modulus rubber is around 2x10^6 Pa, water at 2x10^9 Pa
 
 %contraction_range = [1, 20, 40, 60];
-contraction_rate = 20;
+contraction_rate = 20;% Contraction rate of jellyfish (contrations per minute). Parameter measured from experiments, see figure S6 in Supplementary Material.
 offset = 2;
-muscle_range = [0.05 0.1 0.15 0.2 0.25 0.3 0.35];
-
+% muscle_range = [0.05 0.1 0.15 0.2 0.25 0.3 0.35];
+muscle_strain = 0.21; % Muscle strain of jellyfish (dimensionless). Parameter measurement from experiments, see figure S6 in Supplementary Materials.  
 bulk_range = [0.05 0.1 0.5];
 area_range = 1.001; %, 1.005, 1.01, 1.05, 1.1];
 elast_range = [0.025 0.05 0.075 0.1 0.15 0.2 0.25];
@@ -27,7 +28,7 @@ datapath = pwd; % Set current directory as datapath
 %% Simulate Processes
 
 % Execute for-loop iterations in parallel processes
-parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params) %a = 
+parfor a = 1:length(elast_range) % Vary elastic moduli
 
 % For debugging , execute for-loop iterations in sequential processes
 % for a = 1:length(elast_range)
@@ -38,10 +39,10 @@ parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params)
     elast0 = elast*0.5;
     elast1 = elast*0.5;
     %muscle_strain = params(a, 2);
-    for b = 4:length(vis_range)
+    for b = 4:length(vis_range) % Vary viscosity
         %vis = params(a,2);
         vis = vis_range(b);
-        for c = 1:length(bulk_range) 
+        for c = 1:length(bulk_range) % Vary bulk moduli
             %bulk = params(a,3);
             bulk = bulk_range(c);
             %bulk = vis/1000;
@@ -51,8 +52,8 @@ parfor a = 1:length(elast_range) %bleh = 1:length(params_left) %1:length(params)
                 %realtime_contraction_SLM(elast0, elast1, vis, bulk, muscle_strain, folder_save);
 
                 % Specify subfolder to save data in. Here, data is saved in current directory (datapath) inside folder Data. Creates folder Data if not already created.
-                folder_save1 = ['Data/', 'SLM_off_031921', num2str(a), num2str(b), num2str(c), num2str(d)]; %
-                
+                folder_save1 = ['Data/', 'parameter_search', '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_bulk_modulus_', num2str(bulk), '_viscosity_', num2str(vis)];
+
                 % Simulate jellyfish
                 visco_offset_SLM_newmus(elast0, ...
                                         elast1, ...

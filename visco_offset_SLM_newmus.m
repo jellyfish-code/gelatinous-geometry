@@ -52,7 +52,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     % Time settings
     time_step = 30;                     % minutes
     time_end = 1000;                    % hours
-    time_steps = time_end*60/time_step; % Calculate number of steps based on total time and time step duration.
+    N_time_steps = time_end*60/time_step; % Calculate number of steps based on total time and time step duration.
 
     a_r = [];                           % Array to save aspect ratio of jellyfish at different time points.
     vel = [];                           % Array to save jellyfish velocity at different time points.
@@ -64,10 +64,6 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 %     offset = 2; %only relevant for offset graft
 
     %% Writing images
-%     datapath = '/central/home/mgong/Documents/Model';
-%     datapath = './Data'; 
-    %     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
-
     if ~isempty(datapath)
         Dr = dir([datapath '/' folder_save]);
         if isempty(Dr)
@@ -87,9 +83,14 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     %nodes.
 
     %% Start with uncut jellyfish, find the balance of elastic and pressure forces
-    %%This function assumes that maxwell completely relaxes, i.e. it's just
-    %%Kelvin-Voigt model
-    [jelly_eq, ~, d_uncut] = equilibrium_initial_KV(elast0, vis, bulk_modulus, 100, 1200, area0, contraction_strength);
+    %%This function assumes that maxwell completely relaxes, i.e. it's just the Kelvin-Voigt model
+    [jelly_eq, ~, d_uncut] = equilibrium_initial_KV(elast0, ...
+                                                    vis, ...
+                                                    bulk_modulus, ...
+                                                    100, ... % time step
+                                                    1200, ...% number of time steps
+                                                    area0, ...
+                                                    contraction_strength);
 
     %% Make a matrix with the right shape for offset graft
     [jelly_initial, row_start, row_end] = offset_mesh(offset); 
@@ -106,7 +107,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     %% Convert array to graph
     jelly = convert_jelly_graph(jelly_initial, row_start, row_end);
 
-    %% Add additional parameters
+    %% Initialise variables for velocity and forces
     jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
     jelly.Nodes.F_net = zeros(numnodes(jelly), 2);
     jelly.Nodes.F_elastic = jelly.Nodes.F_net;
@@ -143,8 +144,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     [j_area, ~] = area(jelly_off_i);
     
     area_relax = area0*j_area;
-    jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
-    %before equilibrium is found. So I'm just initializing another offset graft
+    jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length before equilibrium is found. So I'm just initializing another offset graft
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %This is assumed to be fully relaxed
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
@@ -219,7 +219,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
     %%Setup takes about 20 seconds%%%
     %% Start the sim
-    for time = 1:time_steps
+    for time = 1:N_time_steps
 
         %Print the current time_step (in hours)
         hours = (time/(60/time_step));
@@ -301,7 +301,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             %% Plot new relaxed jelly every 2 hours
             figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord); % Plot net force on each node
             hold on
-            figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.velocity(:,1), jelly.Nodes.velocity(:,2)); % Plot velocity at each node
+            figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.velocity(:,1), jelly.Nodes.velocity(:,2), 'off'); % Plot velocity at each node. Switch scaling off.
 
             hold off
             xlim([0, 11 + offset]);
@@ -327,7 +327,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     %% Final 
     figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord); % Plot jelly
     hold on
-    figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2)); % Plot net force on each node
+    figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2), 'off'); % Plot net force on each node. Switch scaling off.
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 11]);

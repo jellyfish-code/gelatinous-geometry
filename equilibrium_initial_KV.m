@@ -1,4 +1,18 @@
-function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity, bulk_modulus, dt, t, area_0, contraction_strength)
+%{
+======================================================================
+    Function that simulates jellyfish for a specified set of parameters. 
+======================================================================
+    INPUT:
+        elast0 (scalar):                Elasticity of spring
+        viscosity (scalar):             Viscosity of dashpot in Maxwell Model
+        bulk_modulus (scalar):          Bulk modulus of jellyfish 
+        dt (scalar):                    Time step 
+        N_time (int):                   Number of time steps
+        area_0 (scalar):                ?
+        contraction_strength (scalar):  ?
+%}
+
+function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscosity, bulk_modulus, dt, N_time , area_0, contraction_strength)
 
     %% Initialize an uncut jelly matrix
     [jelly, row_start, row_end] = offset_mesh(0); 
@@ -17,10 +31,9 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity,
     strain = zeros(mesh_size(1), mesh_size(2), 3);
     F_elastic = zeros(mesh_size(1), mesh_size(2), 3, 2);
     
-    
-    for time = 1:t
+    for time = 1:N_time
         %% Find the muscle force at each node
-        %define the current curve and length of the muscle
+        % define the current curve and length of the muscle
         F_muscle = zeros(mesh_size(1), mesh_size(2), 2);
         for mus = 1:muscle_num
             c = muscle_outer(:,:,mus);
@@ -86,24 +99,24 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity,
                     y1 = jelly(i, j+1, 2) - jelly(i, j, 2);
                     dist_current(i, j, 1) = (x1^2 + y1^2)^(1/2); %horiz node to right
                     strain(i,j,1) = (dist_current(i,j,1) - dist_rel(i,j,1))/dist_rel(i,j,1);
-                    F_elastic(i,j,1,1) = strain(i,j,1)*A0*x1/dist_current(i,j,1);
-                    F_elastic(i,j,1,2) = strain(i,j,1)*A0*y1/dist_current(i,j,1);
+                    F_elastic(i,j,1,1) = strain(i,j,1)*elast0*x1/dist_current(i,j,1);
+                    F_elastic(i,j,1,2) = strain(i,j,1)*elast0*y1/dist_current(i,j,1);
                 end
                 if i < mesh_size(1) && j+1 >= row_start(i+1) && j+1 <= row_end(i+1)
                     x2 = jelly(i+1, j+1, 1) - jelly(i, j, 1);
                     y2 = jelly(i+1, j+1, 2) - jelly(i, j, 2);
                     dist_current(i,j,2) = (x2^2 + y2^2)^(1/2); %node diag right
                     strain(i,j,2) = (dist_current(i,j,2) - dist_rel(i,j,2))/dist_rel(i,j,2);
-                    F_elastic(i,j,2,1) = strain(i,j,2)*A0*x2/dist_current(i,j,2);
-                    F_elastic(i,j,2,2) = strain(i,j,2)*A0*y2/dist_current(i,j,2);
+                    F_elastic(i,j,2,1) = strain(i,j,2)*elast0*x2/dist_current(i,j,2);
+                    F_elastic(i,j,2,2) = strain(i,j,2)*elast0*y2/dist_current(i,j,2);
                 end
                 if i < mesh_size(1) && j >= row_start(i+1) && j <= row_end(i+1)
                     x3 = jelly(i+1, j, 1) - jelly(i, j, 1);
                     y3 = jelly(i+1, j, 2) - jelly(i, j, 2);
                     dist_current(i,j,3) = (x3^2 + y3^2)^(1/2); %node diag left
                     strain(i,j,3) = (dist_current(i,j,3) - dist_rel(i,j,3))/dist_rel(i,j,3);
-                    F_elastic(i,j,3,1) = strain(i,j,3)*A0*x3/dist_current(i,j,3);
-                    F_elastic(i,j,3,2) = strain(i,j,3)*A0*y3/dist_current(i,j,3);
+                    F_elastic(i,j,3,1) = strain(i,j,3)*elast0*x3/dist_current(i,j,3);
+                    F_elastic(i,j,3,2) = strain(i,j,3)*elast0*y3/dist_current(i,j,3);
                 end
             end
         end
@@ -152,10 +165,10 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity,
         F_pressure = find_f_pressure_initial(jelly, area_relax, j_area, bulk_modulus, edges);
 
 
-        F_net = F_e + F_pressure + F_muscle/3;
-        v = F_net./viscosity;
-        displacement = v*dt;
-        jelly = jelly+displacement;
+        F_net = F_e + F_pressure + F_muscle/3; % Calculate net force.
+        v = F_net./viscosity;                  % Calculate velocity due to viscous response to net force.
+        displacement = v*dt;                   % Calculate displacement from velocity.
+        jelly = jelly+displacement;            % Add displacements to jellyfish.
         
 
 %          if mod(time,10)==0
