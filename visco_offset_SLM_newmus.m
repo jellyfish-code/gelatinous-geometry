@@ -211,18 +211,24 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         return
     end
 
-    %% Plot jellyfish
+    %% Plot and save jellyfish at zeroeth hour
     figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord);
+    title(sprintf("Time: %g hours" ,0))
     hold off
     xlim([0, 11 + offset]);
-    ylim([-1, 11]);
+    ylim([-1, 12]);
+
+    % Save image
+    cd(path1);
+    saveas(figure1, ['hour_' num2str(0) '.jpg'])
+    cd(datapath); 
 
     %%Setup takes about 20 seconds%%%
     %% Start the sim
-    for time = 1:N_time_steps
+    for time_index = 1:N_time_steps
 
         %Print the current time_step (in hours)
-        hours = (time/(60/time_step));
+        hours = time_index*(time_step/60); 
 
         %% Find the strain from the muscle contraction
         %find strain from muscle contraction
@@ -277,7 +283,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         
         %% Remesh every 10 hours
         % TO DO: add comments.
-        if mod(time, 20) == 0
+        if mod(time_index, 20) == 0
             [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length);
             if lim_reached == 1
                 cd(path1)
@@ -296,10 +302,11 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             cd(datapath)
             return
         end
-
-        if mod(time, 40) == 0
-            %% Plot new relaxed jelly every 2 hours
+        
+        %% Plot new relaxed jelly every 20 hours
+        if mod(hours, 20) == 0
             figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord); % Plot net force on each node
+            title(sprintf("Time: %g hours" ,hours))
             hold on
             figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.velocity(:,1), jelly.Nodes.velocity(:,2), 'off'); % Plot velocity at each node. Switch scaling off.
 
@@ -309,12 +316,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
             %% Save images
             cd(path1);
-            i = floor(time/(60/time_step)*10);
-            saveas(figure1, [num2str(i) '.jpg'])
+            % i = floor(time_index*(time_step/60)*10); %Time calculated in hours
+            saveas(figure1, ['hour_' num2str(hours) '.jpg'])
             cd(datapath);     
             pause(0.001)
         end
-        if mod(time, 20) == 0
+        if mod(time_index, 20) == 0
             aspect = aspect_ratio(jelly);
             a_r = cat(1, a_r, [aspect, hours]);
             [~, edge_idx] = area(jelly);

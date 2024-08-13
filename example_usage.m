@@ -8,13 +8,13 @@
 %% Declare Parameters
 contraction_rate = 20;  % Contraction rate of jellyfish (contrations per minute). Parameter measured from experiments, see figure S6 in Supplementary Material.
 muscle_strain = 0.2;    % Muscle strain of jellyfish (dimensionless). Parameter measurement from experiments, see figure S6 in Supplementary Materials.      
-offset = 21;            % Offset of jellyfish grafts
+offset = 2;            % Offset of jellyfish grafts
 
-bulk_modulus = 3.2*10^6;
+bulk_modulus = 0.1;
 area = 1.001;           % Initial area of jellyfish.
-elast0 = 3000;          % Elasticity of spring. 
-elast1 = 4000;          % Elasticity of spring in Maxwell model. 
-vis = 600;              % Dashpot in Maxwell model. 
+elast0 = 0.05;          % Elasticity of spring. 
+elast1 = 0.05;          % Elasticity of spring in Maxwell model. 
+vis = 1000;              % Dashpot in Maxwell model. 
 
 %% Simulation 
 
