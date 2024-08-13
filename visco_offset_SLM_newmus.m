@@ -51,8 +51,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     % TO DO: Consider making the units of the time step and time end the same for clarity.
     % Time settings
     time_step = 30;                     % minutes
-    time_end = 1000;                    % hours
-    N_time_steps = time_end*60/time_step; % Calculate number of steps based on total time and time step duration.
+    time_end = 1000*60;                 % minutes
+    N_time_steps = time_end/time_step; % Calculate number of steps based on total time and time step duration.
 
     a_r = [];                           % Array to save aspect ratio of jellyfish at different time points.
     vel = [];                           % Array to save jellyfish velocity at different time points.
