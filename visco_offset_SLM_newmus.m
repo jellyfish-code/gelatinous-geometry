@@ -92,6 +92,10 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
                                                     area0, ...
                                                     contraction_strength);
 
+    if any(isnan(jelly_eq), 'all') 
+        error("One or more positions of equilibrated jellyfish is not a number (nan).")
+    end
+
     %% Make a matrix with the right shape for offset graft
     [jelly_initial, row_start, row_end] = offset_mesh(offset); 
     [muscle_outer, muscle_inner] = offset_muscle(offset);
@@ -235,8 +239,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         %find strain from muscle contraction
         %pos strain = tension, neg strain = compression     
         %% Calculate new muscle coordinates from contraction
-        %muscles are "synchronized", calculations for all muscle bands happen
-        %simultaneously.
+        %muscles are "synchronized", calculations for all muscle bands happen simultaneously.
         [jelly, done] = contraction4offset(jelly, contraction_strength, muscle_strain, max_dR, dR_rate);
         if done == 0
             cd(path1)

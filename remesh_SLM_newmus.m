@@ -29,8 +29,7 @@ count = 0;
         nodes_for_deletion = [node1 node2];
         
 
-        %First, define the new node as halfway between nodes1 and 2 (same
-        %as above)
+        %First, define the new node as halfway between nodes1 and 2 (same as above)
         new_Name = (jelly.Nodes.Node_Names(node1,:) + jelly.Nodes.Node_Names(node2,:))./2;
         new_x = (jelly.Nodes.x_coord(node1) + jelly.Nodes.x_coord(node2))./2;
         new_y = (jelly.Nodes.y_coord(node1) + jelly.Nodes.y_coord(node2))./2;

@@ -36,55 +36,65 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
         % define the current curve and length of the muscle
         F_muscle = zeros(mesh_size(1), mesh_size(2), 2);
         for mus = 1:muscle_num
-            c = muscle_outer(:,:,mus);
-            d = muscle_inner(:,:,mus);
+            outer_muscle_nodes = muscle_outer(:,:,mus);
+            inner_muscle_nodes = muscle_inner(:,:,mus);
+
+            %% For outer muscles
             for m = 1:length(muscle_outer)
                 if m < length(muscle_outer)
-                    node0 = c(:, m);
-                    node1 = c(:, m+1);
+                    node0 = outer_muscle_nodes(:, m);
+                    node1 = outer_muscle_nodes(:, m+1);
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
                     dy = y/((x^2 + y^2)^(1/2));
-
+                    
+                    % Calculate muscle forces.
+                    % TO DO: why does the increment in muscle forces here
+                    % not scale with dt? As written now, there doesn't seem
+                    % to be a reason for looping through time steps.
                     F_muscle(node0(1), node0(2), 1) = F_muscle(node0(1), node0(2), 1) + dx*contraction_strength;
                     F_muscle(node0(1), node0(2), 2) = F_muscle(node0(1), node0(2), 2) + dy*contraction_strength;
                 end
 
                 if m > 1
-                    node0 = c(:, m);
-                    node1 = c(:, m-1);
+                    node0 = outer_muscle_nodes(:, m);
+                    node1 = outer_muscle_nodes(:, m-1);
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
                     dy = y/((x^2 + y^2)^(1/2));
-
+                    
+                    % Calculate muscle forces.
                     F_muscle(node0(1), node0(2), 1) = F_muscle(node0(1), node0(2), 1) + dx*contraction_strength;
                     F_muscle(node0(1), node0(2), 2) = F_muscle(node0(1), node0(2), 2) + dy*contraction_strength;
                 end
             end
             
+            %% For inner muscles
             for m = 1:length(muscle_inner)
                 if m < length(muscle_inner)
-                    node0 = d(:, m);
-                    node1 = d(:, m+1);
+                    node0 = inner_muscle_nodes(:, m);
+                    node1 = inner_muscle_nodes(:, m+1);
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
                     dy = y/((x^2 + y^2)^(1/2));
-
+                    
+                    % Calculate muscle forces.
                     F_muscle(node0(1), node0(2), 1) = F_muscle(node0(1), node0(2), 1) + dx*contraction_strength/2;
                     F_muscle(node0(1), node0(2), 2) = F_muscle(node0(1), node0(2), 2) + dy*contraction_strength/2;
                 end
 
                 if m > 1
-                    node0 = d(:, m);
-                    node1 = d(:, m-1);
+                    node0 = inner_muscle_nodes(:, m);
+                    node1 = inner_muscle_nodes(:, m-1);
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
                     dy = y/((x^2 + y^2)^(1/2));
-
+                    
+                    % Calculate muscle forces.
                     F_muscle(node0(1), node0(2), 1) = F_muscle(node0(1), node0(2), 1) + dx*contraction_strength/2;
                     F_muscle(node0(1), node0(2), 2) = F_muscle(node0(1), node0(2), 2) + dy*contraction_strength/2;
                 end
@@ -170,18 +180,18 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
         displacement = v*dt;                   % Calculate displacement from velocity.
         jelly = jelly+displacement;            % Add displacements to jellyfish.
         
-
-%          if mod(time,10)==0
-%             %% image new relaxed jelly
-%             for n = 1:11       %beads
-%                 figure1 = scatter(jelly(n,row_start(n):row_end(n), 1), jelly(n,row_start(n):row_end(n), 2), 20, 'filled');
-%                 hold on
-%             end
-%             hold off
-%             xlim([-3, 13]);
-%             ylim([-3, 13]);
-%             pause(0.001)
-%          end
+         % 
+         % if mod(time,10)==0
+         %    %% image new relaxed jelly
+         %    for n = 1:11       %beads
+         %        figure1 = scatter(jelly(n,row_start(n):row_end(n), 1), jelly(n,row_start(n):row_end(n), 2), 20, 'filled');
+         %        hold on
+         %    end
+         %    hold off
+         %    xlim([-3, 13]);
+         %    ylim([-3, 13]);
+         %    pause(0.001)
+         % end
     end
     d_uncut = dist_rel(6,6,1);
     jelly_eq = jelly;
