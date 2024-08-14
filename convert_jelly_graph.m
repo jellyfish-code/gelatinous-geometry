@@ -1,3 +1,13 @@
+%{
+======================================================================
+    Function that converts matrix into jellyfish graph
+======================================================================
+    INPUT:
+        jelly_initial (matrix):         Jellyfish matrix
+        row_start (scalar):             Index of jelly_initial where node positions start. 
+        row_end (scalar):               Index of jelly_initial where node positions end.
+%}
+
 function jelly = convert_jelly_graph(jelly_initial, row_start, row_end)
     %% Convert array coordinates to something readable by a graph
     a = size(jelly_initial);

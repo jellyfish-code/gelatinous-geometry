@@ -68,7 +68,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         Dr = dir([datapath '/' folder_save]);
         if isempty(Dr)
             S = mkdir(datapath,folder_save);
-            if ~S, disp('Fail to make folder!'); return;  
+            if ~S, error('Fail to make folder!');  
             end
         end                        
         path1 =[datapath, '/', folder_save];         % the place to store images
@@ -206,9 +206,10 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     [jelly, ~] = remesh_SLM_newmus(jelly, muscle_length);
             
     if max(jelly.Edges.d_current) > 10
-        return
-    elseif any(isfinite(jelly.Nodes.x_coord)-1) == 1 || any(isfinite(jelly.Nodes.y_coord)-1) == 1
-        return
+        error("Jellyfish edge length greater than 10.");
+    elseif ~any(isfinite(jelly.Nodes.x_coord)) || ~any(isfinite(jelly.Nodes.y_coord))
+        num_of_inf_coordinates = min(sum(~isfinite(jelly.Nodes.x_coord)), sum(~isfinite(jelly.Nodes.y_coord)));
+        error('Spatial coordinates of atleast %g nodes are infinite.', num_of_inf_coordinates); 
     end
 
     %% Plot and save jellyfish at zeroeth hour
@@ -276,9 +277,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         %Maxwell relaxation
         jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
         
-        % TO DO: Consider removing if loop below.
+        % TO DO: Why is length capped at 10?
         if max(jelly.Edges.d_current) > 10
-            return
+            error("Jellyfish edge length greater than 10."); 
         end
         
         %% Remesh every 10 hours
