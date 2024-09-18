@@ -6,6 +6,9 @@
         jelly_initial (matrix):         Jellyfish matrix
         row_start (scalar):             Index of jelly_initial where node positions start. 
         row_end (scalar):               Index of jelly_initial where node positions end.
+
+    OUTPUT:
+        jelly (graph):                  Graph containing information on Nodes and Edges of jellyfish.
 %}
 
 function jelly = convert_jelly_graph(jelly_initial, row_start, row_end)

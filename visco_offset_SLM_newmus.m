@@ -25,7 +25,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
     %% Measured parameters
     % TO DO: Add description to parameters
-    max_dR = 1;
+    max_dR = 1.55;
     dR_rate = 0.15;
 
     % Contraction related paramters
@@ -50,7 +50,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
     % TO DO: Consider making the units of the time step and time end the same for clarity.
     % Time settings
-    time_step = 30;                     % minutes
+    time_step = 15;                     % minutes
     time_end = 1000*60;                 % minutes
     N_time_steps = time_end/time_step; % Calculate number of steps based on total time and time step duration.
 
@@ -210,7 +210,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     [jelly, ~] = remesh_SLM_newmus(jelly, muscle_length);
             
     if max(jelly.Edges.d_current) > 10
-        error("Jellyfish edge length greater than 10.");
+        error("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable.");
     elseif ~any(isfinite(jelly.Nodes.x_coord)) || ~any(isfinite(jelly.Nodes.y_coord))
         num_of_inf_coordinates = min(sum(~isfinite(jelly.Nodes.x_coord)), sum(~isfinite(jelly.Nodes.y_coord)));
         error('Spatial coordinates of atleast %g nodes are infinite.', num_of_inf_coordinates); 
@@ -222,10 +222,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 12]);
+    xlabel("mm"); 
+    ylabel("mm");
 
     % Save image
     cd(path1);
-    saveas(figure1, ['hour_' num2str(0) '.jpg'])
+    saveas(figure1, 'hour_0000.jpg')
     cd(datapath); 
 
     %%Setup takes about 20 seconds%%%
@@ -280,16 +282,17 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         %Maxwell relaxation
         jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
         
-        % TO DO: Why is length capped at 10?
-        if max(jelly.Edges.d_current) > 10
-            error("Jellyfish edge length greater than 10."); 
+        % TO DO: Why is length capped at 10 mm.
+        if max(jelly.Edges.d_current) > 10 % in 10 mm.
+            error("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable."); 
         end
         
-        %% Remesh every 10 hours
-        % TO DO: add comments.
+        %% Remesh every 20 hours. 
+        
         if mod(time_index, 20) == 0
             [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length);
             if lim_reached == 1
+                warning('Remesh limit reached. Terminating simulation.')
                 cd(path1)
                 writematrix(a_r, 'a_r.xlsx');
                 writematrix(vel, 'velocity.xlsx');
@@ -307,8 +310,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             return
         end
         
-        %% Plot new relaxed jelly every 20 hours
-        if mod(hours, 20) == 0
+        %% Plot new relaxed jelly every 5 hours
+        if mod(hours, 5) == 0
             figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord); % Plot net force on each node
             title(sprintf("Time: %g hours" ,hours))
             hold on
@@ -317,15 +320,17 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             hold off
             xlim([0, 11 + offset]);
             ylim([-1, 12]);
+            xlabel("mm"); 
+            ylabel("mm");
 
             %% Save images
             cd(path1);
             % i = floor(time_index*(time_step/60)*10); %Time calculated in hours
-            saveas(figure1, ['hour_' num2str(hours) '.jpg'])
+            saveas(figure1, ['hour_' repmat('0',1, 4 - length(num2str(hours))) num2str(hours) '.jpg'])
             cd(datapath);     
             pause(0.001)
         end
-        if mod(time_index, 20) == 0
+        if mod(time_index, 5) == 0
             aspect = aspect_ratio(jelly);
             a_r = cat(1, a_r, [aspect, hours]);
             [~, edge_idx] = area(jelly);
@@ -342,6 +347,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 11]);
+    xlabel("mm"); 
+    ylabel("mm");
     
     %% Save aspect ratio and velocity
     cd(path1);                                                            % write the image data

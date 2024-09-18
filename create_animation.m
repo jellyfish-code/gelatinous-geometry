@@ -4,10 +4,11 @@
     Adapted from https://www.mathworks.com/help/matlab/import_export/convert-between-image-sequences-and-video.html  
 ======================================================================
     INPUT:
-        image_directory_location:    Location of directory containing images to be stitched together.
+        image_directory_location (string):    Location of directory containing images to be stitched together.
+        video_name (string):                  Name of mp4 file. 
 %}
 
-function create_animation(image_directory_location)
+function create_animation(image_directory_location, video_name)
     
     %% Find images in specified directory
     imageNames = dir(fullfile(image_directory_location, "*.jpg"));
@@ -25,7 +26,7 @@ function create_animation(image_directory_location)
     
     %% Create animation
     % Create VideoWriter object
-    outputVideo = VideoWriter(fullfile(image_directory_location,'animation.mp4'), 'MPEG-4');
+    outputVideo = VideoWriter(fullfile(image_directory_location, video_name), 'MPEG-4');
     
     % Specify frame rate
     outputVideo.FrameRate = 5; 

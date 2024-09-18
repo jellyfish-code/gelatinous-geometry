@@ -2,21 +2,27 @@
 %{
 ======================================================================
     Function to remesh jellyfish 
-    TO DO: why are we remeshing?
+    Why are we remeshing? Biological materials can undergo large
+    deformations, which cannot be captured by static meshes. There are
+    references for this - check paper or ask Mengsha.
 ======================================================================
     INPUT:
         jelly (?):                      
         muscle_length (?):              
 %}
 function [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length)
-lim_reached = 0;
+lim_reached = 0; % This is to avoid the code being stuck in an infinite remeshing loop.
 jelly_temp = jelly;
 mus_length_cur = sum(jelly.Edges.d_current(jelly.Edges.muscle == 1));
 lim = numedges(jelly);
-count = 0;
+count = 0; % Keeping track of number of instances of node addition/removal (ie, remeshing). 
+
     %% Delete nodes when needed
-    while min(jelly.Edges.d_current) < 0.35%2
+    while min(jelly.Edges.d_current) < 0.35 % in mm.
         count = count + 1;
+
+        % If number of edges with length less than 0.35 mm is more than the
+        % number of edges
         if count >= lim
             lim_reached = 1;
             return
@@ -148,7 +154,7 @@ count = 0;
     %edge.
     jelly_temp = jelly;
     count = 0;
-    while max(jelly.Edges.d_current) > 1.5
+    while max(jelly.Edges.d_current) > 1.5 % in mm.
         count = count + 1;
         if count >= lim
             lim_reached = 1;
@@ -317,7 +323,7 @@ count = 0;
                         jelly_temp.Nodes.inmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.inmus(a(1)), jelly.Nodes.inmus(a(2))]);
                         jelly_temp.Nodes.outmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.outmus(a(1)), jelly.Nodes.outmus(a(2))]);
                     end
-                    %%Now kill the old edge
+                    %%  Now remove the old edge
                     jelly_temp = rmedge(jelly_temp, a(1), a(2));
 
                 end

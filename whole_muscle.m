@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that initialises a set of nodes for the muscle layers.
+======================================================================
+
+INPUT:
+        None.
+
+OUTPUT:
+        muscle_outer (matrix):             A matrix storing index of jelly array corresponding to outer muscles.
+        muscle_inner (matrix):             A matrix storing index of jelly array corresponding to inner muscles.
+%}
+
+
 function [muscle_outer, muscle_inner] = whole_muscle()
     muscle_top2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 11, 11, 11, 11, 11];
     muscle_top1 = [6, 7, 8, 9, 10, 11, 11, 11, 11, 11, 11, 10, 9, 8, 7, 6];

@@ -4,7 +4,10 @@
     grafts.
 ======================================================================
     INPUT:
-        offset (scalar):                Distance between two grafts. =
+        offset (scalar):                Distance between two grafts. 
+
+    OUTPUT: 
+        jelly (matrix):                 A 3-dimensional matrix. Last dimension can be indexed to access x-axis position (index = 1) and y-axis positions (index = 2).  
 %}
 
 function [jelly, row_start, row_end] = offset_mesh(offset)

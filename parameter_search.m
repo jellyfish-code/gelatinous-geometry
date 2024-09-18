@@ -7,8 +7,8 @@
 
 %% Declare Parameters
 % A0 going from 10^3 to 10^6 (collagen gels from 5x10^2 to 2x10^4)
-%Viscosity from 10^4 - 10^7
-%Bulk modulus rubber is around 2x10^6 Pa, water at 2x10^9 Pa
+% Viscosity from 10^4 - 10^7
+% Bulk modulus rubber is around 2x10^6 Pa, water at 2x10^9 Pa
 
 %contraction_range = [1, 20, 40, 60];
 contraction_rate = 20;% Contraction rate of jellyfish (contrations per minute). Parameter measured from experiments, see figure S6 in Supplementary Material.

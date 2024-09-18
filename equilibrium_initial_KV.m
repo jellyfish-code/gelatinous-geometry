@@ -15,9 +15,18 @@
 function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscosity, bulk_modulus, dt, N_time , area_0, contraction_strength)
 
     %% Initialize an uncut jelly matrix
-    [jelly, row_start, row_end] = offset_mesh(0); 
-    [muscle_outer, muscle_inner] = whole_muscle();
-    muscle_num = 2;
+    [jelly, row_start, row_end] = offset_mesh(0);       % Initialise jellyfish with no offset
+    jelly_converted = convert_jelly_graph(jelly, row_start, row_end);
+
+    [muscle_outer, muscle_inner] = whole_muscle();      % Initialise muscle layers
+    muscle_num = 2;                                       % Number of muscle layers
+    
+    f1 = figure; 
+    plot(jelly_converted, 'XData', jelly_converted.Nodes.x_coord, 'YData', jelly_converted.Nodes.y_coord);
+    title(sprintf("Time: %g hours" ,0))
+    hold on
+    % xlim([0, 11 + offset]);
+    % ylim([-1, 12]);
     
     edges = find_edges(muscle_outer);
     dist_rel = mesh_dist(jelly, row_start, row_end);
@@ -36,14 +45,16 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
         % define the current curve and length of the muscle
         F_muscle = zeros(mesh_size(1), mesh_size(2), 2);
         for mus = 1:muscle_num
-            outer_muscle_nodes = muscle_outer(:,:,mus);
-            inner_muscle_nodes = muscle_inner(:,:,mus);
+            outer_muscle_nodes_index = muscle_outer(:,:,mus);
+            inner_muscle_nodes_index = muscle_inner(:,:,mus);
 
             %% For outer muscles
             for m = 1:length(muscle_outer)
                 if m < length(muscle_outer)
-                    node0 = outer_muscle_nodes(:, m);
-                    node1 = outer_muscle_nodes(:, m+1);
+                    node0 = outer_muscle_nodes_index(:, m);
+                    node1 = outer_muscle_nodes_index(:, m+1);
+                    plot(jelly(node1(1), node1(2), 1), jelly(node1(1), node1(2), 2), 'or'); 
+                    plot(jelly(node0(1), node0(2), 1), jelly(node0(1), node0(2), 2), 'or');
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
@@ -58,8 +69,8 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
                 end
 
                 if m > 1
-                    node0 = outer_muscle_nodes(:, m);
-                    node1 = outer_muscle_nodes(:, m-1);
+                    node0 = outer_muscle_nodes_index(:, m);
+                    node1 = outer_muscle_nodes_index(:, m-1);
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
@@ -74,8 +85,10 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
             %% For inner muscles
             for m = 1:length(muscle_inner)
                 if m < length(muscle_inner)
-                    node0 = inner_muscle_nodes(:, m);
-                    node1 = inner_muscle_nodes(:, m+1);
+                    node0 = inner_muscle_nodes_index(:, m);
+                    node1 = inner_muscle_nodes_index(:, m+1);
+                    plot(jelly(node1(1), node1(2), 1), jelly(node1(1), node1(2), 2), 'om'); 
+                    plot(jelly(node0(1), node0(2), 1), jelly(node0(1), node0(2), 2), 'om');
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
@@ -87,8 +100,8 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
                 end
 
                 if m > 1
-                    node0 = inner_muscle_nodes(:, m);
-                    node1 = inner_muscle_nodes(:, m-1);
+                    node0 = inner_muscle_nodes_index(:, m);
+                    node1 = inner_muscle_nodes_index(:, m-1);
                     x = jelly(node1(1), node1(2), 1) - jelly(node0(1), node0(2), 1);
                     y = jelly(node1(1), node1(2), 2) - jelly(node0(1), node0(2), 2);
                     dx = x/((x^2 + y^2)^(1/2));
@@ -195,3 +208,5 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
     end
     d_uncut = dist_rel(6,6,1);
     jelly_eq = jelly;
+
+    close(f1); % close figure
