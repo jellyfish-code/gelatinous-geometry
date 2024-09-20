@@ -50,7 +50,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
 
     % TO DO: Consider making the units of the time step and time end the same for clarity.
     % Time settings
-    time_step = 15;                     % minutes
+    time_step = 30;                     % minutes
     time_end = 1000*60;                 % minutes
     N_time_steps = time_end/time_step; % Calculate number of steps based on total time and time step duration.
 
@@ -242,7 +242,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         %pos strain = tension, neg strain = compression     
         %% Calculate new muscle coordinates from contraction
         %muscles are "synchronized", calculations for all muscle bands happen simultaneously.
-        [jelly, done] = contraction4offset(jelly, contraction_strength, muscle_strain, max_dR, dR_rate);
+        [jelly, done] = contraction5offset_old(jelly, contraction_strength, muscle_strain, max_dR, dR_rate);
         if done == 0
             cd(path1)
             writematrix(a_r, 'a_r.xlsx');
@@ -287,9 +287,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
             error("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable."); 
         end
         
-        %% Remesh every 20 hours. 
+        %% Remesh every 5 hours. 
         
-        if mod(time_index, 20) == 0
+        if mod(time_index, 10) == 0
             [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length);
             if lim_reached == 1
                 warning('Remesh limit reached. Terminating simulation.')

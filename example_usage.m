@@ -10,11 +10,11 @@ contraction_rate = 40;  % Contraction rate of jellyfish (contrations per minute)
 muscle_strain = 0.25;    % Muscle strain of jellyfish (dimensionless). Parameter measurement from experiments, see figure S6 in Supplementary Materials.      
 offset = 3;            % Offset of jellyfish grafts
 
-bulk_modulus = 0.05;    % (!) Units need to be updated.
+bulk_modulus = 0.05;    % kPa. Units need to be updated.
 area = 1.001;           % Initial area of jellyfish.
 elast0 = 0.01;            % (Pa) Elasticity of spring. (!) Units need to be updated.
 elast1 = 0.04;            % (Pa) Elasticity of spring in Maxwell model. (!) Units need to be updated.
-vis = 500;             % (Pa.s) Dashpot in Maxwell model. (!) Units need to be updated.
+vis = 500;             % (kPa.s) Dashpot in Maxwell model. (!) Units need to be updated.
 
 %% Parameters to predict whether shape will reorganise, see Chapter 4.1 in M. Gong's thesis (2022). 
 characteristic_ratio = muscle_strain*(elast0 + elast1)/vis;     % Should be betweeen 0.4e-6 and 0.3e-5 (1/s) for full reorganisation. 
