@@ -210,7 +210,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     [jelly, ~] = remesh_SLM_newmus(jelly, muscle_length);
             
     if max(jelly.Edges.d_current) > 10
-        error("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable.");
+        warning("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable.");
     elseif ~any(isfinite(jelly.Nodes.x_coord)) || ~any(isfinite(jelly.Nodes.y_coord))
         num_of_inf_coordinates = min(sum(~isfinite(jelly.Nodes.x_coord)), sum(~isfinite(jelly.Nodes.y_coord)));
         error('Spatial coordinates of atleast %g nodes are infinite.', num_of_inf_coordinates); 
@@ -284,12 +284,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         
         % TO DO: Why is length capped at 10 mm.
         if max(jelly.Edges.d_current) > 10 % in 10 mm.
-            error("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable."); 
+            warning("Jellyfish edge length greater than 10 mm. Simulation likely to be unstable."); 
         end
         
-        %% Remesh every 5 hours. 
+        %% Remesh every 2.5 hours. 
         
-        if mod(time_index, 10) == 0
+        if mod(time_index, 5) == 0
             [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length);
             if lim_reached == 1
                 warning('Remesh limit reached. Terminating simulation.')
