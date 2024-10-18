@@ -1,18 +1,19 @@
+function realtime_contraction_SLM(elast0, elast1, vis, bulk_modulus, muscle_strain, folder_save)
 %% Set up parameters, everything in Pa(N/m^2) and s
-elast0 = 0.05;
-elast1 = 0.05;
-vis = 750; %only used during set up
+%elast0 = 0.05;
+%elast1 = 0.05;
+%vis = 750; %only used during set up
 damping = 0.1; 
-bulk_modulus = 0.75;
+%bulk_modulus = 0.75;
 area0 = 1.001;
-muscle_strain = 1.4;
+%muscle_strain = 1.4;
 contraction_rate = 20;
 mass = 0.01; %grams per node
 mus_length = []; %track muscle length over time
 
-graft_type = 'butterfly';
+graft_type = 'offset';
 offset = 2;
-folder_save = 'live_contraction_butterfly1';
+%folder_save = 'live_contraction_butterfly1';
 
 %Measured parameters
 contraction_duration = 0.8; %s
@@ -33,18 +34,18 @@ time_end = 10; %seconds
 time_steps = time_end/time_step;
 
 %% Writing images
-path0 = 'C:\Users\Mengsha\Documents\Model';
+path0 = '/central/home/mgong/Documents/Model';
 %     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
 
 if ~isempty(path0)
-    Dr = dir([path0 '\' folder_save]);
+    Dr = dir([path0 '/' folder_save]);
     if isempty(Dr)
         S = mkdir(path0,folder_save);
         if ~S, disp('Fail to make folder!'); return;  
         end
     else
     end                        
-    path1 =[path0, '\', folder_save];         % the place to store images
+    path1 =[path0, '/', folder_save];         % the place to store images
 else
     path0 = pwd; 
 end
@@ -105,6 +106,9 @@ if contains(graft_type, 'butterfly')
     jelly.Nodes.F_elastic = jelly.Nodes.F_net;
     jelly.Nodes.F_pressure = jelly.Nodes.F_net;
     jelly.Nodes.F_muscle = jelly.Nodes.F_net;
+    jelly.Nodes.outmus = zeros(numnodes(jelly),1);
+    jelly.Nodes.inmus = zeros(numnodes(jelly),1);
+
 
     %% Define nodes that make up the edges (in order)
     edges = find_edges_butterfly(row_start, row_end);
@@ -139,38 +143,55 @@ if contains(graft_type, 'butterfly')
     m5 = zeros(length(muscle_lowleft_inner),1);
     m6 = zeros(length(muscle_lowright_inner),1);
 
+    outcount = 1;
+    incount = 1;
     %% Define edges that make up the muscles
     for j = 1:length(muscle_top_outer)
         for i = 1:numnodes(jelly)
             if jelly.Nodes.Node_Names(i,1) == muscle_top_outer(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_top_outer(1,j)
-                m1(j) = i;
+                m1(j,1) = i;
+                jelly.Nodes.outmus(i) = outcount;
+                outcount = outcount+1;
             end
         end
     end
+
     for j = 1:length(muscle_top_outer)-1
         a = findedge(jelly, m1(j), m1(j+1));
         jelly.Edges.muscle(a) = 1;
     end
-%     for j = 1:length(muscle_lowleft_outer)
-%         for i = 1:numnodes(jelly)
-%             if jelly.Nodes.Node_Names(i,1) == muscle_lowleft_outer(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowleft_outer(1,j)
-%                 m2(j) = i;
-%             end
-%             if jelly.Nodes.Node_Names(i,1) == muscle_lowright_outer(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowright_outer(1,j)
-%                 m3(j) = i;
-%             end
-%         end
-%     end
-%     for j = 1:length(muscle_lowleft_outer)-1
-%         a = findedge(jelly, m2(j), m2(j+1));
-%         jelly.Edges.muscle(a) = 1;
-%         b = findedge(jelly, m3(j), m3(j+1));
-%         jelly.Edges.muscle(b) = 1;
-%     end
+    for j = 1:length(muscle_lowleft_outer)
+        for i = 1:numnodes(jelly)
+            if jelly.Nodes.Node_Names(i,1) == muscle_lowright_outer(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowright_outer(1,j)
+                m3(j) = i;
+                jelly.Nodes.outmus(i) = outcount;
+                outcount = outcount+1;
+            end
+        end
+    end
+
+    for j = 1:length(muscle_lowleft_outer)
+        for i = 1:numnodes(jelly)
+            if jelly.Nodes.Node_Names(i,1) == muscle_lowleft_outer(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowleft_outer(1,j)
+                m2(j) = i;
+                jelly.Nodes.outmus(i) = outcount;
+                outcount = outcount+1;
+            end
+        end
+    end
+    for j = 1:length(muscle_lowleft_outer)-1
+        a = findedge(jelly, m2(j), m2(j+1));
+        jelly.Edges.muscle(a) = 1;
+        b = findedge(jelly, m3(j), m3(j+1));
+        jelly.Edges.muscle(b) = 1;
+    end
+
     for j = 1:length(muscle_top_inner)
         for i = 1:numnodes(jelly)
             if jelly.Nodes.Node_Names(i,1) == muscle_top_inner(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_top_inner(1,j)
                 m4(j) = i;
+                jelly.Nodes.inmus(i) = incount;
+                incount = incount+1;
             end
         end
     end
@@ -178,22 +199,32 @@ if contains(graft_type, 'butterfly')
         a = findedge(jelly, m4(j), m4(j+1));
         jelly.Edges.muscle(a) = 0.5;
     end
-%     for j = 1:length(muscle_lowleft_inner)
-%         for i = 1:numnodes(jelly)
-%             if jelly.Nodes.Node_Names(i,1) == muscle_lowleft_inner(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowleft_inner(1,j)
-%                 m5(j) = i;
-%             end
-%             if jelly.Nodes.Node_Names(i,1) == muscle_lowright_inner(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowright_inner(1,j)
-%                 m6(j) = i;
-%             end
-%         end
-%     end
-%     for j = 1:length(muscle_lowleft_inner)-1
-%         a = findedge(jelly, m5(j), m5(j+1));
-%         jelly.Edges.muscle(a) = 0.5;
-%         b = findedge(jelly, m6(j), m6(j+1));
-%         jelly.Edges.muscle(b) = 0.5;
-%     end
+    for j = 1:length(muscle_lowleft_inner)
+        for i = 1:numnodes(jelly)
+            if jelly.Nodes.Node_Names(i,1) == muscle_lowright_inner(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowright_inner(1,j)
+                m6(j) = i;
+                jelly.Nodes.inmus(i) = incount;
+                incount = incount+1;
+            end
+        end
+    end
+    
+    for j = 1:length(muscle_lowleft_inner)
+        for i = 1:numnodes(jelly)
+            if jelly.Nodes.Node_Names(i,1) == muscle_lowleft_inner(2,j) && jelly.Nodes.Node_Names(i,2) == muscle_lowleft_inner(1,j)
+                m5(j) = i;
+                jelly.Nodes.inmus(i) = incount;
+                incount = incount+1;
+            end
+        end
+    end
+
+    for j = 1:length(muscle_lowleft_inner)-1
+        a = findedge(jelly, m5(j), m5(j+1));
+        jelly.Edges.muscle(a) = 0.5;
+        b = findedge(jelly, m6(j), m6(j+1));
+        jelly.Edges.muscle(b) = 0.5;
+    end
 
     muscle_length = sum(jelly.Edges.d_current(jelly.Edges.muscle == 1));
     [jelly, ~] = remesh_SLM(jelly, muscle_length);
@@ -274,6 +305,8 @@ elseif contains(graft_type, 'offset')
     jelly.Nodes.F_elastic = jelly.Nodes.F_net;
     jelly.Nodes.F_pressure = jelly.Nodes.F_net;
     jelly.Nodes.F_muscle = jelly.Nodes.F_net;
+    jelly.Nodes.outmus = zeros(numnodes(jelly),1);
+    jelly.Nodes.inmus = zeros(numnodes(jelly),1);
 
     %% Define nodes that make up the edges (in order)
     edges = find_edges(muscle_outer);
@@ -306,14 +339,24 @@ elseif contains(graft_type, 'offset')
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
     
+    outcount = 1;
+    incount = 1;
     %% Define edges that make up the muscles
     for j = 1:length(muscle_outer)
         for i = 1:numnodes(jelly)
             if jelly.Nodes.Node_Names(i,1) == muscle_outer(1,j,1) && jelly.Nodes.Node_Names(i,2) == muscle_outer(2,j,1)
                 m1(j) = i;
+                jelly.Nodes.outmus(i) = outcount;
+                outcount = outcount+1;
             end
+        end
+    end
+    for j = 1:length(muscle_outer)
+        for i = 1:numnodes(jelly)
             if jelly.Nodes.Node_Names(i,1) == muscle_outer(1,j,2) && jelly.Nodes.Node_Names(i,2) == muscle_outer(2,j,2)
                 m2(j) = i;
+                jelly.Nodes.outmus(i) = outcount;
+                outcount = outcount+1;
             end
         end
     end
@@ -327,9 +370,17 @@ elseif contains(graft_type, 'offset')
         for i = 1:numnodes(jelly)
             if jelly.Nodes.Node_Names(i,1) == muscle_inner(1,j,1) && jelly.Nodes.Node_Names(i,2) == muscle_inner(2,j,1)
                 m3(j) = i;
+                jelly.Nodes.inmus(i) = incount;
+                incount = incount+1;
             end
+        end
+    end
+    for j = 1:length(muscle_inner)
+        for i = 1:numnodes(jelly)
             if jelly.Nodes.Node_Names(i,1) == muscle_inner(1,j,2) && jelly.Nodes.Node_Names(i,2) == muscle_inner(2,j,2)
                 m4(j) = i;
+                jelly.Nodes.inmus(i) = incount;
+                incount = incount+1;
             end
         end
     end
@@ -379,9 +430,15 @@ end
             dist_current = (dx^2 + dy^2)^(1/2);
             jelly.Edges.d_current(i) = dist_current;
         end
+        
         muscle_length = sum(jelly.Edges.d_current(jelly.Edges.muscle == 1));
         mus_length = cat(1, mus_length, muscle_length);
-        
+        if max(jelly.Edges.d_current) > 10
+            cd(path1);
+            writematrix(mus_length, 'muscle_length.xlsx');
+            cd(path0); 
+        return
+        end
         %% Calculate new muscle coordinates from contraction
         %muscles are "synchronized", calculations for all muscle bands happen
         %simultaneously.

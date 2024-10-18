@@ -11,18 +11,13 @@
 %}
 
 function [jelly, row_start, row_end] = offset_mesh(offset)
-    
-    
     top_start = [1, 2, 3, 4, 5, 6];
     bottom_start = offset + [1, 1, 1, 1, 1];
     row_start = cat(2, bottom_start, top_start);
     width = [5, 6, 7, 8, 9, 10 + offset, 9, 8, 7, 6, 5];
     row_end = row_start + width;
-
-    % Create meshes for x and y variables
     mesh_x = zeros(length(row_start), max(row_end));
     mesh_y = zeros(length(row_start), max(row_end));
-    
     edge_row = [3*sqrt(7)/2, 5*sqrt(3)/2, sqrt(83)/2, sqrt(83)/2, 5*sqrt(3)/2, 3*sqrt(7)/2];
     edge2_row = [sqrt(39)/2, 2*sqrt(3), sqrt(13), 2*sqrt(3), sqrt(39)/2];
     edge_column = [sqrt(21)/2, 3, sqrt(57)/2, 3*sqrt(2), 4.5, sqrt(21), 4.5, 3*sqrt(2), sqrt(57)/2, 3, sqrt(21)/2];

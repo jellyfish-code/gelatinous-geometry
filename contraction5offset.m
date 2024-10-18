@@ -19,6 +19,10 @@ for i = 1:length(mus_idx)-1
     new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
     
     if a == 0 || jelly.Edges.muscle(a) == 0 || i == length(mus_idx)-1
+        if length(new_mus_piece) < 3
+            done = 0;
+            return
+        end
         edge2 = i;
         check1 = outedges(jelly, mus_idx(edge1));
         check2 = outedges(jelly, mus_idx(edge2));
@@ -454,6 +458,10 @@ for i = 1:length(mus_idx)-1
     new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
     
     if a == 0 || jelly.Edges.muscle(a) == 0 || i == length(mus_idx)-1
+        if length(new_mus_piece) < 3
+            done = 0;
+            return
+        end
         edge2 = i;
         check1 = outedges(jelly, mus_idx(edge1));
         check2 = outedges(jelly, mus_idx(edge2));

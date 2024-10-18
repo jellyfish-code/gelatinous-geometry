@@ -12,8 +12,8 @@ offset = 4;            % Offset of jellyfish grafts
 
 bulk_modulus = 0.05;    % kPa. Units need to be updated.
 area = 1.001;           % Initial area of jellyfish.
-elast0 = 0.05*0.8;            % (Pa) Elasticity of spring. (!) Units need to be updated.
-elast1 = 0.05*0.2;            % (Pa) Elasticity of spring in Maxwell model. (!) Units need to be updated.
+elast0 = 0.05*0.2;            % (Pa) Elasticity of spring. (!) Units need to be updated.
+elast1 = 0.05*0.8;            % (Pa) Elasticity of spring in Maxwell model. (!) Units need to be updated.
 vis = 500;             % (kPa.s) Dashpot in Maxwell model. (!) Units need to be updated.
 
 %% Parameters to predict whether shape will reorganise, see Chapter 4.1 in M. Gong's thesis (2022). 
@@ -35,7 +35,7 @@ datapath = pwd; % Set current directory as datapath
 
 % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
 % Creates folder Data if not already created.
-folder_save = ['example_usage_data/', 'offset_graft_', 'elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate), '_using_visco_offset_SLM_newmus_remote_version'];
+folder_save = ['example_usage_data/', 'offset_graft_', 'elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate), '_using_visco_offset_SLM_newmus_remote_version_updated_files'];
 
 % Simulate jellyfish
 % visco_offset_SLM_newmus(elast0, ...

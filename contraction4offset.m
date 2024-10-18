@@ -220,6 +220,7 @@ for i = 1:height(mus_tab)
             
             if any(isinf(p)==1) || any(isnan(p)==1)
                 done = 0;
+                return
             else
                 y1 = roots(p);
                 x1 = (C1 - 2*y1*C2)/(2*C3);
@@ -231,13 +232,18 @@ for i = 1:height(mus_tab)
 %             check = [new_R, sqrt((x1(1)-O(1))^2 + (y1(1)-O(2))^2)]
 %             check = [new_R, sqrt((x1(2)-O(1))^2 + (y1(2)-O(2))^2)]
             %test which point is the correct one with theta
-            t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
-            if abs(t1) > pi
-                t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
-            end
-            t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
-            if abs(t2) > pi
-                t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
+            if isreal(y1) && isreal(x1)
+                t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
+                if abs(t1) > pi
+                    t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
+                end
+                t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
+                if abs(t2) > pi
+                    t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
+                end
+            else
+                done=0;
+                return
             end
             if d_theta > 0
                 if t1 > 0
@@ -389,6 +395,7 @@ for i = 1:height(mus_tab)
             p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
             if any(isinf(p)==1) || any(isnan(p)==1)
                 done = 0;
+                return
             else
                 y1 = roots(p);
                 x1 = (C1 - 2*y1*C2)/(2*C3);
@@ -434,13 +441,20 @@ for i = 1:height(mus_tab)
                 p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
                 if any(isinf(p)==1) || any(isnan(p)==1)
                     done = 0;
+                    return
                 else
                     y1 = roots(p);
                     x1 = (C1 - 2*y1*C2)/(2*C3);
                 end
 
-                v1 = [x1(1)-Ax, y1(1)-Ay];
-                v2 = [x1(2)-Ax, y1(2)-Ay];
+                if isreal(y1) && isreal(x1)
+                
+                    v1 = [x1(1)-Ax, y1(1)-Ay];
+                    v2 = [x1(2)-Ax, y1(2)-Ay];
+                else
+                    done=0;
+                    return
+                end
                 v0 = [jelly.Nodes.x_coord(mus_tab.Nodes(i,j-1)) - jelly.Nodes.x_coord(mus_tab.Nodes(i,j)), jelly.Nodes.y_coord(mus_tab.Nodes(i,j-1))-jelly.Nodes.y_coord(mus_tab.Nodes(i,j))];
                 d1 = sqrt(sum((v0-v1).^2));
                 d2 = sqrt(sum((v0-v2).^2));
@@ -684,10 +698,13 @@ for i = 1:height(mus_tab)
             
             if any(isinf(p)==1) || any(isnan(p)==1)
                 done = 0;
+                return
             else
                 y1 = roots(p);
                 x1 = (C1 - 2*y1*C2)/(2*C3);
             end
+            
+            if isreal(y1) && isreal(x1)
             
             %% Check!
 %             check = [new_m, sqrt((x1(1)-Ax)^2 + (y1(1)-Ay)^2)]
@@ -695,13 +712,17 @@ for i = 1:height(mus_tab)
 %             check = [new_R, sqrt((x1(1)-O(1))^2 + (y1(1)-O(2))^2)]
 %             check = [new_R, sqrt((x1(2)-O(1))^2 + (y1(2)-O(2))^2)]
             %test which point is the correct one with theta
-            t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
-            if abs(t1) > pi
-                t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
-            end
-            t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
-            if abs(t2) > pi
-                t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
+                t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
+                if abs(t1) > pi
+                    t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
+                end
+                t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
+                if abs(t2) > pi
+                    t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
+                end
+            else
+                done = 0;
+                return
             end
             if d_theta > 0
                 if t1 > 0
@@ -853,13 +874,20 @@ for i = 1:height(mus_tab)
             p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
             if any(isinf(p)==1) || any(isnan(p)==1)
                 done = 0;
+                return
             else
                 y1 = roots(p);
                 x1 = (C1 - 2*y1*C2)/(2*C3);
             end
             
-            v1 = [x1(1)-Ax, y1(1)-Ay];
-            v2 = [x1(2)-Ax, y1(2)-Ay];
+            if isreal(y1) && isreal(x1)
+                v1 = [x1(1)-Ax, y1(1)-Ay];
+                v2 = [x1(2)-Ax, y1(2)-Ay];     
+            else
+                done=0;
+                return
+            end
+            
             v0 = [jelly.Nodes.x_coord(mus_tab.Nodes(i,j+1)) - jelly.Nodes.x_coord(mus_tab.Nodes(i,j)), jelly.Nodes.y_coord(mus_tab.Nodes(i,j+1))-jelly.Nodes.y_coord(mus_tab.Nodes(i,j))];
             d1 = sqrt(sum((v0-v1).^2));
             d2 = sqrt(sum((v0-v2).^2));
@@ -898,6 +926,7 @@ for i = 1:height(mus_tab)
                 p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
                 if any(isinf(p)==1) || any(isnan(p)==1)
                     done = 0;
+                    return
                 else
                     y1 = roots(p);
                     x1 = (C1 - 2*y1*C2)/(2*C3);

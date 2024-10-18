@@ -20,6 +20,10 @@ done = 1;
 %% Need to find inflection point for butterfly
 for i = 1:length(mus_idx)-1
     a = findedge(jelly, mus_idx(i), mus_idx(i+1));
+    if length(a) ~= 1
+        done = 0;
+        return 
+    end
 
 %     if length(new_mus_piece) > 1
 %         side_a = sqrt((6 - jelly.Nodes.y_coord(mus_idx(i)))^2 + (6.5 - jelly.Nodes.x_coord(mus_idx(i)))^2);
@@ -160,8 +164,12 @@ for i = 1:m(1)
 
     [A, B] = equationsToMatrix([eqn1, eqn2]);
     X = linsolve(A, B);
+    if isempty(X) || any(isinf(X)==1) || any(isnan(X)==1) || isreal(X)==0
+        done = 0;
+        return
+    end
     Ox = X(1); Oy = X(2); 
-    
+
 
     %Can now define the radius
     radius(i) = ((x1 - Ox)^2 + (y1 - Oy)^2)^(1/2);
@@ -600,6 +608,7 @@ for i = 1:height(mus_tab)
             p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
             if any(isinf(p)==1) || any(isnan(p)==1)
                 done = 0;
+                return
             else
                 y1 = roots(p);
                 x1 = (C1 - 2*y1*C2)/(2*C3);
@@ -645,6 +654,7 @@ for i = 1:height(mus_tab)
                 p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
                 if any(isinf(p)==1) || any(isnan(p)==1)
                     done = 0;
+                    return
                 else
                     y1 = roots(p);
                     x1 = (C1 - 2*y1*C2)/(2*C3);
@@ -695,6 +705,11 @@ mus_anchor = [];
 %% Need to find inflection point for butterfly
 for i = 1:length(mus_idx)-1
     a = findedge(jelly, mus_idx(i), mus_idx(i+1));
+    if length(a) ~= 1
+        done = 0;
+        return
+    end
+        
 %     if length(new_mus_piece) > 1
 %         side_a = sqrt((jelly.Nodes.y_coord(mus_idx(i+1)) - jelly.Nodes.y_coord(mus_idx(i)))^2 + (jelly.Nodes.x_coord(mus_idx(i+1)) - jelly.Nodes.x_coord(mus_idx(i)))^2);
 %         side_b = sqrt((jelly.Nodes.y_coord(mus_idx(i)) - jelly.Nodes.y_coord(mus_idx(i-1)))^2 + (jelly.Nodes.x_coord(mus_idx(i)) - jelly.Nodes.x_coord(mus_idx(i-1)))^2);
@@ -710,6 +725,7 @@ for i = 1:length(mus_idx)-1
 %     cur_cot = acot(1/slope);
     %node i gets added to the current muscle 
     new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
+    
     
     % do we need to start a new muscle?
     %yes if i+1 is not connected to i, then i is in the current muscle but
@@ -830,7 +846,12 @@ for i = 1:m(1)
     eqn2 = (2*x1-2*x3)*ox + (2*y1 - 2*y3)*oy == x1^2 + y1^2 - x3^2 - y3^2;
 
     [A, B] = equationsToMatrix([eqn1, eqn2]);
-    X = linsolve(A, B);
+    X = linsolve(A, B);    
+    if isempty(X) || any(isinf(X)==1) || any(isnan(X)==1) || isreal(X) == 0
+        done = 0;
+        return
+    end
+    
     Ox = X(1); Oy = X(2); 
     
 
@@ -1086,6 +1107,7 @@ for i = 1:height(mus_tab)
             p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
             if any(isinf(p)==1) || any(isnan(p)==1)
                 done = 0;
+                return
             else
                 y1 = roots(p);
                 x1 = (C1 - 2*y1*C2)/(2*C3);
@@ -1131,6 +1153,7 @@ for i = 1:height(mus_tab)
                 p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
                 if any(isinf(p)==1) || any(isnan(p)==1)
                     done = 0;
+                    return
                 else
                     y1 = roots(p);
                     x1 = (C1 - 2*y1*C2)/(2*C3);

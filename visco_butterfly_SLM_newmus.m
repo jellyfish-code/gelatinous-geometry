@@ -1,9 +1,8 @@
-function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, folder_save)
-
+function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save)
 %% Set up parameters, everything in Pa(N/m^2) and s
     %Measured parameters
     contraction_duration = 0.8; %s
-    contraction_strength = elast*muscle_strain; %Pa
+    contraction_strength = (elast0+elast1)*muscle_strain; %Pa
     %Graft parameters
     relax_duration = (60-contraction_rate*contraction_duration)/(contraction_rate + 1); %seconds
     vel = [];
@@ -15,8 +14,8 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
     end
 
     %time
-    time_step = 30; %minutes
-    time_end = 1000; %hours
+    time_step = 15; %minutes
+    time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     
     relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
@@ -32,18 +31,18 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
     body = [6 + body_height, 1+wing_width/2];
 
     %% Writing images
-    path0 = 'C:\Users\Mengsha\Documents\Model';
-%     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
+    path0 = '/central/home/mgong/Documents/Model';
+    %     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
 
     if ~isempty(path0)
-        Dr = dir([path0 '\' folder_save]);
+        Dr = dir([path0 '/' folder_save]);
         if isempty(Dr)
             S = mkdir(path0,folder_save);
             if ~S, disp('Fail to make folder!'); return;  
             end
         else
         end                        
-        path1 =[path0, '\', folder_save];         % the place to store images
+        path1 =[path0, '/', folder_save];         % the place to store images
     else
         path0 = pwd; 
     end
@@ -233,9 +232,9 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
         return
     end
     
-    figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 0.8);
-    hold on
-    figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
+    figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
+    %hold on
+    %figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
 
     hold off
     xlim([-1,14]);
@@ -253,9 +252,13 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
         %Print the current time_step (in hours)
         hours = time/(60/time_step);
         
-        if hours == 210
-            pause(0.001)
-        end
+        %if hours == 1000
+            
+        %    pause(0.001)
+        %    a_rat = area(jelly)/area_relax;
+        %    jelly = sequential_reorg(jelly);
+        %    area_relax = area(jelly)/a_rat;
+        %end
             
 
         %% Update the current length of edges
@@ -268,7 +271,13 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
         end
         
         jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
-                
+        if max(jelly.Edges.d_current) > 10 || max(jelly.Edges.strain0) > 1 %|| min(jelly.Edges.strain0) < -0.5
+            cd(path1)
+            writematrix(vel, 'velocity.xlsx');
+            cd(path0)
+         
+            return
+        end       
         %% Calculate new muscle coordinates from contraction
         %muscles are "synchronized", calculations for all muscle bands happen
         %simultaneously.
@@ -305,25 +314,23 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
             return
         end
        
-        if max(jelly.Edges.d_current) > 10
-            cd(path1);                                                            % write the image data
-            writematrix(vel, 'velocity.xlsx');
-            cd(path0); 
-            return
-        end
+
         %% Remesh every 10 hours
-        if mod(hours, 10) == 0
+        if mod(hours, 5) == 0 || min(jelly.Edges.d_current) < 0.35
             [jelly, lim_reached] = remesh_SLM_butterfly(jelly, muscle_length);
             if lim_reached == 1
+                cd(path1);                                                            % write the image data
+                writematrix(vel, 'velocity.xlsx');
+                cd(path0); 
                 return
             end
         end
     %     
-        if mod(time, 10) == 0
+        if mod(hours, 20) == 0
             %% image new relaxed jelly every 2 hours
-            figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 0.8);
-            hold on
-            figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
+            figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 1, 'NodeLabel', {});
+            %hold on
+            %figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
             hold off
             xlim([-1,14]);
             ylim([-1,14]);
@@ -335,7 +342,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
             pause(0.001)
             
         end
-        if mod(time, 20) == 0
+        if mod(hours, 5) == 0
             [~, edge_idx] = area(jelly);
             vel_max = max((jelly.Nodes.velocity(edge_idx,1).^2) + jelly.Nodes.velocity(edge_idx,2).^2).^(1/2);
             vel = cat(1, vel, [vel_max, hours]);

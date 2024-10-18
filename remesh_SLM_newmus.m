@@ -10,19 +10,16 @@
         jelly (?):                      
         muscle_length (?):              
 %}
+%% Remesh
 function [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length)
-lim_reached = 0; % This is to avoid the code being stuck in an infinite remeshing loop.
+lim_reached = 0;
 jelly_temp = jelly;
 mus_length_cur = sum(jelly.Edges.d_current(jelly.Edges.muscle == 1));
 lim = numedges(jelly);
-count = 0; % Keeping track of number of instances of node addition/removal (ie, remeshing). 
-
+count = 0;
     %% Delete nodes when needed
-    while min(jelly.Edges.d_current) < 0.35 % in mm.
+    while min(jelly.Edges.d_current) < 0.35%2
         count = count + 1;
-
-        % If number of edges with length less than 0.35 mm is more than the
-        % number of edges
         if count >= lim
             lim_reached = 1;
             return
@@ -35,7 +32,8 @@ count = 0; % Keeping track of number of instances of node addition/removal (ie, 
         nodes_for_deletion = [node1 node2];
         
 
-        %First, define the new node as halfway between nodes1 and 2 (same as above)
+        %First, define the new node as halfway between nodes1 and 2 (same
+        %as above)
         new_Name = (jelly.Nodes.Node_Names(node1,:) + jelly.Nodes.Node_Names(node2,:))./2;
         new_x = (jelly.Nodes.x_coord(node1) + jelly.Nodes.x_coord(node2))./2;
         new_y = (jelly.Nodes.y_coord(node1) + jelly.Nodes.y_coord(node2))./2;
@@ -93,6 +91,10 @@ count = 0; % Keeping track of number of instances of node addition/removal (ie, 
         for node_search = 1:numnodes(jelly)
             found = findedge(jelly, node1, node_search);
             found2 = findedge(jelly, node2, node_search);
+            if length(found) >1 || length(found2)>1
+                lim_reached = 1;
+                return
+            end
             if found ~= 0 || found2 ~= 0                
                 dx = jelly.Nodes.x_coord(node_search) - jelly_temp.Nodes.x_coord(newid);
                 dy = jelly.Nodes.y_coord(node_search) - jelly_temp.Nodes.y_coord(newid);
@@ -154,7 +156,7 @@ count = 0; % Keeping track of number of instances of node addition/removal (ie, 
     %edge.
     jelly_temp = jelly;
     count = 0;
-    while max(jelly.Edges.d_current) > 1.5 % in mm.
+    while max(jelly.Edges.d_current) > 1.5
         count = count + 1;
         if count >= lim
             lim_reached = 1;
@@ -281,22 +283,26 @@ count = 0; % Keeping track of number of instances of node addition/removal (ie, 
     %If an edge has a really high strain, check to see if diamond is
     %getting squashed
     for i = 1:numedges(jelly)
-        if jelly.Edges.strain0(i) > 0.15 
-            a = jelly.Edges.EndNodes(i,:);
+        %if jelly.Edges.strain0(i) > 0.15 
+            a = jelly_temp.Edges.EndNodes(i,:);
             squashed = [];
             %is it a diamond? 
-            co_neighs = intersect(neighbors(jelly, a(1)), neighbors(jelly, a(2)));
+            co_neighs = intersect(neighbors(jelly_temp, a(1)), neighbors(jelly_temp, a(2)));
             if length(co_neighs) == 2 %can there be more than 2?
                 for j = 1:length(co_neighs)
-                    l1 = jelly.Edges.d_current(findedge(jelly, a(1), co_neighs(j))) + jelly.Edges.d_current(findedge(jelly, a(2), co_neighs(j)));
-                    squashed = cat(1, squashed, jelly.Edges.d_current(i)/l1);
+                    l1 = jelly_temp.Edges.d_current(findedge(jelly_temp, a(1), co_neighs(j))) + jelly_temp.Edges.d_current(findedge(jelly_temp, a(2), co_neighs(j)));
+                    if length(l1) > 1
+                        lim_reached = 1;
+                        return
+                    end
+                    squashed = cat(1, squashed, jelly_temp.Edges.d_current(i)/l1);
                 end
                 %is it squashed?
                 if max(squashed) > 0.9
                     %connect opposite corners
                     d = ((jelly.Nodes.x_coord(co_neighs(1)) - jelly.Nodes.x_coord(co_neighs(2)))^2 + (jelly.Nodes.y_coord(co_neighs(1)) - jelly.Nodes.y_coord(co_neighs(2)))^2)^(1/2);
-                    s0 = mean([jelly.Edges.strain0(findedge(jelly, a(1), co_neighs(squashed==min(squashed)))), jelly.Edges.strain0(findedge(jelly, a(2), co_neighs(squashed==min(squashed))))]);
-                    s1 = mean([jelly.Edges.strain1(findedge(jelly, a(1), co_neighs(squashed==min(squashed)))), jelly.Edges.strain1(findedge(jelly, a(2), co_neighs(squashed==min(squashed))))]);
+                    s0 = mean([jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==min(squashed)))), jelly_temp.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==min(squashed))))]);
+                    s1 = mean([jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==min(squashed)))), jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==min(squashed))))]);
 
                     props = table([co_neighs(1), co_neighs(2)], 1, d, d/(s0+1), d/(s1+1), s0, s1, 0, ...
                     'VariableNames', {'EndNodes', 'Weight', 'd_current', 'd_rel0', 'd_rel1', 'strain0', 'strain1', 'muscle'});
@@ -304,31 +310,31 @@ count = 0; % Keeping track of number of instances of node addition/removal (ie, 
                     jelly_temp = addedge(jelly_temp, props); 
 
                     %update strain and d_relax on diamond edges
-                    jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = mean([jelly.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))), jelly.Edges.strain0(findedge(jelly_temp, a(1), a(2)))]);
-                    jelly_temp.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = mean([jelly.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))), jelly.Edges.strain0(findedge(jelly_temp, a(1), a(2)))]);
+                    jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), a(2)))]);
+                    jelly_temp.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), a(2)))]);
 
-                    jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = mean([jelly.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))), jelly.Edges.strain1(findedge(jelly_temp, a(1), a(2)))]);
-                    jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = mean([jelly.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))), jelly.Edges.strain1(findedge(jelly, a(1), a(2)))]);
+                    jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), a(2)))]);
+                    jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), a(2)))]);
 
-                    jelly_temp.Edges.d_rel0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly.Edges.d_current(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed))))/(jelly.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) + 1);
-                    jelly_temp.Edges.d_rel0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly.Edges.d_current(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed))))/(jelly.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) + 1);
+                    jelly_temp.Edges.d_rel0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly_temp.Edges.d_current(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed))))/(jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) + 1);
+                    jelly_temp.Edges.d_rel0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly_temp.Edges.d_current(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed))))/(jelly_temp.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) + 1);
                     
-                    jelly_temp.Edges.d_rel1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly.Edges.d_current(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed))))/(jelly.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) + 1);
-                    jelly_temp.Edges.d_rel1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly.Edges.d_current(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed))))/(jelly.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) + 1);
+                    jelly_temp.Edges.d_rel1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly_temp.Edges.d_current(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed))))/(jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) + 1);
+                    jelly_temp.Edges.d_rel1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly_temp.Edges.d_current(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed))))/(jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) + 1);
                     
                     if jelly.Edges.muscle(i) ~= 0
                         jelly_temp.Edges.muscle(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly.Edges.muscle(i);
                         jelly_temp.Edges.muscle(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly.Edges.muscle(i);
                         
-                        jelly_temp.Nodes.inmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.inmus(a(1)), jelly.Nodes.inmus(a(2))]);
-                        jelly_temp.Nodes.outmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.outmus(a(1)), jelly.Nodes.outmus(a(2))]);
+%                         jelly_temp.Nodes.inmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.inmus(a(1)), jelly.Nodes.inmus(a(2))]);
+%                         jelly_temp.Nodes.outmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.outmus(a(1)), jelly.Nodes.outmus(a(2))]);
                     end
-                    %%  Now remove the old edge
+                    %%Now kill the old edge
                     jelly_temp = rmedge(jelly_temp, a(1), a(2));
 
                 end
             end
-        end
+        %end
     end
 jelly = jelly_temp;
     
@@ -364,7 +370,7 @@ jelly = jelly_temp;
         dy = jelly.Nodes.y_coord(node1) - jelly.Nodes.y_coord(node2);
         d = (dx^2 + dy^2)^(1/2);
         
-        if findedge(jelly, node1, node2) == 0
+        if findedge(jelly, node1, node2) == 0 && length(intersect(neighbors(jelly, node1), neighbors(jelly, node2))) == 1
             
             prev_edge = findedge(jelly, node1, node_btw);
             prev_edge2 = findedge(jelly, node_btw, node2);
