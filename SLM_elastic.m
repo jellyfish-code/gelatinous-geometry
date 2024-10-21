@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?):
+
+OUTPUT:
+        jelly (?):
+        A0 (?): 
+        A1 (?): 
+%}
+
 function jelly = SLM_elastic(jelly, A0, A1)
 
     %% Update the strain on each of the springs. 

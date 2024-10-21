@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?): 
+        row_start (?):
+        row_end (?):
+
+OUTPUT:
+        dist (?):
+%}
+
 function dist = mesh_dist(jelly, row_start, row_end)
     mesh_size = size(jelly);
     dist = zeros(mesh_size(1), mesh_size(2), 3); %mm

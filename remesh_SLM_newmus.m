@@ -1,15 +1,18 @@
-% TO DO: complete description and check for accuracy
 %{
 ======================================================================
     Function to remesh jellyfish 
-    Why are we remeshing? Biological materials can undergo large
-    deformations, which cannot be captured by static meshes. There are
-    references for this - check paper or ask Mengsha.
+    Remeshing is required as biological materials can undergo large
+    deformations, which cannot be captured by static meshes. [insert references]
 ======================================================================
     INPUT:
         jelly (?):                      
-        muscle_length (?):              
+        muscle_length (?): 
+    
+    OUTPUT:
+        jelly (?):                      
+        lim_reached (bool):
 %}
+
 %% Remesh
 function [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length)
 lim_reached = 0;
@@ -18,7 +21,7 @@ mus_length_cur = sum(jelly.Edges.d_current(jelly.Edges.muscle == 1));
 lim = numedges(jelly);
 count = 0;
     %% Delete nodes when needed
-    while min(jelly.Edges.d_current) < 0.35%2
+    while min(jelly.Edges.d_current) < 0.35 %mm
         count = count + 1;
         if count >= lim
             lim_reached = 1;
@@ -156,7 +159,7 @@ count = 0;
     %edge.
     jelly_temp = jelly;
     count = 0;
-    while max(jelly.Edges.d_current) > 1.5
+    while max(jelly.Edges.d_current) > 1.5 %mm
         count = count + 1;
         if count >= lim
             lim_reached = 1;

@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        None.
+
+OUTPUT:
+        jelly_initial (?):
+        row_start (?): 
+        row_end (?):
+%}
+
 function [jelly_initial, row_start, row_end] = butterfly_mesh()
     wing_width = 11;
     body_height = 2;

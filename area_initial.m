@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?):
+        row_start (?): 
+        row_end (?): 
+
+OUTPUT:
+        jelly_area (?):
+%}
+
 function jelly_area = area_initial(jelly, row_start, row_end)
     a = size(jelly);
     jelly_area = zeros(a(1), a(2), 2);

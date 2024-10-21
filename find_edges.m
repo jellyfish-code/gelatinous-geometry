@@ -1,3 +1,15 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        muscle_outer (?):
+
+OUTPUT:
+        edges (?):
+%}
+
 function edges = find_edges(muscle_outer)
 
 	% Edges must go clockwise around the jelly

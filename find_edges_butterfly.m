@@ -1,3 +1,16 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        row_start (?):
+        row_end (?):
+
+OUTPUT:
+        edges (?):
+%}
+
 function edges = find_edges_butterfly(row_start, row_end)
     
     edges = cat(2, row_start, flip(row_end,2), row_start(1));

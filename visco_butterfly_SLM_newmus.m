@@ -1,4 +1,25 @@
-function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save)
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        elast0 (?):
+        elast1 (?):
+        vis (?):
+        bulk_modulus (?):
+        area0 (?):
+        muscle_strain (?):
+        contraction_rate (?):
+        max_dR (?):
+        dR_rate (?):
+        folder_save (?):
+
+OUTPUT:
+        None. 
+%}
+
+function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
 %% Set up parameters, everything in Pa(N/m^2) and s
     %Measured parameters
     contraction_duration = 0.8; %s
@@ -31,7 +52,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
     body = [6 + body_height, 1+wing_width/2];
 
     %% Writing images
-    path0 = '/central/home/mgong/Documents/Model';
+    path0 = datapath;
     %     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
 
     if ~isempty(path0)

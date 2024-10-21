@@ -1,3 +1,16 @@
+%{
+======================================================================
+    Function that initialises a set of nodes for the muscle layers for .
+======================================================================
+
+INPUT:
+        None.
+
+OUTPUT:
+        muscle_top_outer (matrix):             ?
+        muscle_top_inner (matrix):             ?
+%}
+
 function [muscle_top_outer, muscle_top_inner, muscle_lowleft_outer,  muscle_lowleft_inner, muscle_lowright_outer, muscle_lowright_inner] = butterfly_muscle()
     muscle_toprow_outer1 = [1, 2, 3, 4, 5, 6, 6, 7, 7, 7, 7, 7, 7];
     muscle_toprow_outer2 = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13];

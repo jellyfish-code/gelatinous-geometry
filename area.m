@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?):
+
+OUTPUT:
+        jelly_area (?):
+        edge_idx (?):
+%}
+
+
 function [jelly_area, edge_idx] = area(jelly)
     [jelly1, idx] = sortrows(jelly.Nodes, {'edges'});
     for i = 1:numnodes(jelly)
@@ -10,7 +24,8 @@ function [jelly_area, edge_idx] = area(jelly)
     edge_idx = cat(1,idx(s:numnodes(jelly)), idx(s));
     
     jelly_area = 0;
-    % Now use the shoelace method
+
+    % Implement shoelace method to calculate jellyfish area
     for i = 1:length(edge_idx)-1
         jelly_area = jelly_area + (jelly.Nodes.x_coord(edge_idx(i))*jelly.Nodes.y_coord(edge_idx(i+1))) - (jelly.Nodes.y_coord(edge_idx(i))*jelly.Nodes.x_coord(edge_idx(i+1)));
     end

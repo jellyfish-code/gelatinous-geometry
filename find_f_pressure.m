@@ -1,3 +1,15 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        muscle_outer (?):
+
+OUTPUT:
+        edges (?):
+%}
+
 function F_pressure = find_f_pressure(jelly, area_relaxed, bulk_modulus)
 
     [area_current, edge_idx] = area(jelly);

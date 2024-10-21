@@ -1,4 +1,3 @@
-% TO DO: complete description and check for accuracy
 %{
 ======================================================================
     Function to calculate aspect ratio of jellyfish.

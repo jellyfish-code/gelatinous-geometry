@@ -1,3 +1,20 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        elast0 (?):
+        elast1 (?):
+        vis (?):
+        bulk_modulus (?):
+        muscle_strain (?):
+        folder_save (?):
+
+OUTPUT:
+        None. 
+%}
+
 function realtime_contraction_SLM(elast0, elast1, vis, bulk_modulus, muscle_strain, folder_save)
 %% Set up parameters, everything in Pa(N/m^2) and s
 %elast0 = 0.05;

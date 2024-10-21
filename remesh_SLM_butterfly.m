@@ -1,3 +1,17 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?):
+        muscle_length (?):
+
+OUTPUT:
+        jelly (?):
+        lim_reached (?): 
+%}
+
 %% Remesh
 function [jelly, lim_reached] = remesh_SLM_butterfly(jelly, muscle_length)
 lim_reached = 0;

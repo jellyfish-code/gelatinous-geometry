@@ -1,3 +1,20 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?):
+        contraction_strength (?): 
+        muscle_strain (?): 
+        max_dR (?): 
+        dR_rate (?):
+
+OUTPUT:
+        jelly (?):
+        done (?):
+%}
+
 function [jelly, done] = contraction5offset_old(jelly, contraction_strength, muscle_strain, max_dR, dR_rate)
 %Reset F_muscle
 F_muscle = zeros(numnodes(jelly), 2);

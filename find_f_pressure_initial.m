@@ -1,3 +1,19 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        jelly (?):
+        area_0 (?):
+        j_area (?):
+        bulk_modulus (?):
+        edges (?):
+
+OUTPUT:
+        F_pressure (?):
+%}
+
 function F_pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus, edges)
     
     d_area = (j_area - area_0)/area_0;

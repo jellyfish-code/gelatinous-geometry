@@ -1,3 +1,16 @@
+%{
+======================================================================
+    Function that (?)
+======================================================================
+
+INPUT:
+        contraction_strength (?):
+        jelly (?): 
+
+OUTPUT:
+        F_muscle (?):
+%}
+
 function F_muscle = contraction3(contraction_strength, jelly)
 
     %Reset F_muscle
