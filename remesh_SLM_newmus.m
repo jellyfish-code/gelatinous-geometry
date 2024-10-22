@@ -86,7 +86,7 @@ count = 0;
         end
         
         props = table(new_Name, new_x, new_y, [0,0], [0,0], [0,0], [0,0], [0,0], new_outmus, new_inmus, new_edge, ...
-            'VariableNames', {'Node_Names', 'x_coord', 'y_coord', 'velocity', 'F_net', 'F_elastic', 'F_pressure', 'F_muscle', 'outmus', 'inmus', 'edges'});
+            'VariableNames', {'Node_Names', 'x_coord', 'y_coord', 'velocity', 'F_net', 'stress_elastic', 'pressure', 'stress_muscle', 'outmus', 'inmus', 'edges'});
         jelly_temp = addnode(jelly_temp, props);
         newid = numnodes(jelly_temp); %Always added to the back, so the new node is the last one.
 
@@ -212,7 +212,7 @@ count = 0;
         end
         
         props = table(new_Name, new_x, new_y, [0,0], [0,0], [0,0], [0,0], [0,0], new_outmus, new_inmus, new_edge, ...
-            'VariableNames', {'Node_Names', 'x_coord', 'y_coord', 'velocity', 'F_net', 'F_elastic', 'F_pressure', 'F_muscle', 'outmus', 'inmus', 'edges'});
+            'VariableNames', {'Node_Names', 'x_coord', 'y_coord', 'velocity', 'F_net', 'stress_elastic', 'pressure', 'stress_muscle', 'outmus', 'inmus', 'edges'});
         jelly_temp = addnode(jelly_temp, props);
         newid = numnodes(jelly_temp); %Always added to the back, so the new node is the last one.
 

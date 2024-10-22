@@ -14,9 +14,10 @@ function F_pressure = find_f_pressure(jelly, area_relaxed, bulk_modulus)
 
     [area_current, edge_idx] = area(jelly);
     
-    d_area = (area_current - area_relaxed)/area_relaxed;
+    d_area = (area_current - area_relaxed)/area_relaxed;    % Dimensionless
     
-    F_pressure = zeros(numnodes(jelly), 2);
+    F_pressure = zeros(numnodes(jelly), 2); % Initialise pressure variable
+
     %d_pressure = bulk_mod*dV/V
     %Pressure(Pa) = bulk_mod(Pa) * -d_area(unitless)
     %Assumes thickness doesn't change

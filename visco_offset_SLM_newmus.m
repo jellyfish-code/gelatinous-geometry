@@ -58,7 +58,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     vel = [];                           % Array to save jellyfish velocity at different time points.
 
     %% Calculate the Maxwell relaxation constants
-    relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
+    relax_param = (1-exp(-1*elast1/vis * (time_step * 60))); % This is correct.
 
     %% Graft geometry
 %     offset = 2; %only relevant for offset graft
@@ -114,9 +114,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
     %% Initialise variables for velocity and forces
     jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
     jelly.Nodes.F_net = zeros(numnodes(jelly), 2);
-    jelly.Nodes.F_elastic = jelly.Nodes.F_net;
-    jelly.Nodes.F_pressure = jelly.Nodes.F_net;
-    jelly.Nodes.F_muscle = jelly.Nodes.F_net;
+    jelly.Nodes.stress_elastic = jelly.Nodes.F_net;
+    jelly.Nodes.pressure = jelly.Nodes.F_net;
+    jelly.Nodes.stress_muscle = jelly.Nodes.F_net;
     jelly.Nodes.outmus = zeros(numnodes(jelly),1);
     jelly.Nodes.inmus = zeros(numnodes(jelly),1);
 
@@ -262,17 +262,20 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscl
         jelly = SLM_elastic(jelly, elast0, elast1);
 
         %% Calculate forces 
-        jelly.Nodes.F_pressure = find_f_pressure(jelly, area_relax, bulk_modulus);              % Pressure force to maintain incompressibility of tissue.
-        F_contract = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure + jelly.Nodes.F_muscle;     % Force with muscle contraction.
-        F_relax = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure;                               % Force without muscle contraction.
+        jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);              % Pressure force to maintain incompressibility of tissue.
+        stress_contraction = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;     % Force with muscle contraction.
+        stress_relaxation = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;                               % Force without muscle contraction.
 
         %% Instead of separating out by contraction and relaxation phases, we are just finding the average F_net over the time step
-        jelly.Nodes.F_net = (F_contract*contraction_rate*contraction_duration + F_relax*relax_duration*(contraction_rate+1))/60;
+        stress_net = (stress_contraction*contraction_rate*contraction_duration + stress_relaxation*relax_duration*(contraction_rate+1))/60;
+        edge_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
+        jelly.Nodes.F_net = stress_net*edge_area; % Force = Stress * Area. Units in Newtons.
 
         %% Update the position of each node
 
         % STEP 1: Update positions based on current forces acting on each node.
-        jelly.Nodes.velocity = jelly.Nodes.F_net./vis; % Obtain node velocity due to net force.
+        % TODO: vis here needs to be friction constant and NOT viscosity.
+        jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./vis; % Obtain node velocity due to net force. Factor of 1e3 converts meters per second to millimeters per second.
         
         contraction_displacement = jelly.Nodes.velocity*time_step*60;              % calculate displacement dx = velocity * dt
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1); % update x coordinate

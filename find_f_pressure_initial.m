@@ -16,11 +16,11 @@ OUTPUT:
 
 function F_pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus, edges)
     
-    d_area = (j_area - area_0)/area_0;
+    d_area = (j_area - area_0)/area_0; % dimensionless
     mesh_size = size(jelly);
     F_pressure = zeros(mesh_size(1), mesh_size(2), 2);
     
-    d_pressure = bulk_modulus*-1*d_area;
+    d_pressure = bulk_modulus*-1*d_area; % In Pascals.
     
     %Pa = N/m^2
     

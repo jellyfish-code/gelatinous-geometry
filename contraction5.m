@@ -18,7 +18,7 @@ OUTPUT:
 
 function [jelly, done] = contraction5(jelly, contraction_strength, muscle_strain, max_dR, dR_rate)
 %Reset F_muscle
-F_muscle = zeros(numnodes(jelly), 2);
+stress_muscle = zeros(numnodes(jelly), 2);
 %Define the different piece of muscle
 [trash, idx] = sortrows(jelly.Nodes, {'outmus'});
 mus_idx = idx(trash.outmus~=0);
@@ -345,8 +345,8 @@ for i = 1:height(mus_tab)
         
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
-        F_muscle(mus_tab.Nodes(i,midpt),1) = F_muscle(mus_tab.Nodes(i,midpt),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
-        F_muscle(mus_tab.Nodes(i,midpt),2) = F_muscle(mus_tab.Nodes(i,midpt),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),1) = stress_muscle(mus_tab.Nodes(i,midpt),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),2) = stress_muscle(mus_tab.Nodes(i,midpt),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
         
         for j = midpt-1:-1:1
             edge = findedge(jelly, mus_tab.Nodes(i,j+1), mus_tab.Nodes(i,j));
@@ -362,8 +362,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -373,8 +373,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -397,8 +397,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -408,8 +408,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -526,8 +526,8 @@ for i = 1:height(mus_tab)
 
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
-        F_muscle(mus_tab.Nodes(i,midpt),1) = F_muscle(mus_tab.Nodes(i,midpt),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
-        F_muscle(mus_tab.Nodes(i,midpt),2) = F_muscle(mus_tab.Nodes(i,midpt),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),1) = stress_muscle(mus_tab.Nodes(i,midpt),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),2) = stress_muscle(mus_tab.Nodes(i,midpt),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
 
         for j = midpt-1:-1:1
             edge = findedge(jelly, mus_tab.Nodes(i,j+1), mus_tab.Nodes(i,j));
@@ -543,8 +543,8 @@ for i = 1:height(mus_tab)
 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
             else
@@ -553,8 +553,8 @@ for i = 1:height(mus_tab)
 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
             end
@@ -577,8 +577,8 @@ for i = 1:height(mus_tab)
 
                     contracted_nodes(i,j,1) = Ax;
                     contracted_nodes(i,j,2) = Ay;
-                    F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                    F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                     cur_theta = atan2(Ay - O(2), Ax - O(1));
 
@@ -588,8 +588,8 @@ for i = 1:height(mus_tab)
 
                     contracted_nodes(i,j,1) = Ax;
                     contracted_nodes(i,j,2) = Ay;
-                    F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                    F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                     cur_theta = atan2(Ay - O(2), Ax - O(1));
 
@@ -645,8 +645,8 @@ for i = 1:height(mus_tab)
                 Ay = y1(2);
             end
             
-            F_muscle(mus_tab.Nodes(i,j+1),1) = F_muscle(mus_tab.Nodes(i,j+1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j+1)));
-            F_muscle(mus_tab.Nodes(i,j+1),2) = F_muscle(mus_tab.Nodes(i,j+1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j+1)));
+            stress_muscle(mus_tab.Nodes(i,j+1),1) = stress_muscle(mus_tab.Nodes(i,j+1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j+1)));
+            stress_muscle(mus_tab.Nodes(i,j+1),2) = stress_muscle(mus_tab.Nodes(i,j+1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j+1)));
             %save the points
             contracted_nodes(i,j+1,1) = Ax;
             contracted_nodes(i,j+1,2) = Ay;
@@ -691,8 +691,8 @@ for i = 1:height(mus_tab)
                     Ay = y1(2);
                 end
 
-                F_muscle(mus_tab.Nodes(i,j-1),1) = F_muscle(mus_tab.Nodes(i,j-1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j-1)));
-                F_muscle(mus_tab.Nodes(i,j-1),2) = F_muscle(mus_tab.Nodes(i,j-1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j-1)));
+                stress_muscle(mus_tab.Nodes(i,j-1),1) = stress_muscle(mus_tab.Nodes(i,j-1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j-1)));
+                stress_muscle(mus_tab.Nodes(i,j-1),2) = stress_muscle(mus_tab.Nodes(i,j-1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j-1)));
                 %save the points
                 contracted_nodes(i,j-1,1) = Ax;
                 contracted_nodes(i,j-1,2) = Ay;
@@ -925,8 +925,8 @@ for i = 1:height(mus_tab)
         
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
-        F_muscle(mus_tab.Nodes(i,midpt),1) = F_muscle(mus_tab.Nodes(i,midpt),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
-        F_muscle(mus_tab.Nodes(i,midpt),2) = F_muscle(mus_tab.Nodes(i,midpt),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),1) = stress_muscle(mus_tab.Nodes(i,midpt),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),2) = stress_muscle(mus_tab.Nodes(i,midpt),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
         
         for j = midpt-1:-1:1
             edge = findedge(jelly, mus_tab.Nodes(i,j+1), mus_tab.Nodes(i,j));
@@ -942,8 +942,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -953,8 +953,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -977,8 +977,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -988,8 +988,8 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -1025,8 +1025,8 @@ for i = 1:height(mus_tab)
 
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
-        F_muscle(mus_tab.Nodes(i,midpt),1) = F_muscle(mus_tab.Nodes(i,midpt),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
-        F_muscle(mus_tab.Nodes(i,midpt),2) = F_muscle(mus_tab.Nodes(i,midpt),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),1) = stress_muscle(mus_tab.Nodes(i,midpt),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),2) = stress_muscle(mus_tab.Nodes(i,midpt),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
 
         for j = midpt-1:-1:1
             edge = findedge(jelly, mus_tab.Nodes(i,j+1), mus_tab.Nodes(i,j));
@@ -1042,8 +1042,8 @@ for i = 1:height(mus_tab)
 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
             else
@@ -1052,8 +1052,8 @@ for i = 1:height(mus_tab)
 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
             end
@@ -1076,8 +1076,8 @@ for i = 1:height(mus_tab)
 
                     contracted_nodes(i,j,1) = Ax;
                     contracted_nodes(i,j,2) = Ay;
-                    F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                    F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                     cur_theta = atan2(Ay - O(2), Ax - O(1));
 
@@ -1087,8 +1087,8 @@ for i = 1:height(mus_tab)
 
                     contracted_nodes(i,j,1) = Ax;
                     contracted_nodes(i,j,2) = Ay;
-                    F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-                    F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),1) = stress_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                    stress_muscle(mus_tab.Nodes(i,j),2) = stress_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
 
                     cur_theta = atan2(Ay - O(2), Ax - O(1));
 
@@ -1144,8 +1144,8 @@ for i = 1:height(mus_tab)
                 Ay = y1(2);
             end
             
-            F_muscle(mus_tab.Nodes(i,j+1),1) = F_muscle(mus_tab.Nodes(i,j+1),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j+1)));
-            F_muscle(mus_tab.Nodes(i,j+1),2) = F_muscle(mus_tab.Nodes(i,j+1),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j+1)));
+            stress_muscle(mus_tab.Nodes(i,j+1),1) = stress_muscle(mus_tab.Nodes(i,j+1),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j+1)));
+            stress_muscle(mus_tab.Nodes(i,j+1),2) = stress_muscle(mus_tab.Nodes(i,j+1),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j+1)));
             %save the points
             contracted_nodes(i,j+1,1) = Ax;
             contracted_nodes(i,j+1,2) = Ay;
@@ -1190,8 +1190,8 @@ for i = 1:height(mus_tab)
                     Ay = y1(2);
                 end
 
-                F_muscle(mus_tab.Nodes(i,j-1),1) = F_muscle(mus_tab.Nodes(i,j-1),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j-1)));
-                F_muscle(mus_tab.Nodes(i,j-1),2) = F_muscle(mus_tab.Nodes(i,j-1),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j-1)));
+                stress_muscle(mus_tab.Nodes(i,j-1),1) = stress_muscle(mus_tab.Nodes(i,j-1),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j-1)));
+                stress_muscle(mus_tab.Nodes(i,j-1),2) = stress_muscle(mus_tab.Nodes(i,j-1),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j-1)));
                 %save the points
                 contracted_nodes(i,j-1,1) = Ax;
                 contracted_nodes(i,j-1,2) = Ay;
@@ -1201,4 +1201,4 @@ for i = 1:height(mus_tab)
         
     end
 end
-jelly.Nodes.F_muscle = F_muscle;
+jelly.Nodes.stress_muscle = stress_muscle;

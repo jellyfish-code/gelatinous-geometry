@@ -24,6 +24,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
     %Measured parameters
     contraction_duration = 0.8; %s
     contraction_strength = (elast0+elast1)*muscle_strain; %Pa
+    
     %Graft parameters
     relax_duration = (60-contraction_rate*contraction_duration)/(contraction_rate + 1); %seconds
     vel = [];

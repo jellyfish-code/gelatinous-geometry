@@ -891,4 +891,4 @@ for i = 1:height(mus_tab)
         
     end
 end
-jelly.Nodes.F_muscle = F_muscle;
+jelly.Nodes.stress_muscle = F_muscle;
