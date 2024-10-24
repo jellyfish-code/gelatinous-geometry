@@ -1,14 +1,19 @@
 %{
 ======================================================================
-    Function that initialises a set of nodes for the muscle layers for .
+    Function that initialises a set of nodes for the muscle layers for
+    butterfly graft.
 ======================================================================
 
 INPUT:
         None.
 
 OUTPUT:
-        muscle_top_outer (matrix):             ?
-        muscle_top_inner (matrix):             ?
+        muscle_top_outer (matrix):      Matrix of indices identifying outer edge of top muscle layer.
+        muscle_top_inner (matrix):      Matrix of indices identifying inner edge of top muscle layer.
+        muscle_lowleft_outer (matrix):  Matrix of indices identifying outer edge of left side of bottom muscle layer. 
+        muscle_lowleft_inner (matrix):  Matrix of indices identifying inner edge of left side of bottom muscle layer.
+        muscle_lowright_outer (matrix): Matrix of indices identifying outer edge of right side of bottom muscle layer.
+        muscle_lowright_inner (matrix): Matrix of indices identifying inner edge of right side of bottom muscle layer.
 %}
 
 function [muscle_top_outer, muscle_top_inner, muscle_lowleft_outer,  muscle_lowleft_inner, muscle_lowright_outer, muscle_lowright_inner] = butterfly_muscle()

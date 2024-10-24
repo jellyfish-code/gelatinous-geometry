@@ -1,7 +1,6 @@
 %{
 ======================================================================
-    Example usage of the code for an offset graft.
-    TO DO: Add units.
+    Example usage of the code for an offset graft and a butterfly graft.
 ======================================================================
 %}
 clear; 
@@ -49,6 +48,7 @@ dR_rate = 0.15;
 area0 = 1.001; 
 % visco_offset_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, offset, folder_save, datapath)
 visco_offset_SLM_newmus_remote_version(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
+
 %% Simulation of butterfly graft
 % % Specify datapath of directory to save data in
 % datapath = pwd; % Set current directory as datapath

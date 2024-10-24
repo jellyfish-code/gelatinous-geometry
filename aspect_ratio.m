@@ -3,9 +3,12 @@
     Function to calculate aspect ratio of jellyfish.
 ======================================================================
     INPUT:
-        a_r (?):                Last aspect ratio? (dimensionless)                       
-        major_axis (?):         ? (?)
-        minor_axis (?):         ? (?)
+        jelly (graph):      Graph representing jellyfish.
+
+    OUTPUT:
+        a_r (float):            Ratio of major axis to minor axis.                      
+        major_axis (float):     Longest distance found between opposite boundary nodes.
+        minor_axis (float):     Distance between boundary nodes perpendicular to major axis.
 %}
 function [a_r, major_axis, minor_axis] = aspect_ratio(jelly)
 

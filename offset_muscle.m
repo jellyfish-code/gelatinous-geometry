@@ -1,14 +1,15 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that returns positions of muscle nodes based on offset between
+    jellyfish grafts.
 ======================================================================
 
 INPUT:
-        offset (?):
+        offset (float):     Offset distance between grafts.
 
 OUTPUT:
-        muscle_outer (?): 
-        muscle_inner (?):
+        muscle_outer (array): 
+        muscle_inner (array):
 %}
 
 function [muscle_outer, muscle_inner] = offset_muscle(offset)

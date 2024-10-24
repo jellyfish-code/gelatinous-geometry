@@ -4,8 +4,8 @@
 ======================================================================
     INPUT:
         jelly_initial (matrix):         Jellyfish matrix
-        row_start (scalar):             Index of jelly_initial where node positions start. 
-        row_end (scalar):               Index of jelly_initial where node positions end.
+        row_start (array):              For each row of the jellyfish, position(?) of where row starts.  
+        row_end (array):                For each row of the jellyfish, position(?) of where row ends.
 
     OUTPUT:
         jelly (graph):                  Graph containing information on Nodes and Edges of jellyfish.

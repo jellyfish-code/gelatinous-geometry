@@ -1,15 +1,15 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that generates mesh for butterfly graft.
 ======================================================================
 
 INPUT:
         None.
 
 OUTPUT:
-        jelly_initial (?):
-        row_start (?): 
-        row_end (?):
+        jelly_initial (array): Jellyfish coordinates where all edges are relaxed.
+        row_start (array):     For each row of the jellyfish, position(?) of where row starts.  
+        row_end (array):       For each row of the jellyfish, position(?) of where row ends.
 %}
 
 function [jelly_initial, row_start, row_end] = butterfly_mesh()

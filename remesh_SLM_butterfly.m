@@ -4,11 +4,11 @@
 ======================================================================
 
 INPUT:
-        jelly (?):
+        jelly (graph):      Graph containing information on Nodes and Edges of jellyfish.  
         muscle_length (?):
 
 OUTPUT:
-        jelly (?):
+        jelly (graph):      Graph containing information on Nodes and Edges of jellyfish. 
         lim_reached (?): 
 %}
 

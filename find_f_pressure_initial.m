@@ -4,21 +4,21 @@
 ======================================================================
 
 INPUT:
-        jelly (?):
-        area_0 (?):
-        j_area (?):
-        bulk_modulus (?):
-        edges (?):
+        jelly (graph):          Graph containing information on Nodes and Edges of jellyfish.
+        area_0 (float):     
+        j_area (float):
+        bulk_modulus (float):   Bulk modulus of jellyfish. 
+        edges (float):
 
 OUTPUT:
-        F_pressure (?):
+        pressure (float):       Pressure inside jellyfish (in Pascals).
 %}
 
-function F_pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus, edges)
+function pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus, edges)
     
     d_area = (j_area - area_0)/area_0; % dimensionless
     mesh_size = size(jelly);
-    F_pressure = zeros(mesh_size(1), mesh_size(2), 2);
+    pressure = zeros(mesh_size(1), mesh_size(2), 2);
     
     d_pressure = bulk_modulus*-1*d_area; % In Pascals.
     
@@ -35,10 +35,10 @@ function F_pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulu
         dx = jelly(edges(1,i+1), edges(2,i+1),1) - jelly(edges(1,i),edges(2,i),1);
         dy = jelly(edges(1,i+1), edges(2,i+1),2) - jelly(edges(1,i),edges(2,i),2);
         l = (dx^2 + dy^2)^(1/2);
-        F_pressure(edges(1,i), edges(2,i),1) = -1*dy/l*d_pressure + F_pressure(edges(1,i), edges(2,i),1);
-        F_pressure(edges(1,i), edges(2,i),2) = dx/l*d_pressure + F_pressure(edges(1,i), edges(2,i),2);
+        pressure(edges(1,i), edges(2,i),1) = -1*dy/l*d_pressure + pressure(edges(1,i), edges(2,i),1);
+        pressure(edges(1,i), edges(2,i),2) = dx/l*d_pressure + pressure(edges(1,i), edges(2,i),2);
         
-        F_pressure(edges(1,i+1), edges(2,i+1),1) = -1*dy/l*d_pressure + F_pressure(edges(1,i+1), edges(2,i+1),1);
-        F_pressure(edges(1,i+1), edges(2,i+1),2) = dx/l*d_pressure + F_pressure(edges(1,i+1), edges(2,i+1),2);
+        pressure(edges(1,i+1), edges(2,i+1),1) = -1*dy/l*d_pressure + pressure(edges(1,i+1), edges(2,i+1),1);
+        pressure(edges(1,i+1), edges(2,i+1),2) = dx/l*d_pressure + pressure(edges(1,i+1), edges(2,i+1),2);
     end
     

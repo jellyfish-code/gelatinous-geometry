@@ -4,12 +4,12 @@
 ======================================================================
 
 INPUT:
-        jelly (?):
-        row_start (?): 
-        row_end (?): 
+        jelly (graph):      Graph representing jellyfish.
+        row_start (array):  For each row of the jellyfish, position(?) of where row starts.  
+        row_end (array):    For each row of the jellyfish, position(?) of where row ends.
 
 OUTPUT:
-        jelly_area (?):
+        jelly_area (array): Area of each element of jellyfish.
 %}
 
 function jelly_area = area_initial(jelly, row_start, row_end)

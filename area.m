@@ -1,14 +1,14 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that calculates jellyfish area.
 ======================================================================
 
 INPUT:
-        jelly (?):
+        jelly (graph): Graph representation of jellyfish.
 
 OUTPUT:
-        jelly_area (?):
-        edge_idx (?):
+        jelly_area (float): Area of jellyfish in millimeter squared.
+        edge_idx (array):   Array of edge notes.    
 %}
 
 

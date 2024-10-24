@@ -1,19 +1,20 @@
 %{
 ======================================================================
-    Function that (?)
+    Main function evolving jellyfish butterfly mesh.  
 ======================================================================
 
 INPUT:
-        elast0 (?):
-        elast1 (?):
-        vis (?):
-        bulk_modulus (?):
-        area0 (?):
-        muscle_strain (?):
-        contraction_rate (?):
-        max_dR (?):
-        dR_rate (?):
-        folder_save (?):
+        elast0 (float):             Elasticity of spring (in Pascals).
+        elast1 (float):             Elasticity of spring (in Pascals).
+        vis (float):                Viscosity of dashpot (in Pascal*seconds).
+        bulk_modulus (float):       Bulk modulus of jellyfish (in Pascals).
+        area0 (float):              Initial area of jellyfish (in ?).
+        muscle_strain (float):      Strain of jellyfish (in ?).
+        contraction_rate (float):   Number of jellyfish contractions per minute.
+        max_dR (float):             Maximum change in radius during contraction.
+        dR_rate (float):            Increase in radius change with distance from anchored end (Figure S6c in paper).
+        folder_save (string):       Name of folder in which simulation images is to be saved.
+        datapath (string):          Directory in which folder specificed in folder_save can be found.
 
 OUTPUT:
         None. 

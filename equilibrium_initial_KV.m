@@ -3,13 +3,15 @@
     Function that simulates jellyfish for a specified set of parameters. 
 ======================================================================
     INPUT:
-        elast0 (scalar):                Elasticity of spring
-        viscosity (scalar):             Viscosity of dashpot in Maxwell Model
-        bulk_modulus (scalar):          Bulk modulus of jellyfish 
-        dt (scalar):                    Time step 
-        N_time (int):                   Number of time steps
-        area_0 (scalar):                ?
-        contraction_strength (scalar):  ?
+A0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength
+        A0 (?):                         
+        viscosity (float):             Viscosity of dashpot in Maxwell Model
+        damping_coefficient (float):   Damping coefficien used to calculated velocity from force.
+        bulk_modulus (float):          Bulk modulus of jellyfish 
+        dt (float):                    Time step 
+        t (?):                         ?
+        area_0 (float):                ?
+        contraction_strength (float):  In Pascals. Calculated as (elast0+elast1)*muscle_strain.
 %}
 
 function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength)
