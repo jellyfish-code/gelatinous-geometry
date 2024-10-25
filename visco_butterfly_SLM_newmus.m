@@ -4,23 +4,24 @@
 ======================================================================
 
 INPUT:
-        elast0 (float):             Elasticity of spring (in Pascals).
-        elast1 (float):             Elasticity of spring (in Pascals).
-        vis (float):                Viscosity of dashpot (in Pascal*seconds).
-        bulk_modulus (float):       Bulk modulus of jellyfish (in Pascals).
-        area0 (float):              Initial area of jellyfish (in ?).
-        muscle_strain (float):      Strain of jellyfish (in ?).
-        contraction_rate (float):   Number of jellyfish contractions per minute.
-        max_dR (float):             Maximum change in radius during contraction.
-        dR_rate (float):            Increase in radius change with distance from anchored end (Figure S6c in paper).
-        folder_save (string):       Name of folder in which simulation images is to be saved.
-        datapath (string):          Directory in which folder specificed in folder_save can be found.
+        elast0 (float):                 Elasticity of spring (in Pascals).
+        elast1 (float):                 Elasticity of spring (in Pascals).
+        vis (float):                    Viscosity of dashpot (in Pascal*seconds).
+        damping_coefficient (float):    Damping coefficient of jellyfish (n Newton*seconds/meter).
+        bulk_modulus (float):           Bulk modulus of jellyfish (in Pascals).
+        area0 (float):                  Initial area of jellyfish (in ?).
+        muscle_strain (float):          Strain of jellyfish (in ?).
+        contraction_rate (float):       Number of jellyfish contractions per minute.
+        max_dR (float):                 Maximum change in radius during contraction.
+        dR_rate (float):                Increase in radius change with distance from anchored end (Figure S6c in paper).
+        folder_save (string):           Name of folder in which simulation images is to be saved.
+        datapath (string):              Directory in which folder specificed in folder_save can be found.
 
 OUTPUT:
         None. 
 %}
 
-function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
+function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
 %% Set up parameters, everything in Pa(N/m^2) and s
     %Measured parameters
     contraction_duration = 0.8; %s
@@ -79,7 +80,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
     %%This function sets the "relaxed area" at 105% of the initial area,
     %%and allows the jellyfish F_elastic and F_pressure to find equilibrium
     %%over 120 hours
-    [jelly_eq, ~, ~] = equilibrium_initial_KV(elast0, vis, bulk_modulus, 100, 1200, area0, contraction_strength);
+    [jelly_eq, ~, ~] = equilibrium_initial_KV(elast0, vis, damping_coefficient, bulk_modulus, 100, 1200, area0, contraction_strength);
 
     %% Make a matrix with the right shape 
     [jelly_initial, row_start, row_end] = butterfly_mesh();
@@ -109,12 +110,22 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
     end
     %% Convert array to graph
     jelly = convert_jelly_graph(jelly_initial, row_start, row_end);
+    % %%Add additional parameters
+    % jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
+    % jelly.Nodes.F_net = zeros(numnodes(jelly), 2);
+    % jelly.Nodes.F_elastic = jelly.Nodes.F_net;
+    % jelly.Nodes.F_pressure = jelly.Nodes.F_net;
+    % jelly.Nodes.F_muscle = jelly.Nodes.F_net;
+    % jelly.Nodes.outmus = zeros(numnodes(jelly),1);
+    % jelly.Nodes.inmus = zeros(numnodes(jelly),1);
+    % jelly.Nodes.mus_num = zeros(numnodes(jelly),1);
+
     %%Add additional parameters
     jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
     jelly.Nodes.F_net = zeros(numnodes(jelly), 2);
-    jelly.Nodes.F_elastic = jelly.Nodes.F_net;
-    jelly.Nodes.F_pressure = jelly.Nodes.F_net;
-    jelly.Nodes.F_muscle = jelly.Nodes.F_net;
+    jelly.Nodes.stress_elastic = jelly.Nodes.F_net;
+    jelly.Nodes.pressure = jelly.Nodes.F_net;
+    jelly.Nodes.stress_muscle = jelly.Nodes.F_net;
     jelly.Nodes.outmus = zeros(numnodes(jelly),1);
     jelly.Nodes.inmus = zeros(numnodes(jelly),1);
     jelly.Nodes.mus_num = zeros(numnodes(jelly),1);
@@ -315,15 +326,21 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
         jelly = SLM_elastic(jelly, elast0, elast1);
 
         %% pressure force
-        jelly.Nodes.F_pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
-        F_contract = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure + jelly.Nodes.F_muscle;
-        F_relax = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure;
+        jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
+        % F_contract = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure + jelly.Nodes.F_muscle;
+        % F_relax = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure;
+        stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
+        stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
         
         %% Instead of separating out by contraction and relaxation phases, we are just finding the average F_net over the time step
-        jelly.Nodes.F_net = (F_contract*contraction_rate*contraction_duration + F_relax*relax_duration*(contraction_rate+1))/60;
+        % jelly.Nodes.F_net = (F_contract*contraction_rate*contraction_duration + F_relax*relax_duration*(contraction_rate+1))/60;
+        stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
+        edge_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
+        jelly.Nodes.F_net = stress_net*edge_area; % Force in Newtons.
 
         %% Update the position of each node
-        jelly.Nodes.velocity = jelly.Nodes.F_net./vis;
+        % jelly.Nodes.velocity = jelly.Nodes.F_net./vis;
+        jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
         jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
@@ -353,7 +370,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, bulk_modulus, area0, mu
             %% image new relaxed jelly every 2 hours
             figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 1, 'NodeLabel', {});
             %hold on
-            %figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
+            %figure1 = quiver(jelly.Nodes.x_coiord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
             hold off
             xlim([-1,14]);
             ylim([-1,14]);
