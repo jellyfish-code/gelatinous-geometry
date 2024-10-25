@@ -1,20 +1,22 @@
 %{
 ======================================================================
-    Function that simulates jellyfish for a specified set of parameters. 
+    Balancing of pressure force and elastic force after dissection of jellyfish. 
+    Aurelia medusa are under constant elastic stress. When a cut is made in a medusa bell, the cut immediately widens as stress is released.
+    To create this internal stress in the model, we set the relaxed area artificially high at some percentage (set here by variable area_0) greater than the calculated jellyfish mesh area, 
+    creating a positive pressure outward. The jellyfish mesh is then allowed to come to equilibrium, with elastic stress acting against the pressure force of the mesh.
 ======================================================================
     INPUT:
-A0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength
-        A0 (?):                         
-        viscosity (float):             Viscosity of dashpot in Maxwell Model
-        damping_coefficient (float):   Damping coefficien used to calculated velocity from force.
-        bulk_modulus (float):          Bulk modulus of jellyfish 
-        dt (float):                    Time step 
-        t (?):                         ?
-        area_0 (float):                ?
-        contraction_strength (float):  In Pascals. Calculated as (elast0+elast1)*muscle_strain.
+        elast0 (float):                Elastic Modulus of Kelvin-Voigt Model (in Pascals).                                          
+        viscosity (float):             Viscosity of dashpot in Kelvin-Voigt Model (in Pascal*seconds).
+        damping_coefficient (float):   Damping coefficient used to calculated velocity from force.
+        bulk_modulus (float):          Bulk modulus of jellyfish (in Pascals).
+        dt (float):                    Time step (in seconds). 
+        t (int):                       Number of timesteps.
+        area_0 (float):                Relaxed area as a percentage of jellyfish area. Greater than 1. 
+        contraction_strength (float):  Calculated as (elast0+elast1)*muscle_strain (in Pascals).
 %}
 
-function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength)
+function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength)
 
     %% Initialize an uncut jelly matrix
     [jelly, row_start, row_end] = offset_mesh(0); 
@@ -102,24 +104,24 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(A0, viscosity,
                     y1 = jelly(i, j+1, 2) - jelly(i, j, 2);
                     dist_current(i, j, 1) = (x1^2 + y1^2)^(1/2); %horiz node to right
                     strain(i,j,1) = (dist_current(i,j,1) - dist_rel(i,j,1))/dist_rel(i,j,1);
-                    elastic_stress(i,j,1,1) = strain(i,j,1)*A0*x1/dist_current(i,j,1);
-                    elastic_stress(i,j,1,2) = strain(i,j,1)*A0*y1/dist_current(i,j,1);
+                    elastic_stress(i,j,1,1) = strain(i,j,1)*elast0*x1/dist_current(i,j,1);
+                    elastic_stress(i,j,1,2) = strain(i,j,1)*elast0*y1/dist_current(i,j,1);
                 end
                 if i < mesh_size(1) && j+1 >= row_start(i+1) && j+1 <= row_end(i+1)
                     x2 = jelly(i+1, j+1, 1) - jelly(i, j, 1);
                     y2 = jelly(i+1, j+1, 2) - jelly(i, j, 2);
                     dist_current(i,j,2) = (x2^2 + y2^2)^(1/2); %node diag right
                     strain(i,j,2) = (dist_current(i,j,2) - dist_rel(i,j,2))/dist_rel(i,j,2);
-                    elastic_stress(i,j,2,1) = strain(i,j,2)*A0*x2/dist_current(i,j,2);
-                    elastic_stress(i,j,2,2) = strain(i,j,2)*A0*y2/dist_current(i,j,2);
+                    elastic_stress(i,j,2,1) = strain(i,j,2)*elast0*x2/dist_current(i,j,2);
+                    elastic_stress(i,j,2,2) = strain(i,j,2)*elast0*y2/dist_current(i,j,2);
                 end
                 if i < mesh_size(1) && j >= row_start(i+1) && j <= row_end(i+1)
                     x3 = jelly(i+1, j, 1) - jelly(i, j, 1);
                     y3 = jelly(i+1, j, 2) - jelly(i, j, 2);
                     dist_current(i,j,3) = (x3^2 + y3^2)^(1/2); %node diag left
                     strain(i,j,3) = (dist_current(i,j,3) - dist_rel(i,j,3))/dist_rel(i,j,3);
-                    elastic_stress(i,j,3,1) = strain(i,j,3)*A0*x3/dist_current(i,j,3);
-                    elastic_stress(i,j,3,2) = strain(i,j,3)*A0*y3/dist_current(i,j,3);
+                    elastic_stress(i,j,3,1) = strain(i,j,3)*elast0*x3/dist_current(i,j,3);
+                    elastic_stress(i,j,3,2) = strain(i,j,3)*elast0*y3/dist_current(i,j,3);
                 end
             end
         end

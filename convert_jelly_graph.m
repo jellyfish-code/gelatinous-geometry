@@ -1,10 +1,10 @@
 %{
 ======================================================================
-    Function that converts matrix into jellyfish graph
+    Function that converts matrix into jellyfish graph.
 ======================================================================
     INPUT:
         jelly_initial (matrix):         Jellyfish matrix
-        row_start (array):              For each row of the jellyfish, position(?) of where row starts.  
+        row_start (array):              For each row of the jellyfish, position(or coordinate?) of where row starts.  
         row_end (array):                For each row of the jellyfish, position(?) of where row ends.
 
     OUTPUT:

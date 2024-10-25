@@ -5,7 +5,7 @@
 
 INPUT:
         jelly (graph):      Graph representing jellyfish.
-        row_start (array):  For each row of the jellyfish, position(?) of where row starts.  
+        row_start (array):  For each row of the jellyfish, position(or coordinate?) of where row starts.  
         row_end (array):    For each row of the jellyfish, position(?) of where row ends.
 
 OUTPUT:

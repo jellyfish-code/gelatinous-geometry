@@ -1,13 +1,13 @@
 %{
 ======================================================================
-    Function that finds edges of outer muscle. (?)
+    Function that finds edges of outer muscle for the offset mesh.
 ======================================================================
 
 INPUT:
-        muscle_outer (?):
+        muscle_outer (array): Array that describes the order of muscle nodes. 
 
 OUTPUT:
-        edges (?):
+        edges (array):        Describes the edge nodes in clockwise order. 
 %}
 
 function edges = find_edges(muscle_outer)

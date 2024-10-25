@@ -9,7 +9,7 @@ INPUT:
         vis (float):                    Viscosity of dashpot (in Pascal*seconds).
         damping_coefficient (float):    Damping coefficient of jellyfish (n Newton*seconds/meter).
         bulk_modulus (float):           Bulk modulus of jellyfish (in Pascals).
-        area0 (float):                  Initial area of jellyfish (in ?).
+        area0 (float):                  Relaxed area as a percentage of jellyfish area. Greater than 1.
         muscle_strain (float):          Strain of jellyfish (in ?).
         contraction_rate (float):       Number of jellyfish contractions per minute.
         max_dR (float):                 Maximum change in radius during contraction.

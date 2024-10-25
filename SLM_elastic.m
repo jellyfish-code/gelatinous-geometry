@@ -5,8 +5,8 @@
 
 INPUT:
         jelly (?):
-        A0 (?): 
-        A1 (?): 
+        elast0 (?): 
+        elast1 (?): 
 
 OUTPUT:
         jelly (?):

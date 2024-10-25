@@ -1,14 +1,14 @@
 %{
 ======================================================================
-    Function that finds edges (?)
+    Function that finds edges for the butterfly mesh.
 ======================================================================
 
 INPUT:
-        row_start (?):
-        row_end (?):
+        row_start (array):  For each row of the jellyfish, position(or coordinate?) of where row starts.  
+        row_end (array):    For each row of the jellyfish, position(?) of where row ends.
 
 OUTPUT:
-        edges (?):
+        edges (array):      Describes the edge nodes in clockwise order. 
 %}
 
 function edges = find_edges_butterfly(row_start, row_end)

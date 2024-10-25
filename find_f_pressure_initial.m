@@ -4,11 +4,11 @@
 ======================================================================
 
 INPUT:
-        jelly (graph):          Graph containing information on Nodes and Edges of jellyfish.
-        area_0 (float):     
-        j_area (float):
-        bulk_modulus (float):   Bulk modulus of jellyfish. 
-        edges (float):
+        jelly (array):          Array containing coordinates of jellyfish nodes. 
+        area_0 (float):         Relaxed area of jellyfish (in mm^2).
+        j_area (float):         Current area of jellyfish (in mm^2).
+        bulk_modulus (float):   Bulk modulus of jellyfish (in Pascals). 
+        edges (array):          Describes the edge nodes in clockwise order.
 
 OUTPUT:
         pressure (float):       Pressure inside jellyfish (in Pascals).

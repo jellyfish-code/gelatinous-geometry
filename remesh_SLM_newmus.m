@@ -2,15 +2,15 @@
 ======================================================================
     Function to remesh jellyfish 
     Remeshing is required as biological materials can undergo large
-    deformations, which cannot be captured by static meshes. [insert references]
+    deformations, which cannot be captured by static meshes. [See Chen 2000?]
 ======================================================================
     INPUT:
-        jelly (graph):      Graph containing information on Nodes and Edges of jellyfish.                     
-        muscle_length (?): 
+        jelly (graph):         Graph containing information on Nodes and Edges of jellyfish.                     
+        muscle_length (float): Sum of lengths of muscles in current geometry. Used to preserve total length of muscles during remeshing. 
     
     OUTPUT:
-        jelly (graph):      Graph containing information on Nodes and Edges of jellyfish.                     
-        lim_reached (bool):
+        jelly (graph):         Graph containing information on Nodes and Edges of jellyfish.                     
+        lim_reached (bool):    Used to prevent infinite loop of remeshing. If returned 1, simulation exits (check?).
 %}
 
 %% Remesh
