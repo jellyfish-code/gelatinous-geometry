@@ -1,14 +1,14 @@
 %{
 ======================================================================
-    Function that calculates jellyfish area.
+    Function that calculates area of graph-type jelly.
 ======================================================================
 
 INPUT:
-        jelly (graph): Graph representation of jellyfish.
+        jelly (graph):                      Graph containing information on Nodes and Edges of jellyfish.
 
 OUTPUT:
-        jelly_area (float): Area of jellyfish in millimeter squared.
-        edge_idx (array):   Array of edge notes.    
+        jelly_area (float):                 Area of jellyfish (in millimeter squared).
+        edge_idx (array of doubles):   Array of indices of edge nodes.    
 %}
 
 

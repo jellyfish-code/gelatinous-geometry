@@ -9,7 +9,7 @@ INPUT:
         elast1 (float):        Elasticity of spring (in Pascals).
 
 OUTPUT:
-        jelly (graph):         Updated graph containing information on Nodes and Edges of jellyfish.
+        jelly (graph):         Graph containing information on Nodes and Edges of jellyfish. Contains updated elastic stress.
 %}
 
 function jelly = SLM_elastic(jelly, elast0, elast1)

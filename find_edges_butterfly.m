@@ -4,11 +4,10 @@
 ======================================================================
 
 INPUT:
-        row_start (array):  For each row of the jellyfish, position(or coordinate?) of where row starts.  
-        row_end (array):    For each row of the jellyfish, position(?) of where row ends.
-
+        row_start (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        row_end (array of doubles):     For each row of the jellyfish, position in jellyfish mesh where row ends.
 OUTPUT:
-        edges (array):      Describes the edge nodes in clockwise order. 
+        edges (array of doubles):       Describes the edge nodes in clockwise order. 
 %}
 
 function edges = find_edges_butterfly(row_start, row_end)

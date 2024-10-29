@@ -4,14 +4,14 @@
 ======================================================================
 
 INPUT:
-        jelly (array):          Array containing coordinates of jellyfish nodes. 
-        area_0 (float):         Relaxed area of jellyfish (in mm^2).
-        j_area (float):         Current area of jellyfish (in mm^2).
-        bulk_modulus (float):   Bulk modulus of jellyfish (in Pascals). 
-        edges (array):          Describes the edge nodes in clockwise order.
-
+        jelly (11x11x2 array of doubles):    A 3-dimensional matrix storing positions of jellyfish nodes.
+        area_0 (double):                     Relaxed area of jellyfish (in mm^2).
+        j_area (double):                     Current area of jellyfish (in mm^2).
+        bulk_modulus (double):               Bulk modulus of jellyfish (in Pascals). 
+        edges (2x31 array of doubles):       Describes the edge nodes in clockwise order.
+    
 OUTPUT:
-        pressure (float):       Pressure inside jellyfish (in Pascals).
+        pressure (11x11x2 array of doubles): Pressure acting on each node of jellyfish (in Pascals).
 %}
 
 function pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus, edges)

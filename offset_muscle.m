@@ -4,11 +4,11 @@
 ======================================================================
 
 INPUT:
-        offset (float):     Offset distance between grafts.
+        offset (double):                        Offset distance between grafts.
 
 OUTPUT:
-        muscle_outer (array): 
-        muscle_inner (array):
+        muscle_outer (array of doubles): A matrix storing index of jelly array corresponding to outer muscles.
+        muscle_inner (array of doubles): A matrix storing index of jelly array corresponding to inner muscles.
 %}
 
 function [muscle_outer, muscle_inner] = offset_muscle(offset)

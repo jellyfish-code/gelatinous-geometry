@@ -1,15 +1,15 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that calculates area of initialised jellyfish.
 ======================================================================
 
 INPUT:
-        jelly (graph):      Graph representing jellyfish.
-        row_start (array):  For each row of the jellyfish, position(or coordinate?) of where row starts.  
-        row_end (array):    For each row of the jellyfish, position(?) of where row ends.
+        jelly (array of doubles):    A 3-dimensional matrix storing positions of jellyfish nodes.
+        row_start (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        row_end (array of doubles):     For each row of the jellyfish, position in jellyfish mesh where row ends.
 
 OUTPUT:
-        jelly_area (array): Area of each element of jellyfish.
+        jelly_area (array of doubles): Area of each element of jellyfish (in millimeter squared).
 %}
 
 function jelly_area = area_initial(jelly, row_start, row_end)

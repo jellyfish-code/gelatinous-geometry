@@ -5,12 +5,12 @@
     deformations, which cannot be captured by static meshes. [See Chen 2000?]
 ======================================================================
     INPUT:
-        jelly (graph):         Graph containing information on Nodes and Edges of jellyfish.                     
-        muscle_length (float): Sum of lengths of muscles in current geometry. Used to preserve total length of muscles during remeshing. 
+        jelly (graph):          Graph containing information on Nodes and Edges of jellyfish.                     
+        muscle_length (double): Sum of lengths of muscles in current geometry. Used to preserve total length of muscles during remeshing. 
     
     OUTPUT:
-        jelly (graph):         Updated graph containing information on Nodes and Edges of jellyfish.                     
-        lim_reached (bool):    Used to prevent infinite loop of remeshing. If returned 1, simulation exits (check?).
+        jelly (graph):          Updated graph containing information on Nodes and Edges of jellyfish.                     
+        lim_reached (double):   Takes values 0 or 1. Used to prevent infinite loop of remeshing. If returned 1, simulation exits (check?).
 %}
 
 %% Remesh

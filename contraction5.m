@@ -1,20 +1,19 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that calculates muscle stress due to contraction in butterfly graft.
 ======================================================================
 
 INPUT:
-        jelly (?):
-        contraction_strength (?): 
-        muscle_strain (?): 
-        max_dR (?): 
-        dR_rate (?):
+        jelly (graph):                  Graph containing information on Nodes and Edges of jellyfish.
+        contraction_strength (double):  Calculated as (elast0+elast1)*muscle_strain (in Pascals).
+        muscle_strain (double):         Muscle strain parameter.
+        max_dR (double):                Maximum change in radius during contraction.
+        dR_rate (double):               Increase in radius change with distance from anchored end (Figure S6c in paper).
 
 OUTPUT:
-        jelly (?):
-        done (?):
+        jelly (graph):                  Graph containing information on Nodes and Edges of jellyfish. Contains updated contraction stress.
+        done (double):                  Takes values 0 or 1. Keeps track of errors or instability. If zero, visco_offset_SLM_newmus.m exits simulation.
 %}
-
 
 function [jelly, done] = contraction5(jelly, contraction_strength, muscle_strain, max_dR, dR_rate)
 %Reset F_muscle

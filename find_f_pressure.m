@@ -4,14 +4,14 @@
 ======================================================================
 
 INPUT:
-        jelly (graph):          Graph containing information on Nodes and Edges of jellyfish.
-        area_relaxed (float):   Relaxed area used to calculate internal pressure (in mm^2). Calculated by
-                                multiplying initial graft area with percentage factor (greater than 1) to account for release
-                                of internal elastic stress after dissection.
-        bulk_modulus (float):   Bulk modulus of jellyfish (in Pascals). 
+        jelly (graph):                     Graph containing information on Nodes and Edges of jellyfish.
+        area_relaxed (double):             Relaxed area used to calculate internal pressure (in mm^2). Calculated by
+                                           multiplying initial graft area with percentage factor (greater than 1) to account for release
+                                           of internal elastic stress after dissection.
+        bulk_modulus (double):             Bulk modulus of jellyfish (in Pascals). 
 
 OUTPUT:
-        pressure (float):   Pressure inside jellyfish (in Pascals).
+        pressure (array of doubles):       Pressure acting on jellyfish nodes (in Pascals).
 %}
 
 function pressure = find_f_pressure(jelly, area_relaxed, bulk_modulus)

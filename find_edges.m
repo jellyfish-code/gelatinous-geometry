@@ -4,10 +4,10 @@
 ======================================================================
 
 INPUT:
-        muscle_outer (array): Array that describes the order of muscle nodes. 
+        muscle_outer (2x16x2 array of doubles): Array that describes the order of muscle nodes. 
 
 OUTPUT:
-        edges (array):        Describes the edge nodes in clockwise order. 
+        edges (2x33 array of doubles):          Describes the edge nodes in clockwise order. 
 %}
 
 function edges = find_edges(muscle_outer)

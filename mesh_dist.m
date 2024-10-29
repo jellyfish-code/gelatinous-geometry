@@ -1,15 +1,15 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that calculates distance between each pair of nodes in the mesh.
 ======================================================================
 
 INPUT:
-        jelly (?): 
-        row_start (array):  For each row of the jellyfish, position(or coordinate?) of where row starts.  
-        row_end (array):    For each row of the jellyfish, position(?) of where row ends.
+        jelly (array of doubles):  A 3-dimensional matrix storing positions of jellyfish nodes.
+        row_start (array of doubles): For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        row_end (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row ends.
 
 OUTPUT:
-        dist (array):       Returns distance between each pair of nodes in the mesh (?). 
+        dist (array of doubles):   Returns distance between each pair of nodes in the mesh (?). 
 %}
 
 function dist = mesh_dist(jelly, row_start, row_end)
@@ -35,3 +35,4 @@ function dist = mesh_dist(jelly, row_start, row_end)
             end
         end
     end
+    

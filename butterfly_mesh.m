@@ -7,9 +7,13 @@ INPUT:
         None.
 
 OUTPUT:
-        jelly_initial (array): Jellyfish coordinates where all edges are relaxed.
-        row_start (array):     For each row of the jellyfish, position(?) of where row starts.  
-        row_end (array):       For each row of the jellyfish, position(?) of where row ends.
+        [CHECK]jelly_initial (array of doubles):  A 3-dimensional matrix
+                                                  storing positions of jellyfish nodes. Last dimension can be indexed
+                                                  to access x-axis position (index = 1) and y-axis positions (index = 2). 
+                                                  All edges are relaxed at this stage.
+        [CHECK]row_start (array of doubles):      For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        [CHECK]row_end (array of doubles):        For each row of the jellyfish, position in jellyfish mesh where row ends.
+
 %}
 
 function [jelly_initial, row_start, row_end] = butterfly_mesh()

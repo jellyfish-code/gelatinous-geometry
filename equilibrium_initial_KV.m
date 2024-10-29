@@ -6,14 +6,19 @@
     creating a positive pressure outward. The jellyfish mesh is then allowed to come to equilibrium, with elastic stress acting against the pressure force of the mesh.
 ======================================================================
     INPUT:
-        elast0 (float):                Elastic Modulus of Kelvin-Voigt Model (in Pascals).                                          
-        viscosity (float):             Viscosity of dashpot in Kelvin-Voigt Model (in Pascal*seconds).
-        damping_coefficient (float):   Damping coefficient used to calculated velocity from force.
-        bulk_modulus (float):          Bulk modulus of jellyfish (in Pascals).
-        dt (float):                    Time step (in seconds). 
-        t (int):                       Number of timesteps.
-        area_0 (float):                Relaxed area as a percentage of jellyfish area. Greater than 1. 
-        contraction_strength (float):  Calculated as (elast0+elast1)*muscle_strain (in Pascals).
+        elast0 (double):                        Elastic Modulus of Kelvin-Voigt Model (in Pascals).                                          
+        viscosity (double):                     Viscosity of dashpot in Kelvin-Voigt Model (in Pascal*seconds).
+        damping_coefficient (double):           Damping coefficient used to calculated velocity from force.
+        bulk_modulus (double):                  Bulk modulus of jellyfish (in Pascals).
+        dt (double):                            Time step (in seconds). 
+        t (double):                             Number of timesteps.
+        area_0 (double):                        Relaxed area as a percentage of jellyfish area. Greater than 1. 
+        contraction_strength (double):          Calculated as (elast0+elast1)*muscle_strain (in Pascals).
+
+    OUTPUT: 
+        jelly_eq (array of doubles):            A 3-dimensional matrix storing positions of jellyfish nodes after elastic stress and pressure have equilibrated.
+        jelly_area (double):                    Area of jellyfish (in mm^2).  
+        d_uncut (?):                            ?
 %}
 
 function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength)

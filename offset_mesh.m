@@ -3,12 +3,12 @@
     Function that creates a jellyfish mesh with a user-specified offset between two grafts.
 ======================================================================
     INPUT:
-        offset (scalar):                Distance between two grafts. 
+        offset (double):                Distance between two grafts. 
 
     OUTPUT: 
-        jelly (matrix):                 A 3-dimensional matrix. Last dimension can be indexed to access x-axis position (index = 1) and y-axis positions (index = 2).
-        row_start (array):              For each row of the jellyfish, position(or coordinate?) of where row starts.  
-        row_end (array):                For each row of the jellyfish, position(?) of where row ends.
+        [CHECK]jelly (array of doubles):  A 3-dimensional matrix storing positions of jellyfish nodes. Last dimension can be indexed to access x-axis position (index = 1) and y-axis positions (index = 2).
+        [CHECK]row_start (array of doubles): For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        [CHECK]row_end (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row ends.
 %}
 
 function [jelly, row_start, row_end] = offset_mesh(offset)
@@ -123,7 +123,7 @@ function [jelly, row_start, row_end] = offset_mesh(offset)
     end
         
     jelly = cat(3, mesh_x, mesh_y);
-    
+   
     
         
     

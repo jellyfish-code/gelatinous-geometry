@@ -4,18 +4,18 @@
 ======================================================================
 
 INPUT:
-        elast0 (float):                 Elasticity of spring (in Pascals).
-        elast1 (float):                 Elasticity of spring (in Pascals).
-        vis (float):                    Viscosity of dashpot (in Pascal*seconds).
-        damping_coefficient (float):    Damping coefficient of jellyfish (n Newton*seconds/meter).
-        bulk_modulus (float):           Bulk modulus of jellyfish (in Pascals).
-        area0 (float):                  Initial area of jellyfish (in ?).
-        muscle_strain (float):          Strain of jellyfish (in ?).
-        contraction_rate (float):       Number of jellyfish contractions per minute.
-        max_dR (float):                 Maximum change in radius during contraction.
-        dR_rate (float):                Increase in radius change with distance from anchored end (Figure S6c in paper).
-        folder_save (string):           Name of folder in which simulation images is to be saved.
-        datapath (string):              Directory in which folder specificed in folder_save can be found.
+        elast0 (double):                 Elasticity of spring (in Pascals).
+        elast1 (double):                 Elasticity of spring (in Pascals).
+        vis (double):                    Viscosity of dashpot (in Pascal*seconds).
+        damping_coefficient (double):    Damping coefficient of jellyfish (n Newton*seconds/meter).
+        bulk_modulus (double):           Bulk modulus of jellyfish (in Pascals).
+        area0 (double):                  Initial area of jellyfish (in ?).
+        muscle_strain (double):          Strain of jellyfish (in ?).
+        contraction_rate (double):       Number of jellyfish contractions per minute.
+        max_dR (double):                 Maximum change in radius during contraction.
+        dR_rate (double):                Increase in radius change with distance from anchored end (Figure S6c in paper).
+        folder_save (string):            Name of folder in which simulation images is to be saved.
+        datapath (string):               Directory in which folder specificed in folder_save can be found.
 
 OUTPUT:
         None. 

@@ -7,8 +7,8 @@ INPUT:
         None.
 
 OUTPUT:
-        muscle_outer (matrix):             A matrix storing index of jelly array corresponding to outer muscles.
-        muscle_inner (matrix):             A matrix storing index of jelly array corresponding to inner muscles.
+        muscle_outer (array of doubles): A matrix storing index of jelly array corresponding to outer muscles.
+        muscle_inner (array of doubles): A matrix storing index of jelly array corresponding to inner muscles.
 %}
 
 

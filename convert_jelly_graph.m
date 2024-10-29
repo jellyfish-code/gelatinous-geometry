@@ -3,12 +3,12 @@
     Function that converts matrix into jellyfish graph.
 ======================================================================
     INPUT:
-        jelly_initial (matrix):         Jellyfish matrix
-        row_start (array):              For each row of the jellyfish, position(or coordinate?) of where row starts.  
-        row_end (array):                For each row of the jellyfish, position(?) of where row ends.
+        jelly_initial (array of doubles):   A 3-dimensional matrix storing positions of jellyfish nodes.
+        row_start (array of doubles):          For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        row_end (array of doubles):            For each row of the jellyfish, position in jellyfish mesh where row ends.
 
     OUTPUT:
-        jelly (graph):                  Graph containing information on Nodes and Edges of jellyfish.
+        jelly (graph):                              Graph containing information on Nodes and Edges of jellyfish.
 %}
 
 function jelly = convert_jelly_graph(jelly_initial, row_start, row_end)
