@@ -1,15 +1,14 @@
 %{
 ======================================================================
-    Function that creates a jellyfish mesh with some offset between two
-    grafts.
+    Function that creates a jellyfish mesh with a user-specified offset between two grafts.
 ======================================================================
     INPUT:
         offset (scalar):                Distance between two grafts. 
 
     OUTPUT: 
         jelly (matrix):                 A 3-dimensional matrix. Last dimension can be indexed to access x-axis position (index = 1) and y-axis positions (index = 2).
-        row_start
-        row_end
+        row_start (array):              For each row of the jellyfish, position(or coordinate?) of where row starts.  
+        row_end (array):                For each row of the jellyfish, position(?) of where row ends.
 %}
 
 function [jelly, row_start, row_end] = offset_mesh(offset)

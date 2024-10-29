@@ -10,7 +10,7 @@ INPUT:
         damping_coefficient (float):    Damping coefficient of jellyfish (n Newton*seconds/meter).
         bulk_modulus (float):           Bulk modulus of jellyfish (in Pascals).
         area0 (float):                  Relaxed area as a percentage of jellyfish area. Greater than 1.
-        muscle_strain (float):          Strain of jellyfish (in ?).
+        muscle_strain (float):          Strain of jellyfish in ? (dimensionless quantity).
         contraction_rate (float):       Number of jellyfish contractions per minute.
         max_dR (float):                 Maximum change in radius during contraction.
         dR_rate (float):                Increase in radius change with distance from anchored end (Figure S6c in paper).
@@ -273,10 +273,14 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
 
         %% Instead of separating out by contraction and relaxation phases, we are just finding the average F_net over the time step
         stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
-        edge_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
-        jelly.Nodes.F_net = stress_net*edge_area; % Force in Newtons.
+        edge_crossectional_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
+        jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
 
-        %% Update the position of each node
+        %% Update the position of each node. Vis Pa*s = Ns/m2, damping Ns/m
+
+        % % Old version 
+        % jelly.Nodes.velocity = jelly.Nodes.F_net./vis; % Obtain node velocity due to net force.
+        
         jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);

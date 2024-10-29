@@ -1,15 +1,15 @@
 %{
 ======================================================================
-    Function that (?)
+    Function that computes the strain between edges and elastic stress acting on each node.
 ======================================================================
 
 INPUT:
-        jelly (?):
-        elast0 (?): 
-        elast1 (?): 
+        jelly (graph):         Graph containing information on Nodes and Edges of jellyfish.
+        elast0 (float):        Elasticity of spring (in Pascals).
+        elast1 (float):        Elasticity of spring (in Pascals).
 
 OUTPUT:
-        jelly (?):
+        jelly (graph):         Updated graph containing information on Nodes and Edges of jellyfish.
 %}
 
 function jelly = SLM_elastic(jelly, elast0, elast1)
@@ -18,7 +18,7 @@ function jelly = SLM_elastic(jelly, elast0, elast1)
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
 
-    %% Find the elastic force on each node 
+    %% Find the elastic stress on each node 
     %stress_elastic(N) = scale(m^2)*strain(unitless)*stiffness(Pa)
     jelly.Nodes.stress_elastic = zeros(numnodes(jelly), 2);
     for i = 1:numedges(jelly)

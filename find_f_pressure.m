@@ -1,6 +1,6 @@
 %{
 ======================================================================
-    Function that finds pressure in jellyfish.
+    Function that computes pressure in jellyfish.
 ======================================================================
 
 INPUT:

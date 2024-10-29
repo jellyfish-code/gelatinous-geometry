@@ -5,11 +5,11 @@
 
 INPUT:
         jelly (?): 
-        row_start (?):
-        row_end (?):
+        row_start (array):  For each row of the jellyfish, position(or coordinate?) of where row starts.  
+        row_end (array):    For each row of the jellyfish, position(?) of where row ends.
 
 OUTPUT:
-        dist (?):
+        dist (array):       Returns distance between each pair of nodes in the mesh (?). 
 %}
 
 function dist = mesh_dist(jelly, row_start, row_end)

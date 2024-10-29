@@ -9,7 +9,7 @@
         muscle_length (float): Sum of lengths of muscles in current geometry. Used to preserve total length of muscles during remeshing. 
     
     OUTPUT:
-        jelly (graph):         Graph containing information on Nodes and Edges of jellyfish.                     
+        jelly (graph):         Updated graph containing information on Nodes and Edges of jellyfish.                     
         lim_reached (bool):    Used to prevent infinite loop of remeshing. If returned 1, simulation exits (check?).
 %}
 

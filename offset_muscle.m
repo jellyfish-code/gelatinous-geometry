@@ -1,7 +1,6 @@
 %{
 ======================================================================
-    Function that returns positions of muscle nodes based on offset between
-    jellyfish grafts.
+    Function that returns positions of muscle nodes based on offset between jellyfish grafts.
 ======================================================================
 
 INPUT:
