@@ -23,14 +23,8 @@ OUTPUT:
 
 function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     %% Set up parameters, everything in Pa(N/m^2) and s
-%     elast0 = 3*10^3; %Pa %This is the spring by itself
-%     elast1 = 4*10^3; %Pa %This is the spring in the Maxwell model
-%     vis = 600; %Pa*s %This is the dashpot in the Maxwell model
-%     bulk_modulus = 3.2*10^6; %Pa, just using the one for water, 
 
     %Measured parameters
-%     max_dR = 1;
-%     dR_rate = 0.15;
     contraction_duration = 0.8; %s
     contraction_strength = (elast0+elast1)*muscle_strain; %Pa
     relax_duration = (60-contraction_rate*contraction_duration)/(contraction_rate + 1); %seconds
@@ -41,12 +35,6 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     if relax_duration < 0
         relax_duration = 0;
     end
-%     area0 = 1.01;
-%     contraction_rate = 20; %per minute
-    
-    %Stress = strain*elastic modulus; Stress = Force/Area, so Force =
-    %Stress*Area
-    %damping = 0.3; 
 
     %time
     time_step = 30; %minutes
@@ -54,17 +42,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     time_steps = time_end*60/time_step;
     a_r = [];
     vel = [];
+
     %% Calculate the Maxwell relaxation constants
     relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
 
-
-    %% Graft geometry
-%     offset = 2; %only relevant for offset graft
-
     %% Writing images
-    % path0 = '/central/home/mgong/Documents/Model';
     path0 = datapath;
-    %     folder_save = ['KV_052620_off', num2str(offset), 'rate', num2str(contraction_rate)];
 
     if ~isempty(path0)
         Dr = dir([path0 '/' folder_save]);
@@ -86,8 +69,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     %nodes.
 
     %% Start with uncut jellyfish, find the balance of elastic and pressure forces
-    %%This function assumes that maxwell completely relaxes, i.e. it's just
-    %%Kelvin-Voigt model
+    %%This function assumes that maxwell completely relaxes, i.e. the Kelvin-Voigt model
     [jelly_eq, ~, d_uncut] = equilibrium_initial_KV(elast0, vis, damping_coefficient, bulk_modulus, 100, 1200, area0, contraction_strength);
 
     %% Make a matrix with the right shape for offset graft
@@ -217,16 +199,11 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     saveas(figure1, '000.jpg')
     cd(path0);     
     pause(0.001)
-    %%Setup takes about 20 seconds%%%
+
     %% Start the sim
     for time = 1:time_steps
 
-        %Print the current time_step (in hours)
        hours = (time/(60/time_step));
-        
-%         if hours == 320
-%             pause(0.001)
-%         end
 
         %% Update the current length of edges
         for i = 1:numedges(jelly)
@@ -247,11 +224,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         end
             
         %% Find the strain from the muscle contraction
-        %find strain from muscle contraction
-        %pos strain = tension, neg strain = compression     
+        %find strain from muscle contraction. Positive strain implies tension, negative strain implies compression.   
         %% Calculate new muscle coordinates from contraction
-        %muscles are "synchronized", calculations for all muscle bands happen
-        %simultaneously.
+        % As muscles are "synchronized", calculations for all muscle bands happen simultaneously.
         [jelly, done] = contraction5offset(jelly, contraction_strength, muscle_strain, max_dR, dR_rate);
         if done == 0 % If an unstability or error arose in contraction5offset, exit simulation.
             cd(path1)
@@ -277,9 +252,6 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
 
         %% Update the position of each node. Vis Pa*s = Ns/m2, damping Ns/m
-
-        % % Old version 
-        % jelly.Nodes.velocity = jelly.Nodes.F_net./vis; % Obtain node velocity due to net force.
         
         jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
@@ -332,8 +304,6 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         if mod(hours, 20) == 0
             %% image new relaxed jelly every 2 hours
                 figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
-            %hold on
-            %figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
 
             hold off
             xlim([0, 11 + offset]);
@@ -358,12 +328,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
 
     %% final image
     figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 1);
-    %hold on
-    %figure1 = quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:,1), jelly.Nodes.F_net(:,2));
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 11]);
-    %Calculate aspect ratio
     
     %% Plot aspect ratio
     cd(path1);                                                            % write the image data

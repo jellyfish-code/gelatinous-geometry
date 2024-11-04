@@ -11,7 +11,7 @@ INPUT:
         edges (2x31 array of doubles):       Describes the edge nodes in clockwise order.
     
 OUTPUT:
-        pressure (11x11x2 array of doubles): Pressure acting on each node of jellyfish (in Pascals).
+        pressure (11x11x2 array of doubles): Pressure acting on each edge node of jellyfish (in Pascals).
 %}
 
 function pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus, edges)

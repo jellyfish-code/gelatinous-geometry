@@ -4,7 +4,7 @@
 ======================================================================
 
 INPUT:
-        jelly (array of doubles):    A 3-dimensional matrix storing positions of jellyfish nodes.
+        jelly (array of doubles):       A 3-dimensional matrix storing positions of jellyfish nodes.
         row_start (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row starts.  
         row_end (array of doubles):     For each row of the jellyfish, position in jellyfish mesh where row ends.
 

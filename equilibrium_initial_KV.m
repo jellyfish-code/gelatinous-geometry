@@ -18,7 +18,7 @@
     OUTPUT: 
         jelly_eq (array of doubles):            A 3-dimensional matrix storing positions of jellyfish nodes after elastic stress and pressure have equilibrated.
         jelly_area (double):                    Area of jellyfish (in mm^2).  
-        d_uncut (?):                            ?
+        d_uncut (double):                       Relaxed edge length between nodes along the horizontal cut between grafts, used to set up the offset mesh. 
 %}
 
 function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscosity, damping_coefficient, bulk_modulus, dt, t, area_0, contraction_strength)
