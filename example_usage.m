@@ -22,7 +22,10 @@ damping_coefficient = 500;  % Damping coefficient of jellyfish. Units in Newton*
 max_dR = 1.55;              % Maximum change in radius of jellyfish during contraction.
 dR_rate = 0.15;             % Increase in radius change with distance from anchored end (Figure S6c in paper).
 
-
+tau_SLM = vis*(elast0 + elast1)/(elast0*elast1); 
+tau_maxwell = vis/elast1; 
+tau = min(tau_SLM, tau_maxwell); 
+timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 %% Uncomment to simulate an offset graft
 % Specify datapath of directory to save data in
 datapath = pwd; % Set current directory as datapath

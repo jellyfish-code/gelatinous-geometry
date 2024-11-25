@@ -43,7 +43,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     a_r = [];
     vel = [];
 
-    %% Calculate the Maxwell relaxation constants
+    %% Calculate the Maxwell relaxation constants. Used to update relaxed length of spring 1 in series with dashpot.
     relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
 
     %% Writing images
@@ -225,7 +225,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             
         %% Find the strain from the muscle contraction
         %find strain from muscle contraction. Positive strain implies tension, negative strain implies compression.   
-        %% Calculate new muscle coordinates from contraction
+        %% Calculate muscle stress from contraction and new muscle coordinates from contraction [?]
         % As muscles are "synchronized", calculations for all muscle bands happen simultaneously.
         [jelly, done] = contraction5offset(jelly, contraction_strength, muscle_strain, max_dR, dR_rate);
         if done == 0 % If an unstability or error arose in contraction5offset, exit simulation.
@@ -237,8 +237,6 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             return
         end
         
-
-
         jelly = SLM_elastic(jelly, elast0, elast1);
 
         %% pressure force
@@ -246,19 +244,19 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
         stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
 
-        %% Instead of separating out by contraction and relaxation phases, we are just finding the average F_net over the time step
+        %% Instead of separating out by contraction and relaxation phases, we calculate the average F_net over the time step
         stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
         edge_crossectional_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
         jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
 
-        %% Update the position of each node. Vis Pa*s = Ns/m2, damping Ns/m
+        %% Update the position cof each node. Vis Pa*s = Ns/m2, damping Ns/m
         
         jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
         jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
 
-        %Maxwell relaxation
+        % Update relaxed length of spring 1 due to the presence of dashpot in series.
         jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
        
         

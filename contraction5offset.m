@@ -573,7 +573,7 @@ end
 %create table to store muscle info
 mus_tab = table(mus_lengths, mus_anchor, mus_piece, radius, theta, center, 'VariableNames',["length", "anchored", "Nodes", "radius", "theta", "center"]);
 
-%% Yay, all muscle info is extracted! Now to find the contracted valueeee
+%% Yay, all muscle info is extracted! Now to find the contracted value
 %new muscle contraction
 %function F_muscle = ThreeDcontract(jelly, theta, radius, mus_idx)
 
