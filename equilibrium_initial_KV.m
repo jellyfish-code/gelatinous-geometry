@@ -179,7 +179,7 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
         edge_area = 1e-3*1e-3;                              % In meters squared. 
         F_net = stress_net * edge_area;                     % Net force in Newtons.
         
-        v = 1e3*F_net./damping_coefficient;                           % Factor of 1e3 converts meters per second to millimeters per second.
+        v = 1e3*F_net./damping_coefficient;                 % Factor of 1e3 converts meters per second to millimeters per second.
         displacement = v*dt;                                % In mm.
         jelly = jelly+displacement;                         % Update positions in jelly.
         

@@ -87,7 +87,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     %% Convert array to graph
     jelly = convert_jelly_graph(jelly_initial, row_start, row_end);
 
-    %%Add additional parameters
+    %% Initialise velocity, net force, elastic stress, pressure, muscle stress, outer muscles, and inner muscles in jelly graph. 
     jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
     jelly.Nodes.F_net = zeros(numnodes(jelly), 2);
     jelly.Nodes.stress_elastic = jelly.Nodes.F_net;
@@ -121,12 +121,14 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     jelly_off_i.Nodes.edges = j_edges;
     [j_area, ~] = area(jelly_off_i);
     area_relax = area0*j_area;
+
+    %% Initialise relaxed lengths of springs and calculate initial strains
     jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
     %before equilibrium is found. So I'm just initializing another offset graft
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %This is assumed to be fully relaxed
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
-
+    jelly.Edges.strainviscous = jelly.Edges.strain0; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
 
     outcount = 1;
     incount = 1;
@@ -200,7 +202,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     cd(path0);     
     pause(0.001)
 
-    %% Start the sim
+    %% Start the simulation
     for time = 1:time_steps
 
        hours = (time/(60/time_step));
@@ -237,9 +239,10 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             return
         end
         
-        jelly = SLM_elastic(jelly, elast0, elast1);
-
-        %% pressure force
+        %% Calculate elastic stress arising from springs
+        % jelly = SLM_elastic(jelly, elast0, elast1);
+        jelly = SLM_viscoelastic(jelly, elast0, elast1, vis, time_step); 
+        %% Calculate internal pressure acting on nodes
         jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
         stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
         stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
@@ -260,7 +263,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
        
         
-        %% Remesh every 10 hours
+        %% Remesh every 5 hours OR if constraints are met
+        %% TODO: remove requirements of every 5 hours?
         [trash, idx] = sortrows(jelly.Nodes, {'edges'});
         edge_idx = idx(trash.edges~=0);
         new_con = [];

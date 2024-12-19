@@ -31,7 +31,7 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 datapath = pwd; % Set current directory as datapath
 
 % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. Creates folder example_usage_data if not already created.
-folder_save = ['example_usage_data/', 'offset_graft_', 'elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate), '_using_visco_offset_SLM_newmus_remote_version_updated_files_corrected_conversion_factors_nonessential_files_deleted'];
+folder_save = ['example_usage_data/', 'corrected_numerical_algorithm_offset_graft_', 'elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate), '_using_visco_offset_SLM_newmus_remote_version_updated_files_corrected_conversion_factors_nonessential_files_deleted'];
 
 visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
 
@@ -47,5 +47,5 @@ visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, 
 
 %% (Optional) Stitch images into a .avi video
 dataDir = fullfile([pwd, '/' ,folder_save]); % Specify location of images
-video_name = ['animation_offset_graft_', 'elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
+video_name = ['animation_offset_graft_', 'corrected_numerical_algorithm_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
 create_animation(dataDir, video_name); 
