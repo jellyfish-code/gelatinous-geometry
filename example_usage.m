@@ -27,7 +27,7 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 %% Uncomment to simulate an offset graft
 % % Specify datapath of directory to save data in
 % datapath = pwd; % Set current directory as datapath
-% graft_type = "_offset_graft"; 
+% graft_type = '_offset_graft'; 
 % % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. Creates folder example_usage_data if not already created.
 % date = string(datetime("today")); 
 % folder_save = ['example_usage_data/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
@@ -37,11 +37,11 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 %% Uncomment to simulate a butterfly graft
 % Specify datapath of directory to save data in
 datapath = pwd; % Set current directory as datapath
-graft_type = "_butterfly_graft"; 
+graft_type = '_butterfly_graft'; 
 % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
 % Creates folder Data if not already created.
 date = string(datetime("today")); 
-folder_save = ['example_usage_data/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+folder_save = ['example_usage_data/', graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 
 visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
 
