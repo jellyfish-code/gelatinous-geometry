@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#SBATCH --time=1:00:00 
+#SBATCH --ntasks=1
+#SBATCH --nodes=1 
+#SBATCH --mem-per-cpu=1G   # memory per CPU core.
+#SBATCH -J "test-run"      # job name
+#SBATCH --mail-user=mashok2@caltech.edu   # email address (not necessary)
+
+# Notify at the beginning, end of job and on failure. (Not necessary)
+#SBATCH --mail-type=BEGIN
+#SBATCH --mail-type=END
+#SBATCH --mail-type=FAIL
+
+# LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
+
+module load matlab/r2024a 
+
+#matlab -nodisplay -nosplash -r "try; run('slurm_test_script.m'); catch e; disp(getReport(e)); exit(1); end; exit(0);"
+
+echo done
