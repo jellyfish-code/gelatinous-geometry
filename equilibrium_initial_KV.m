@@ -1,6 +1,6 @@
 %{
 ======================================================================
-    Balancing of pressure force and elastic force after dissection of jellyfish. 
+    This codes compute the initial condition ie the initial stresses at each node i
     Aurelia medusa are under constant elastic stress. When a cut is made in a medusa bell, the cut immediately widens as stress is released.
     To create this internal stress in the model, we set the relaxed area artificially high at some percentage (set here by variable area_0) greater than the calculated jellyfish mesh area, 
     creating a positive pressure outward. The jellyfish mesh is then allowed to come to equilibrium, with elastic stress acting against the pressure force of the mesh.
