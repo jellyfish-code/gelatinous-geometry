@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --nodes=1 
 #SBATCH --mem-per-cpu=15G   # memory per CPU core.
-#SBATCH -J "butterfly-graft-example-run"      # job name
+#SBATCH -J "slurm-test-run"      # job name
 #SBATCH --mail-user=mashok2@caltech.edu
 
 # Notify at the beginning, end of job and on failure. (Not necessary)
@@ -16,6 +16,6 @@
 
 module load matlab/r2024a 
 
-#matlab -nodisplay -nosplash -r "try; run('example_usage.m'); catch e; disp(getReport(e)); exit(1); end; exit(0);"
+matlab -nodisplay -nosplash -nodesktop -r "try; run('example_usage.m'); catch e; disp(getReport(e)); exit(1); end; exit(0);"
 
 echo done
