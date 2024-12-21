@@ -607,7 +607,8 @@ for i = 1:height(mus_tab)
         
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
-        
+        stress_muscle(mus_tab.Nodes(i,midpt),1) = stress_muscle(mus_tab.Nodes(i,midpt),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),2) = stress_muscle(mus_tab.Nodes(i,midpt),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
         
         for j = midpt:length(actual)-1
             edge = findedge(jelly, mus_tab.Nodes(i,j), mus_tab.Nodes(i,j+1));
@@ -1106,7 +1107,8 @@ for i = 1:height(mus_tab)
         
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
-        
+        stress_muscle(mus_tab.Nodes(i,midpt),1) = stress_muscle(mus_tab.Nodes(i,midpt),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        stress_muscle(mus_tab.Nodes(i,midpt),2) = stress_muscle(mus_tab.Nodes(i,midpt),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
         
         for j = midpt:length(actual)-1
             edge = findedge(jelly, mus_tab.Nodes(i,j), mus_tab.Nodes(i,j+1));
