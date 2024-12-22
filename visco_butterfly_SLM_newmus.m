@@ -42,7 +42,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bu
     time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     
-    relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
+    % relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
 
     wing_width = 11;
     body_height = 2;
@@ -155,7 +155,8 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bu
     jelly.Edges.d_rel1 = jelly.Edges.d_rel0;
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
-
+    jelly.Edges.strainviscous = jelly.Edges.strain0; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
+    
     m1 = zeros(length(muscle_top_outer),1);
     m2 = zeros(length(muscle_lowleft_outer),1);
     m3 = zeros(length(muscle_lowright_outer),1);
@@ -304,7 +305,7 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bu
             jelly.Edges.d_current(i) = dist_current;
         end
         
-        jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
+        % jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
         if max(jelly.Edges.d_current) > 10 || max(jelly.Edges.strain0) > 1 %|| min(jelly.Edges.strain0) < -0.5
             cd(path1)
             writematrix(vel, 'velocity.xlsx');
@@ -323,7 +324,8 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bu
             return
         end
         
-        jelly = SLM_elastic(jelly, elast0, elast1);
+        % jelly = SLM_elastic(jelly, elast0, elast1);
+        jelly = SLM_viscoelastic(jelly, elast0, elast1, vis, time_step); 
 
         %% pressure force
         jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  

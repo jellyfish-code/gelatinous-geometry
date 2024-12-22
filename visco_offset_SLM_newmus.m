@@ -43,8 +43,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     a_r = [];
     vel = [];
 
-    %% Calculate the Maxwell relaxation constants. Used to update relaxed length of spring 1 in series with dashpot.
-    relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
+    % %% Calculate the Maxwell relaxation constants. Used to update relaxed length of spring 1 in series with dashpot.
+    % relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
 
     %% Writing images
     path0 = datapath;
@@ -259,8 +259,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
         jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
 
-        % Update relaxed length of spring 1 due to the presence of dashpot in series.
-        jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
+        % % Update relaxed length of spring 1 due to the presence of dashpot in series.
+        % jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
        
         
         %% Remesh every 5 hours OR if constraints are met
