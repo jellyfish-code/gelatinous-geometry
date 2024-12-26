@@ -190,10 +190,9 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                # changed to unit vector
-                vector_length = ((Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))^2 + (Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))^2)^(1/2)
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))/vector_length;
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))/vector_length;
+                
+                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -203,10 +202,9 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                # changed to unit vector
-                vector_length = ((Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))^2 + (Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))^2)^(1/2)
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))/vector_length;
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))/vector_length;
+                
+                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
@@ -229,10 +227,9 @@ for i = 1:height(mus_tab)
                 
                 contracted_nodes(i,j,1) = Ax;
                 contracted_nodes(i,j,2) = Ay;
-                # changed to unit vector
-                vector_length = ((Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))^2 + (Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))^2)^(1/2)
-                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))/vector_length;
-                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))/vector_length;
+               
+                F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+                F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
                 
                 cur_theta = atan2(Ay - O(2), Ax - O(1));
                 
