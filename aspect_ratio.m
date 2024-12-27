@@ -12,12 +12,13 @@
 %}
 function [a_r, major_axis, minor_axis] = aspect_ratio(jelly)
 
-[trash, edge_idx] = area(jelly);
+%% Extract locations of edge node
+[~, edge_idx] = area(jelly);
 
 x_s = jelly.Nodes.x_coord(edge_idx);
 y_s = jelly.Nodes.y_coord(edge_idx);
 
-a = floor(length(edge_idx)/2);
+a = floor(length(edge_idx)/2); % For any given edge node, "opposite" node is located a nodes away.
 
 axes = [];
 ang = [];
