@@ -34,11 +34,17 @@ function pressure = find_f_pressure_initial(jelly, area_0, j_area, bulk_modulus,
         %define the side that pressure is acting on
         dx = jelly(edges(1,i+1), edges(2,i+1),1) - jelly(edges(1,i),edges(2,i),1);
         dy = jelly(edges(1,i+1), edges(2,i+1),2) - jelly(edges(1,i),edges(2,i),2);
-        l = (dx^2 + dy^2)^(1/2);
-        pressure(edges(1,i), edges(2,i),1) = -1*dy/l*d_pressure + pressure(edges(1,i), edges(2,i),1);
-        pressure(edges(1,i), edges(2,i),2) = dx/l*d_pressure + pressure(edges(1,i), edges(2,i),2);
         
-        pressure(edges(1,i+1), edges(2,i+1),1) = -1*dy/l*d_pressure + pressure(edges(1,i+1), edges(2,i+1),1);
-        pressure(edges(1,i+1), edges(2,i+1),2) = dx/l*d_pressure + pressure(edges(1,i+1), edges(2,i+1),2);
+        %l = (dx^2 + dy^2)^(1/2);
+        %pressure(edges(1,i), edges(2,i),1) = -1*dy/l*d_pressure + pressure(edges(1,i), edges(2,i),1);
+        %pressure(edges(1,i), edges(2,i),2) = dx/l*d_pressure + pressure(edges(1,i), edges(2,i),2);
+        %pressure(edges(1,i+1), edges(2,i+1),1) = -1*dy/l*d_pressure + pressure(edges(1,i+1), edges(2,i+1),1);
+        %pressure(edges(1,i+1), edges(2,i+1),2) = dx/l*d_pressure + pressure(edges(1,i+1), edges(2,i+1),2);
+
+        pressure(edges(1,i), edges(2,i),1) = -1*dy*d_pressure + pressure(edges(1,i), edges(2,i),1);
+        pressure(edges(1,i), edges(2,i),2) = dx*d_pressure + pressure(edges(1,i), edges(2,i),2);
+        
+        pressure(edges(1,i+1), edges(2,i+1),1) = -1*dy*d_pressure + pressure(edges(1,i+1), edges(2,i+1),1);
+        pressure(edges(1,i+1), edges(2,i+1),2) = dx*d_pressure + pressure(edges(1,i+1), edges(2,i+1),2);
     end
     
