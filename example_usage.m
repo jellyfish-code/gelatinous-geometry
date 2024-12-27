@@ -12,8 +12,8 @@ offset = 4;                 % Offset of jellyfish grafts
 
 bulk_modulus = 0.05*1e3;    % Bulk modulus of jellyfish in Pascals. 
 area0 = 1.001;              % Relaxed area as a percentage of jellyfish area. Greater than 1.
-elast0 = 0.025*0.2*1e3;      % Elasticity of spring in Pascals.
-elast1 = 0.025*0.8*1e3;      % Elasticity of spring in Pascals.
+elast0 = 0.05*0.2*1e3;      % Elasticity of spring in Pascals.
+elast1 = 0.05*0.8*1e3;      % Elasticity of spring in Pascals.
 vis = 500*1e3;              % Viscosity of dashpot in Maxwell model. Units in Pascal*seconds.
 damping_coefficient = 500;  % Damping coefficient of jellyfish. Units in Newton*seconds/meter.
 max_dR = 1.55;              % Maximum change in radius of jellyfish during contraction.
@@ -47,7 +47,7 @@ visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, 
 % visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
 
 %% (Optional) Stitch images into a .avi video
-dataDir = fullfile([pwd, '/' ,folder_save]); % Specify location of images
+dataDir = fullfile([pwd, '/' ,folder_save, '/stress_contraction']); % Specify location of images
 video_name = ['animation', graft_type, 'corrected_numerical_algorithm_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
 create_animation(dataDir, video_name); 
 

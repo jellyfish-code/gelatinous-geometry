@@ -50,9 +50,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     path0 = datapath;
 
     if ~isempty(path0)
-        Dr = dir([path0 '/' folder_save]);
+        Dr = dir([path0 '/' folder_save '/graft_reorganization']);
         if isempty(Dr)
-            S = mkdir(path0,folder_save);
+            S = mkdir(path0,[folder_save, '/graft_reorganization']);
             if ~S, disp('Fail to make folder!'); return;  
             end
         else
@@ -192,13 +192,13 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     end
 
     %% Image the graph
-    figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
+    figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 11]);
     
     cd(path1);                                                            % write the image data
-    saveas(figure1, '000.jpg')
+    saveas(figure_graft, '000.jpg')
     cd(path0);     
     pause(0.001)
 
@@ -252,7 +252,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         edge_crossectional_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
         jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
 
-        %% Update the position cof each node. Vis Pa*s = Ns/m2, damping Ns/m
+        %% Update the position of each node. Vis Pa*s = Ns/m2, damping Ns/m
         
         jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
@@ -304,19 +304,88 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         end
 
         if mod(hours, 20) == 0
-            %% image new relaxed jelly every 2 hours
-                figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
-
+            %% Generate and save image of new relaxed jelly every 20 hours
+            % Graft reorganization
+            figure(1)
+            figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
             hold off
             xlim([0, 11 + offset]);
             ylim([-1, 12]);
-            
-            %% Save images
-            cd(path1);                                                            % write the image data
-            i = floor(hours)*10;
-            saveas(figure1, [num2str(i) '.jpg'])
-            cd(path0);     
+
+            % Need to explicitly create subfolders.
+            path_graft = [path1, '/graft_reorganization'];
+            cd(path_graft);
+            i = hours;
+            saveas(figure_graft, ['hour_', num2str(i) '.jpg'])   
             pause(0.001)
+            
+            % % Contraction Stress
+            % figure(2)
+            % figure_contraction = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
+            % hold on
+            % quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.stress_muscle(:, 1), jelly.Nodes.stress_muscle(:, 2), 'AutoScale', 'on', 'LineWidth', 1.5);
+            % 
+            % hold off
+            % xlim([0, 11 + offset]);
+            % ylim([-1, 12]);
+            % 
+            % path_contraction = [path1, '/stress_contraction'];
+            % cd(path_contraction);                                                            % write the image data
+            % i = hours;
+            % saveas(figure_contraction, [num2str(i) '.jpg'])    
+            % pause(0.001)
+            % 
+            % % Pressure
+            % figure(3)
+            % figure_pressure = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
+            % hold on
+            % quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.pressure(:, 1), jelly.Nodes.pressure(:, 2), 'AutoScale', 'on', 'LineWidth', 1.5);
+            % 
+            % hold off
+            % xlim([0, 11 + offset]);
+            % ylim([-1, 12]);
+            % 
+            % path_pressure = [path1, '/pressure'];
+            % cd(path_pressure);                                                            % write the image data
+            % i = hours;
+            % saveas(figure_pressure, [num2str(i) '.jpg'])
+            % pause(0.001)
+            % 
+            % % Elastic Stress
+            % figure(4)
+            % figure_elastic = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
+            % hold on
+            % quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.stress_elastic(:, 1), jelly.Nodes.stress_elastic(:, 2), 'AutoScale', 'on', 'LineWidth', 1.5);
+            % 
+            % hold off
+            % xlim([0, 11 + offset]);
+            % ylim([-1, 12]);
+            % 
+            % path_elastic = [path1, '/stress_elastic'];
+            % cd(path_elastic);                                                            % write the image data
+            % i = hours;
+            % saveas(figure_elastic, [num2str(i) '.jpg'])    
+            % pause(0.001)
+            % 
+            % % Net Force
+            % figure(5)
+            % figure_net_force = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
+            % hold on
+            % quiver(jelly.Nodes.x_coord, jelly.Nodes.y_coord, jelly.Nodes.F_net(:, 1), jelly.Nodes.F_net(:, 2), 'AutoScale', 'on', 'LineWidth', 1.5);
+            % 
+            % hold off
+            % xlim([0, 11 + offset]);
+            % ylim([-1, 12]);
+            % 
+            % path_stress_net = [path1, '/F_net'];
+            % cd(path_stress_net);                                                            % write the image data
+            % i = hours;
+            % saveas(figure_net_force, [num2str(i) '.jpg'])    
+            % pause(0.001)
+
+            cd(path0); 
+            
+         
         end
         if mod(hours, 5) == 0
             aspect = aspect_ratio(jelly);
@@ -329,7 +398,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     end
 
     %% final image
-    figure1 = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 1);
+    figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 1);
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 11]);
@@ -338,4 +407,5 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     cd(path1);                                                            % write the image data
     writematrix(a_r, 'a_r.xlsx');
     writematrix(vel, 'velocity.xlsx');
+    writematrix([jelly.Nodes.x_coord, jelly.Nodes.y_coord], 'final_position.xlsx');
     cd(path0);  
