@@ -61,8 +61,8 @@ for i = 1:height(parameter_sweep_table)
     % % Display the result
     % fprintf('Number of files in the directory: %d\n', numFiles);
 
-    % Generate animation
-    dataDir = fullfile([pwd, '/' ,folder_save, '/graft_reorganization']); % Specify location of images
-    video_name = [date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
-    create_animation(dataDir, video_name); 
+    % % Generate animation
+    % dataDir = fullfile([pwd, '/' ,folder_save, '/graft_reorganization']); % Specify location of images
+    % video_name = [date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
+    % create_animation(dataDir, video_name); 
 end
