@@ -191,14 +191,14 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         return
     end
 
-    %% Image the graph
+    %% Image initial jellyfish graft
     figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
     hold off
     xlim([0, 11 + offset]);
-    ylim([-1, 11]);
-    
+    ylim([-1, 12]);
+
     cd(path1);                                                            % write the image data
-    saveas(figure_graft, '000.jpg')
+    saveas(figure_graft, '0.jpg')
     cd(path0);     
     pause(0.001)
 
@@ -316,7 +316,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             path_graft = [path1, '/graft_reorganization'];
             cd(path_graft);
             i = hours;
-            saveas(figure_graft, ['hour_', num2str(i) '.jpg'])   
+            saveas(figure_graft, [num2str(i) '.jpg'])   
             pause(0.001)
             
             % % Contraction Stress
