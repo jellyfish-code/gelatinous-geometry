@@ -48,7 +48,7 @@ visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, 
 
 %% (Optional) Stitch images into a .avi video
 dataDir = fullfile([pwd, '/' ,folder_save, '/stress_contraction']); % Specify location of images
-video_name = ['animation', graft_type, 'corrected_numerical_algorithm_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
+video_name = ['animation', graft_type, 'offset_graft_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
 create_animation(dataDir, video_name); 
 
 %% Uncomment to start a parallel process
