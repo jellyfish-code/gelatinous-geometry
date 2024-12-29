@@ -8,7 +8,7 @@
         video_name (string):                  Name of mp4 file. 
 %}
 
-function create_animation(image_directory_location, video_name)
+function create_animation(image_directory_location, video_name, save_directory_location)
     
     %% Find images in specified directory
     imageNames = dir(fullfile(image_directory_location, "*.jpg"));
@@ -26,7 +26,7 @@ function create_animation(image_directory_location, video_name)
     
     %% Create animation
     % Create VideoWriter object
-    outputVideo = VideoWriter(fullfile(image_directory_location, video_name), 'MPEG-4');
+    outputVideo = VideoWriter(fullfile(save_directory_location, video_name), 'MPEG-4');
     
     % Specify frame rate
     outputVideo.FrameRate = 5; 
