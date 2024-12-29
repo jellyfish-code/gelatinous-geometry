@@ -196,8 +196,9 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     hold off
     xlim([0, 11 + offset]);
     ylim([-1, 12]);
-
-    cd(path1);                                                            % write the image data
+    
+    path_graft = [path1, '/graft_reorganization'];
+    cd(path_graft);                                                            % write the image data
     saveas(figure_graft, '0.jpg')
     cd(path0);     
     pause(0.001)
