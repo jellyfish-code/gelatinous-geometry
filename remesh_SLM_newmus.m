@@ -324,6 +324,9 @@ count = 0;
                     jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), a(2)))]);
                     jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strain1(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strain1(findedge(jelly_temp, a(1), a(2)))]);
 
+                    jelly_temp.Edges.strainviscous(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strainviscous(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strainviscous(findedge(jelly_temp, a(1), a(2)))]);
+                    jelly_temp.Edges.strainviscous(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = mean([jelly_temp.Edges.strainviscous(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))), jelly_temp.Edges.strainviscous(findedge(jelly_temp, a(1), a(2)))]);
+
                     jelly_temp.Edges.d_rel0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly_temp.Edges.d_current(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed))))/(jelly_temp.Edges.strain0(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) + 1);
                     jelly_temp.Edges.d_rel0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly_temp.Edges.d_current(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed))))/(jelly_temp.Edges.strain0(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) + 1);
                     
