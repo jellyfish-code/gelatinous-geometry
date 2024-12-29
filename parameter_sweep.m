@@ -21,12 +21,20 @@ tau_maxwell = vis/elast1;
 tau = min(tau_SLM, tau_maxwell); 
 timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 
-%% Declare Sweep Parameters
+%% Declare Sweep Parameters - for Figure 4F
+% contraction_rate_sweep = [10, 20, 30, 40, 50]; 
+% graft_diameter = 10;
+% offset_to_diameter_ratio_sweep = [0.1, 0.2, 0.3, 0.4, 0.5];
+% offset_sweep = offset_to_diameter_ratio_sweep*10;
+% parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
+
+%% Declare Sweep Parameters - for Figure 5E
 contraction_rate_sweep = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]; 
 graft_diameter = 10;
 offset_to_diameter_ratio_sweep = [0.1, 0.2, 0.3, 0.4, 0.5];
 offset_sweep = offset_to_diameter_ratio_sweep*10;
 parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
+
 
 %% Start a parallel process
 
@@ -41,7 +49,7 @@ parfor i = 1:height(parameter_sweep_table)
     % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
     % Creates folder Data if not already created.
     date = sprintf('%s', datetime("today"));
-    folder_save = ['parameter_sweep_figure_5e/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+    folder_save = ['/date/parameter_sweep_figure_5e/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 
     visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     
@@ -61,8 +69,14 @@ parfor i = 1:height(parameter_sweep_table)
     % % Display the result
     % fprintf('Number of files in the directory: %d\n', numFiles);
 
-    % % Generate animation
-    % dataDir = fullfile([pwd, '/' ,folder_save, '/graft_reorganization']); % Specify location of images
-    % video_name = [date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
-    % create_animation(dataDir, video_name); 
+    % Generate animation
+    dataDir = fullfile([pwd, '/' ,folder_save, '/graft_reorganization']); % Specify location of images
+    saveDir = fullfile([pwd, '/date/parameter_sweep_figure_5e/animations_figure_5e']); % Specify location to save animations in
+    
+    if ~exist(folderName, 'dir')
+        mkdir(folderName); % Create the folder if it doesn't exist
+    end
+
+    video_name = [date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
+    create_animation(dataDir, video_name, saveDir); 
 end
