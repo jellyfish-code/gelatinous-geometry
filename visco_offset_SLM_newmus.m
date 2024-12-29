@@ -38,7 +38,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
 
     %time
     time_step = 30; %minutes
-    time_end = 2000; %hours
+    time_end = 4000; %hours
     time_steps = time_end*60/time_step;
     a_r = [];
     vel = [];
@@ -129,7 +129,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
     jelly.Edges.strainviscous = jelly.Edges.strain0; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
-
+    
     outcount = 1;
     incount = 1;
     %% Define edges that make up the muscles
@@ -259,7 +259,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
         jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
 
-        % % Update relaxed length of spring 1 due to the presence of dashpot in series.
+        % Update relaxed length of spring 1 due to the presence of dashpot
+        % in series. This is done for the remeshing code.
         % jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
        
         
