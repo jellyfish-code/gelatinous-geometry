@@ -70,13 +70,13 @@ parfor i = 1:height(parameter_sweep_table)
     % fprintf('Number of files in the directory: %d\n', numFiles);
 
     % Generate animation
-    dataDir = fullfile([pwd, '/' ,folder_save, '/graft_reorganization']); % Specify location of images
-    saveDir = fullfile([pwd, '/date/parameter_sweep_figure_5e/animations_figure_5e']); % Specify location to save animations in
+    % dataDir = fullfile([pwd, '/' ,folder_save, '/graft_reorganization']); % Specify location of images
+    % saveDir = fullfile([pwd, '/date/parameter_sweep_figure_5e/animations_figure_5e']); % Specify location to save animations in
     
-    if ~exist(folderName, 'dir')
-        mkdir(folderName); % Create the folder if it doesn't exist
-    end
+    % if ~exist(folderName, 'dir')
+    %     mkdir(folderName); % Create the folder if it doesn't exist
+    % end
 
-    video_name = [date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
-    create_animation(dataDir, video_name, saveDir); 
+    % video_name = [date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
+    % create_animation(dataDir, video_name, saveDir); 
 end
