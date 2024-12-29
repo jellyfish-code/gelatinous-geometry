@@ -40,7 +40,9 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
     strain = zeros(mesh_size(1), mesh_size(2), 3);
     elastic_stress = zeros(mesh_size(1), mesh_size(2), 3, 2);
     
-    
+    % figure(1)
+    % plot(jelly(:, :, 1), jelly(:, :, 2), 'or');
+
     for time = 1:t
         %% Find the muscle stress at each node
         %define the current curve and length of the muscle
@@ -183,7 +185,8 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
         displacement = v*dt;                                % In mm.
         jelly = jelly+displacement;                         % Update positions in jelly.
         
-
+        % figure(1)
+        % plot(jelly(:, :, 1), jelly(:, :, 2), 'or');
 %          if mod(time,10)==0
 %             %% image new relaxed jelly
 %             for n = 1:11       %beads
@@ -198,3 +201,7 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
     end
     d_uncut = dist_rel(6,6,1);
     jelly_eq = jelly;
+
+    % figure(1); hold on; 
+    % plot(jelly(:, :, 1), jelly(:, :, 2), 'ob'); 
+
