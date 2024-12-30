@@ -29,7 +29,7 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 % parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
 
 %% Declare Sweep Parameters - for Figure 5E
-contraction_rate_sweep = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50, 55]; 
+contraction_rate_sweep = [20]; 
 graft_diameter = 10;
 offset_to_diameter_ratio_sweep = [0.1, 0.2, 0.3, 0.4, 0.5];
 offset_sweep = offset_to_diameter_ratio_sweep*10;
@@ -49,7 +49,7 @@ parfor i = 1:height(parameter_sweep_table)
     % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
     % Creates folder Data if not already created.
     date = sprintf('%s', datetime("today"));
-    folder_save = ['/', date, '/parameter_sweep_figure_5e/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+    folder_save = ['/', date, '/parameter_sweep_no_KV_initialisation_test/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 
     visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     

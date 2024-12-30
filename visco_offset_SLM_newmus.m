@@ -123,12 +123,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     area_relax = area0*j_area;
 
     %% Initialise relaxed lengths of springs and calculate initial strains
-    jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
+    % jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
     % %before equilibrium is found. So I'm just initializing another offset graft
 
     % IF IGNORING KV INITIALISATION
-    % jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
-    % jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
+    jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
+    jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
 
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %This is assumed to be fully relaxed
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
