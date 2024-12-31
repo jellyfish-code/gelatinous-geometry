@@ -47,7 +47,7 @@ parfor i = 1:height(parameter_sweep_table)
     % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
     % Creates folder Data if not already created.
     date = sprintf('%s', datetime("today"));
-    folder_save = ['/', date, '/parameter_sweep_muscle_strain_sweep/', date, graft_type, '_muscle_strain_', muscle_strain,'_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+    folder_save = ['/', date, '/parameter_sweep_muscle_strain_sweep/', date, graft_type, '_muscle_strain_', num2str(muscle_strain),'_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 
     visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     

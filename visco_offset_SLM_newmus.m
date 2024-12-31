@@ -202,7 +202,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
     hold off
     xlim([0, 11 + offset]);
-    ylim([-1, 12]);
+    ylim([0, 11 + offset]);
     
     path_graft = [path1, '/graft_reorganization'];
     cd(path_graft);                                                            % write the image data
@@ -321,7 +321,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
             hold off
             xlim([0, 11 + offset]);
-            ylim([-1, 12]);
+            ylim([0, 11 + offset]);
 
             % Need to explicitly create subfolders.
             path_graft = [path1, '/graft_reorganization'];
@@ -338,7 +338,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % 
             % hold off
             % xlim([0, 11 + offset]);
-            % ylim([-1, 12]);
+            % ylim([0, 11 + offset]);
             % 
             % path_contraction = [path1, '/stress_contraction'];
             % cd(path_contraction);                                                            % write the image data
@@ -354,7 +354,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % 
             % hold off
             % xlim([0, 11 + offset]);
-            % ylim([-1, 12]);
+            % ylim([0, 11 + offset]);
             % 
             % path_pressure = [path1, '/pressure'];
             % cd(path_pressure);                                                            % write the image data
@@ -370,7 +370,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % 
             % hold off
             % xlim([0, 11 + offset]);
-            % ylim([-1, 12]);
+            % ylim([0, 11 + offset]);
             % 
             % path_elastic = [path1, '/stress_elastic'];
             % cd(path_elastic);                                                            % write the image data
@@ -386,7 +386,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % 
             % hold off
             % xlim([0, 11 + offset]);
-            % ylim([-1, 12]);
+            % ylim([0, 11 + offset]);
             % 
             % path_stress_net = [path1, '/F_net'];
             % cd(path_stress_net);                                                            % write the image data
@@ -412,7 +412,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0 + jelly.Edges.strain1, 'LineWidth', 1);
     hold off
     xlim([0, 11 + offset]);
-    ylim([-1, 11]);
+    ylim([0, 11 + offset]);
     
     %% Plot aspect ratio
     cd(path1);                                                            % write the image data
