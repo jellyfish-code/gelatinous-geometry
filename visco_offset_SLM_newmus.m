@@ -133,7 +133,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %This is assumed to be fully relaxed
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
-    jelly.Edges.strainviscous = jelly.Edges.strain0; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
+    jelly.Edges.strainviscous = jelly.Edges.strain0 - jelly.Edges.strain1; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
     
     outcount = 1;
     incount = 1;
