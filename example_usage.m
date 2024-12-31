@@ -34,8 +34,7 @@ folder_save = ['example_usage_data/', date, graft_type, '_elast0_', num2str(elas
 
 visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
 
-%% Uncomment to simulate
-% a butterfly graft
+%% Uncomment to simulate a butterfly graft
 % % Specify datapath of directory to save data in
 % datapath = pwd; % Set current directory as datapath
 % graft_type = '_butterfly_graft'; 
