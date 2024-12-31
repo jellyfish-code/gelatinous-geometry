@@ -123,12 +123,12 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     area_relax = area0*j_area;
 
     %% Initialise relaxed lengths of springs and calculate initial strains
-    % jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
+    jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
     % %before equilibrium is found. So I'm just initializing another offset graft
 
-    % IF IGNORING KV INITIALISATION
-    jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
-    jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
+    % % IF IGNORING KV INITIALISATION
+    % jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
+    % jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
 
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %This is assumed to be fully relaxed
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
@@ -191,8 +191,10 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     [jelly, ~] = remesh_SLM_newmus(jelly, muscle_length);
             
     if max(jelly.Edges.d_current) > 10
+        display('Edge length greater than 10mm, Line 194');
         return
     elseif any(isfinite(jelly.Nodes.x_coord)-1) == 1 || any(isfinite(jelly.Nodes.y_coord)-1) == 1
+        display('Infinity in coordinates, Line 197');
         return
     end
 
@@ -289,6 +291,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         if mod(hours, 5) == 0 || min(jelly.Edges.d_current) < 0.35 || min(new_con) < 1
             [jelly, lim_reached] = remesh_SLM_newmus(jelly, muscle_length);
             if lim_reached == 1
+                display('Remeshing Limit Reached, Line 292'); 
                 cd(path1)
                 a_r = cat(1, a_r, [2, hours]);
                 writematrix(a_r, 'a_r.xlsx');
@@ -307,6 +310,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             writematrix(a_r, 'a_r.xlsx');
             writematrix(vel, 'velocity.xlsx');
             cd(path0)
+            display('Infinity in coordinates, Line 311'); 
             return
         end
 
