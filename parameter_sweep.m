@@ -30,7 +30,7 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 %% Declare Sweep Parameters - for Figure 5E
 contraction_rate_sweep = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]; 
 graft_diameter = 10; 
-offset_sweep = [0.1, 0.3, 0.4, 0.5]*graft_diameter; 
+offset_sweep = [0.1, 0.2, 0.3, 0.4, 0.5]*graft_diameter; 
 parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
 
 
