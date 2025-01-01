@@ -126,7 +126,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
     % %before equilibrium is found. So I'm just initializing another offset graft
 
-    % % IF IGNORING KV INITIALISATION
+    % % IF IGNORING KV INITIALISATION, test initializing the simulation with zero stresses 
     % jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
     % jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
 
@@ -211,6 +211,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     cd(path0);     
     pause(0.001)
 
+
   %========================================================================================================================
     %% Start the simulation
     for time = 1:time_steps
@@ -248,14 +249,18 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
         end
         
         %% Estimate elastic stress arising from springs for each node 
-        % jelly = SLM_elastic(jelly, elast0, elast1);
+	% and direction of elastic force 
+	% Elastic force is function of the dashpot viscosity  
+ 	% jelly = SLM_elastic(jelly, elast0, elast1);
         jelly = SLM_viscoelastic(jelly, elast0, elast1, vis, time_step); 
         
 	%% Estimate stress from pressure for each node 
+ 	% and direction of pressure force   
         jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
 
 	%% Estimate total stress for each node
-	% Muscle stress is present only during contraction. Implemented using contraction duration, which is the fraction of time that jellyfish spends on average contracted. 
+	% Vectorial addition using the direction information   
+ 	% Muscle stress is present only during contraction. Implemented using contraction duration, which is the fraction of time that jellyfish spends on average contracted. 
  	stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
 	stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
         stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
@@ -263,9 +268,10 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
 	%% Estimate force from stress  
 	edge_crossectional_area = 1e-3*1e-3;                    % Characteristic cross-ectional area, use initial mesh size. Units in meters squared.
         jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
+	
 
-        %% Update the position of each node. Vis Pa*s = Ns/m2, damping Ns/m
-        
+        %% Force balance equation 
+	% Compute displacement each node. Vis Pa*s = Ns/m2, damping Ns/m
         jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
