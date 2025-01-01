@@ -211,6 +211,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     cd(path0);     
     pause(0.001)
 
+  %========================================================================================================================
     %% Start the simulation
     for time = 1:time_steps
 
@@ -234,10 +235,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             return
         end
             
-        %% Find the strain from the muscle contraction
-        %find strain from muscle contraction. Positive strain implies tension, negative strain implies compression.   
-        %% Calculate muscle stress from contraction and new muscle coordinates from contraction [?]
-        % As muscles are "synchronized", calculations for all muscle bands happen simultaneously.
+        %% Calculate on each node stress from muscle contraction
+        % Call contraction5offset.m calculates coordinate and direction of contraction
         [jelly, done] = contraction5offset(jelly, contraction_strength, muscle_strain, max_dR, dR_rate);
         if done == 0 % If an unstability or error arose in contraction5offset, exit simulation.
             cd(path1)
@@ -248,17 +247,21 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             return
         end
         
-        %% Calculate elastic stress arising from springs
+        %% Estimate elastic stress arising from springs for each node 
         % jelly = SLM_elastic(jelly, elast0, elast1);
         jelly = SLM_viscoelastic(jelly, elast0, elast1, vis, time_step); 
-        %% Calculate internal pressure acting on nodes
+        
+	%% Estimate stress from pressure for each node 
         jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
-        stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
-        stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
 
-        %% Instead of separating out by contraction and relaxation phases, we calculate the average F_net over the time step
+	%% Estimate total stress for each node
+	% Muscle stress is present only during contraction. Implemented using contraction duration, which is the fraction of time that jellyfish spends on average contracted. 
+ 	stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
+	stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
         stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
-        edge_crossectional_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
+
+	%% Estimate force from stress  
+	edge_crossectional_area = 1e-3*1e-3;                    % Characteristic cross-ectional area, use initial mesh size. Units in meters squared.
         jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
 
         %% Update the position of each node. Vis Pa*s = Ns/m2, damping Ns/m
