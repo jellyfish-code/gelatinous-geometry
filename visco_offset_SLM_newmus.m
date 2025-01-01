@@ -37,7 +37,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     end
 
     %time
-    time_step = 30; %minutes
+    time_step = 15; %minutes
     time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     a_r = [];
