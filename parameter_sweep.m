@@ -5,8 +5,7 @@
 %}
 
 %% Declare Non-Sweep Parameters
-% muscle_strain = 0.20;       % Muscle strain of jellyfish (dimensionless). Parameter measurement from experiments, see figure S6 in Supplementary Materials.      
-offset = 2; 
+muscle_strain = 0.15;       % Muscle strain of jellyfish (dimensionless). Parameter measurement from experiments, see figure S6 in Supplementary Materials.      
 bulk_modulus = 0.05*1e3;    % Bulk modulus of jellyfish in Pascals. 
 area0 = 1.001;              % Relaxed area as a percentage of jellyfish area. Greater than 1.
 elast0 = 0.05*0.2*1e3;      % Elasticity of spring in Pascals.
@@ -29,16 +28,17 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 % parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
 
 %% Declare Sweep Parameters - for Figure 5E
-contraction_rate_sweep = [10, 20, 30, 40, 50]; 
-muscle_strain_sweep = [0.20, 0.15]
-parameter_sweep_table = combinations(contraction_rate_sweep, muscle_strain_sweep); 
+contraction_rate_sweep = [5, 10, 15, 20, 25, 30, 35, 40, 45, 50]; 
+graft_diameter = 10; 
+offset_sweep = [0.1, 0.3, 0.4, 0.5]*graft_diameter; 
+parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
 
 
 %% Start a parallel process
 
 parfor i = 1:height(parameter_sweep_table) 
     contraction_rate = parameter_sweep_table(i,:).contraction_rate_sweep; % Contraction rate of jellyfish (contrations per minute.
-    muscle_strain = parameter_sweep_table(i,:).muscle_strain_sweep;                 % Offset of graft in Pascals.
+    offset = parameter_sweep_table(i,:).offset_sweep;                 % Offset of graft in Pascals.
 
     % Specify datapath of directory to save data in
     datapath = pwd; % Set current directory as datapath
@@ -47,7 +47,7 @@ parfor i = 1:height(parameter_sweep_table)
     % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
     % Creates folder Data if not already created.
     date = sprintf('%s', datetime("today"));
-    folder_save = ['/', date, '/parameter_sweep_muscle_strain_sweep/', date, graft_type, '_muscle_strain_', num2str(muscle_strain),'_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+    folder_save = ['/', date, '/parameter_sweep_muscle_strain_0.15/', date, graft_type, '_muscle_strain_', num2str(muscle_strain),'_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 
     visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     

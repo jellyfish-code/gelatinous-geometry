@@ -203,7 +203,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     hold off
     xlim([0, 11 + offset]);
     ylim([0, 11 + offset]);
-    
+    axis square; 
+
     path_graft = [path1, '/graft_reorganization'];
     cd(path_graft);                                                            % write the image data
     saveas(figure_graft, '0.jpg')
@@ -322,6 +323,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             hold off
             xlim([0, 11 + offset]);
             ylim([0, 11 + offset]);
+	    axis square; 
 
             % Need to explicitly create subfolders.
             path_graft = [path1, '/graft_reorganization'];
@@ -339,7 +341,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % hold off
             % xlim([0, 11 + offset]);
             % ylim([0, 11 + offset]);
-            % 
+            % axis square 
+
             % path_contraction = [path1, '/stress_contraction'];
             % cd(path_contraction);                                                            % write the image data
             % i = hours;
@@ -355,7 +358,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % hold off
             % xlim([0, 11 + offset]);
             % ylim([0, 11 + offset]);
-            % 
+            % axis square; 
             % path_pressure = [path1, '/pressure'];
             % cd(path_pressure);                                                            % write the image data
             % i = hours;
@@ -371,7 +374,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % hold off
             % xlim([0, 11 + offset]);
             % ylim([0, 11 + offset]);
-            % 
+            % axis square
             % path_elastic = [path1, '/stress_elastic'];
             % cd(path_elastic);                                                            % write the image data
             % i = hours;
@@ -387,7 +390,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             % hold off
             % xlim([0, 11 + offset]);
             % ylim([0, 11 + offset]);
-            % 
+            % axis square
             % path_stress_net = [path1, '/F_net'];
             % cd(path_stress_net);                                                            % write the image data
             % i = hours;
@@ -413,7 +416,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     hold off
     xlim([0, 11 + offset]);
     ylim([0, 11 + offset]);
-    
+    axis square 
     %% Plot aspect ratio
     cd(path1);                                                            % write the image data
     writematrix(a_r, 'a_r.xlsx');
