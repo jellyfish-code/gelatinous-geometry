@@ -28,11 +28,11 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 % parameter_sweep_table = combinations(contraction_rate_sweep, offset_sweep); 
 
 %% Declare Sweep Parameters - for Figure 5E
-contraction_rate_sweep_for_offsets = [55, 60, 70, 80]; 
+contraction_rate_sweep = [55, 60, 70, 80]; 
 graft_diameter = 10; 
 offset_sweep = [0.1, 0.2, 0.3, 0.4]*graft_diameter; 
 muscle_strain_sweep = [0.15, 0.25]; 
-parameter_sweep_table_for_offsets_1_2_3_4 = combinations(offset_sweep, contraction_rate_sweep_for_offsets, muscle_strain_sweep); 
+parameter_sweep_table_for_offsets_1_2_3_4 = combinations(offset_sweep, contraction_rate_sweep, muscle_strain_sweep); 
 
 contraction_rate_sweep = [25, 40, 50, 55, 60, 70, 80]; 
 offset_sweep = [0.5]*graft_diameter; 
