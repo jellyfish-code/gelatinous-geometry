@@ -37,7 +37,7 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
     end
 
     %time
-    time_step = 15; %minutes
+    time_step = 1; %minutes
     time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     a_r = [];
@@ -324,8 +324,8 @@ function visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_
             return
         end
 
-        if mod(hours, 20) == 0
-            %% Generate and save image of new relaxed jelly every 20 hours
+        if mod(hours, 5) == 0
+            %% Generate and save image of new relaxed jelly every 5 hours
             % Graft reorganization
             figure(1)
             figure_graft = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
