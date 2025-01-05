@@ -15,9 +15,11 @@ OUTPUT:
 function jelly = SLM_viscoelastic(jelly, elast0, elast1, eta, dt)
 
     %% Update the strain across springs and dashpot. 
-    % sigma0 = 1; 
-    jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
+    % sigma0 = 1;
     jelly.Edges.strainviscous = jelly.Edges.strainviscous*(1 - (dt*elast1/eta)) + (dt*elast1/eta)*jelly.Edges.strain0; 
+    jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
+    % jelly.Edges.strainviscous = jelly.Edges.strainviscous*(1 - (dt*elast1/eta)) + (dt*elast1/eta)*jelly.Edges.strain0; 
+    
     % jelly.Edges.strain0 = (sigma0 + elast1*jelly.Edges.strainviscous)/(elast0 + elast1); 
     jelly.Edges.strain1 = jelly.Edges.strain0 - jelly.Edges.strainviscous; 
     
