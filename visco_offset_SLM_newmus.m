@@ -308,8 +308,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
         jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
 
-        % Update relaxed length of spring 1 due to the presence of dashpot
-        % in series. This is done for the remeshing code.
+        % Update relaxed length of spring 1 due to the presence of dashpot in series. 
         % jelly.Edges.d_rel1 = -1*(jelly.Edges.d_current.*jelly.Edges.d_rel1)./((jelly.Edges.d_rel1 - jelly.Edges.d_current).*relax_param - jelly.Edges.d_rel1);
        
         
