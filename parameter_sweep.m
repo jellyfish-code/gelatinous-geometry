@@ -37,7 +37,7 @@ offset_sweep = [0.1, 0.2, 0.3, 0.4, 0.5]*graft_diameter;
 parameter_sweep_table = combinations(offset_sweep, contraction_rate_sweep); 
 
 %% Start a parallel process
-for i = 1:height(parameter_sweep_table) 
+parfor i = 1:height(parameter_sweep_table) 
     contraction_rate = parameter_sweep_table(i,:).contraction_rate_sweep; % Contraction rate of jellyfish (contrations per minute).
     offset = parameter_sweep_table(i,:).offset_sweep;                     % Offset of graft in Pascals.
 
