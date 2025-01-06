@@ -66,7 +66,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
     end
 
     %% Save simulation parameter values
-    
+
     cd(path1);
     % Simulation parameters
     parameters = {
@@ -161,7 +161,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
     % jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
     % jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
 
-    jelly.Edges.d_rel1 = jelly.Edges.d_current; %This is assumed to be fully relaxed
+    jelly.Edges.d_rel1 = jelly.Edges.d_current; %Spring 1 is assumed to be fully relaxed.
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
     jelly.Edges.strainviscous = jelly.Edges.strain0 - jelly.Edges.strain1; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
@@ -372,6 +372,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
             saveas(figure_graft, [num2str(i) '.jpg'])   
             pause(0.001)
             
+            % Uncomment code below for other plots.
             % % Contraction Stress
             % figure(2)
             % figure_contraction = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
