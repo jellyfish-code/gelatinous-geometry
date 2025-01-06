@@ -21,7 +21,7 @@ OUTPUT:
         None. 
 %}
 
-function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
+function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
 %% Set up parameters, everything in Pa(N/m^2) and s
     %Measured parameters
     contraction_duration = 0.8; %s
@@ -38,8 +38,8 @@ function visco_butterfly_SLM_newmus(elast0, elast1, vis, damping_coefficient, bu
     end
 
     %time
-    time_step = 15; %minutes
-    time_end = 2000; %hours
+    % time_step = 15; %minutes
+    % time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     
     % relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
