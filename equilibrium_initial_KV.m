@@ -176,7 +176,10 @@ function [jelly_eq, jelly_area, d_uncut] = equilibrium_initial_KV(elast0, viscos
         j_area = sum(area_initial(jelly, row_start, row_end),'all');
         pressure = find_f_pressure_initial(jelly, area_relax, j_area, bulk_modulus, edges);
 
-
+        % The stress muscle below is divided by 3 as the muscle force is
+        % “on” 1/3 of the time, equivalent to 25/min contraction rate. 
+        % Muscle contractions are 0.8 sec each, so contracted for 20 sec
+        % per 60 sec, or 20/0.8 = 25 contractions per min. 
         stress_net = stress_e + pressure + stress_muscle/3; % Net stress in Pascals
         edge_area = 1e-3*1e-3;                              % In meters squared. 
         F_net = stress_net * edge_area;                     % Net force in Newtons.
