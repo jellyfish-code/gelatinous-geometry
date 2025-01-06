@@ -4,8 +4,10 @@
 ======================================================================
 
 INPUT:
-        elast0 (double):                 Elasticity of spring (in Pascals).
-        elast1 (double):                 Elasticity of spring (in Pascals).
+        time_step (double):              Time step of simulation (in minutes).
+        time_end (double):               End time of simulation (in hours).
+        elast0 (double):                 Elasticity of spring parallel to Maxwell arm (in Pascals).
+        elast1 (double):                 Elasticity of spring in Maxwell arm (in Pascals).
         vis (double):                    Viscosity of dashpot (in Pascal*seconds).
         damping_coefficient (double):    Damping coefficient of jellyfish (n Newton*seconds/meter).
         bulk_modulus (double):           Bulk modulus of jellyfish (in Pascals).

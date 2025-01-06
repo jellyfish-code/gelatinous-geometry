@@ -15,10 +15,13 @@ damping_coefficient = 500;  % Damping coefficient of jellyfish. Units in Newton*
 max_dR = 1.55;              % Maximum change in radius of jellyfish during contraction.
 dR_rate = 0.15;             % Increase in radius change with distance from anchored end (Figure S6c in paper).
 
+time_step = 15; % Timestep of simulation, in mins. 
+time_end = 2000; % Total time of simulation, in hours.
+
 tau_SLM = vis*(elast0 + elast1)/(elast0*elast1); 
 tau_maxwell = vis/elast1; 
 tau = min(tau_SLM, tau_maxwell); 
-timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
+timestep_fraction_of_tau = tau/(time_step*60);
 
 %% Declare Sweep Parameters - for Figure 4F
 % contraction_rate_sweep = [10, 20, 30, 40, 50]; 
@@ -42,7 +45,7 @@ parameter_sweep_table = combinations(offset_sweep, contraction_rate_sweep);
 %parameter_sweep_table = vertcat(parameter_sweep_table_for_offsets_1_2_3_4, parameter_sweep_table_for_offset_5); 
 
 %% Start a parallel process
-parfor i = 1:height(parameter_sweep_table) 
+for i = 1:height(parameter_sweep_table) 
     contraction_rate = parameter_sweep_table(i,:).contraction_rate_sweep; % Contraction rate of jellyfish (contrations per minute).
     offset = parameter_sweep_table(i,:).offset_sweep;                     % Offset of graft in Pascals.
     % muscle_strain = parameter_sweep_table(i,:).muscle_strain_sweep;       % Muscle strain of jellyfish.
@@ -54,7 +57,7 @@ parfor i = 1:height(parameter_sweep_table)
     % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
     % Creates folder Data if not already created.
     date = sprintf('%s', datetime("today"));
-    folder_save = ['/', date, '/parameter_sweep_with_swapped_discretization_steps_in_viscoelastic_edges_with_KV_initialisation/', date, graft_type, '_muscle_strain_', num2str(muscle_strain),'_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+    folder_save = ['/', date, '/parameter_sweep_with_swapped_discretization_steps_in_viscoelastic_edges_with_KV_initialisation/', date, graft_type, '_time_step_', num2str(time_step), 'mins', '_end_time_', num2str(time_end), 'hours', '_muscle_strain_', num2str(muscle_strain),'_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 
     visco_offset_SLM_newmus(elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     

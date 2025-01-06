@@ -19,13 +19,13 @@ damping_coefficient = 500;  % Damping coefficient of jellyfish. Units in Newton*
 max_dR = 1.55;              % Maximum change in radius of jellyfish during contraction.
 dR_rate = 0.15;             % Increase in radius change with distance from anchored end (Figure S6c in paper).
 
+time_step = 15; % Timestep of simulation, in mins. 
+time_end = 2000; % Total time of simulation, in hours.
+
 tau_SLM = vis*(elast0 + elast1)/(elast0*elast1); 
 tau_maxwell = vis/elast1; 
 tau = min(tau_SLM, tau_maxwell); 
-timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
-
-time_step = 15; % Timestep of simulation, in mins. 
-time_end = 2000; % Total time of simulation, in hours.
+timestep_fraction_of_tau = tau/(time_step*60); % current timestep is 30 mins
 
 %% Uncomment to simulate an offset graft
 % Specify datapath of directory to save data in
@@ -33,8 +33,8 @@ datapath = pwd; % Set current directory as datapath
 graft_type = '_offset_graft'; 
 % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. Creates folder example_usage_data if not already created.
 date = sprintf('%s', datetime("today"));  
-folder_save = ['example_usage_data/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
-
+folder_save = ['example_usage_data/', date, graft_type, '_time_step_', num2str(time_step), 'mins', '_end_time_', num2str(time_end), 'hours', '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+ 
 visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
 
 %% Uncomment to simulate a butterfly graft
@@ -44,14 +44,15 @@ visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, damping_coeffi
 % % Specify subfolder to save data in. Data is saved in datapath (here, the current directory) inside folder Data. 
 % % Creates folder Data if not already created.
 % date = sprintf('%s', datetime("today"));  
-% folder_save = ['example_usage_data/', date, graft_type, '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
+% folder_save = ['example_usage_data/', date, graft_type, '_time_step_', num2str(time_step), 'mins', '_end_time_', num2str(time_end), 'hours', '_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)];
 % 
 % visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, folder_save, datapath)
 
-%% (Optional) Stitch images into a .avi video
-% dataDir = fullfile([pwd, '/' ,folder_save, '/stress_contraction']); % Specify location of images
-% video_name = ['animation', graft_type, 'offset_graft_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
-% create_animation(dataDir, video_name); 
+% (Optional) Stitch images into a .avi video
+dataDir = fullfile([pwd, '/' ,folder_save, '/stress_contraction']); % Specify location of images
+video_name = ['animation', graft_type, 'offset_graft_elast0_', num2str(elast0), '_elast1_', num2str(elast1), '_viscosity_', num2str(vis), '_damping_coefficient_', num2str(damping_coefficient), '_bulk_modulus_', num2str(bulk_modulus), '_offset_', num2str(offset), '_contraction_rate_', num2str(contraction_rate)]; 
+animation_save_location = fullfile([folder_save, '/', date, '_animations']); % Specify location to save animations in
+create_animation(dataDir, video_name, animation_save_location); 
 
 %% Uncomment to start a parallel process
 % elasticity_range = [0.05*1e3, 1e3]; 
