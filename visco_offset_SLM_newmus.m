@@ -47,7 +47,8 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
 
     % %% Calculate the Maxwell relaxation constants. Used to update relaxed length of spring 1 in series with dashpot.
     % relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
-
+    
+    
     %% Writing images
     path0 = datapath;
 
@@ -64,6 +65,34 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
         path0 = pwd; 
     end
 
+    %% Save simulation parameter values
+    
+    cd(path1);
+    % Simulation parameters
+    parameters = {
+        'Parameter Name', 'Description', 'Value', 'Units'; % Header row
+        'time_step', 'Time step of simulations.', time_step, 'Minutes';
+        'time_end', 'End time of simulations.', time_end, 'Hours';
+        'offset', 'Offset of jellyfish graft pieces.', offset, 'millimeters';
+        'elast0', 'Elasticity of Spring 0', elast0, 'Pascals';
+        'elast1', 'Elasticity of Spring 1', elast1, 'Pascals';
+        'vis', 'Viscosity', vis, 'Pascal*seconds';
+        'damping_coefficient', 'Damping coefficient associated to nodes moving in a viscous environment.', damping_coefficient, 'Newton*seconds/meter'; 
+        'muscle_strain', 'Strain experienced by muscles during contractions.', muscle_strain, 'Dimensionless'; 
+        'bulk_modulus', 'Bulk Modullus of jellyfish material.', bulk_modulus, 'Pascals'; 
+        'area0', 'Factor by which initial jellyfish area is multiplied to obtain relaxed jellyfish area. Ad-hoc value used for calculating internal pressure.', area0, 'Dimensionless'; 
+        'max_dR', 'Maximum radial change experienced by muscles during contraction', max_dR, 'Millimeters';
+        'dR_rate', 'Rate at which radial change during contraction increases per number of muscle nodes from anchored end.', dR_rate, 'Millimeters per node';
+        'contraction_duration', 'Duration of jellyfish contraction event.', contraction_duration, 'Seconds per contraction';
+        'contraction_rate', 'Rate of jellyfish contractions.', contraction_rate, 'Number of contractions per minute'; 
+    };
+    
+    % Save to CSV file
+    filename = 'simulation_parameters.csv';
+    writecell(parameters, filename);
+    
+
+    cd(path0);  
 
     %% Set up jellyfish geometry as an array
     %This creates the initial offset array, assigning coordinates for each
@@ -274,7 +303,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
 
         %% Force balance equation 
 	% Compute displacement each node. Vis Pa*s = Ns/m2, damping Ns/m
-        jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
+        jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Factor of 1e3 converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
         jelly.Nodes.y_coord = jelly.Nodes.y_coord + contraction_displacement(:,2);
