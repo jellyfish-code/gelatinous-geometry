@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#SBATCH --time=48:00:00 
+#SBATCH --ntasks=20
+#SBATCH --nodes=1 
+#SBATCH --mem-per-cpu=15G   # memory per CPU core.
+#SBATCH -J "slurm-parameter-sweep-figure5d"      # job name
+#SBATCH --mail-user=mashok2@caltech.edu
+
+# Notify at the beginning, end of job and on failure. (Not necessary)
+#SBATCH --mail-type=BEGIN
+#SBATCH --mail-type=END
+#SBATCH --mail-type=FAIL
+
+# LOAD MODULES, INSERT CODE, AND RUN YOUR PROGRAMS HERE
+
+module load matlab/r2024a 
+
+matlab -nodisplay -nosplash -nodesktop -r "try; run('parameter_sweep.m'); catch e; disp(getReport(e)); exit(1); end; exit(0);"
+
+echo done
