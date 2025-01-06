@@ -18,14 +18,14 @@ function jelly = SLM_viscoelastic(jelly, elast0, elast1, eta, dt)
     
     % Update viscous strain before strain0 has been updated. 
     % implements strainviscous[t + dt] = strainviscous[t]*(1 - (dt*elast1/eta) + (dt*elast1/eta)*strain0[t] 
-    % jelly.Edges.strainviscous = jelly.Edges.strainviscous*(1 - (dt*elast1/eta)) + (dt*elast1/eta)*jelly.Edges.strain0; 
+    jelly.Edges.strainviscous = jelly.Edges.strainviscous*(1 - (dt*elast1/eta)) + (dt*elast1/eta)*jelly.Edges.strain0; 
     
     % Update strain across spring 0 using new node positions.
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
 
     % Update viscous strain after strain0 has been updated. 
     % implements strainviscous[t + dt] = strainviscous[t]*(1 - (dt*elast1/eta) + (dt*elast1/eta)*strain0[t + dt] 
-    jelly.Edges.strainviscous = jelly.Edges.strainviscous*(1 - (dt*elast1/eta)) + (dt*elast1/eta)*jelly.Edges.strain0; 
+    % jelly.Edges.strainviscous = jelly.Edges.strainviscous*(1 - (dt*elast1/eta)) + (dt*elast1/eta)*jelly.Edges.strain0; 
     
     % Implements strain1[t + dt] = strain0[t + dt] - strain_viscous[t + dt] 
     jelly.Edges.strain1 = jelly.Edges.strain0 - jelly.Edges.strainviscous; 
