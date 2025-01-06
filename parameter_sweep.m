@@ -29,7 +29,7 @@ timestep_fraction_of_tau = tau/(30*60); % current timestep is 30 mins
 
 %% Declare Sweep Parameters - for Figure 5E
 % contraction_rate_sweep = [55, 60, 70, 80]; 
-% graft_diameter = 10; 
+graft_diameter = 10; 
 % offset_sweep = [0.1, 0.2, 0.3, 0.4, 0.5]*graft_diameter; 
 % muscle_strain_sweep = [0.15, 0.25]; 
 % parameter_sweep_table_for_offsets_1_2_3_4 = combinations(offset_sweep, contraction_rate_sweep, muscle_strain_sweep); 
@@ -45,7 +45,7 @@ parameter_sweep_table = combinations(offset_sweep, contraction_rate_sweep);
 parfor i = 1:height(parameter_sweep_table) 
     contraction_rate = parameter_sweep_table(i,:).contraction_rate_sweep; % Contraction rate of jellyfish (contrations per minute).
     offset = parameter_sweep_table(i,:).offset_sweep;                     % Offset of graft in Pascals.
-    muscle_strain = parameter_sweep_table(i,:).muscle_strain_sweep;       % Muscle strain of jellyfish.
+    % muscle_strain = parameter_sweep_table(i,:).muscle_strain_sweep;       % Muscle strain of jellyfish.
 
     % Specify datapath of directory to save data in
     datapath = pwd; % Set current directory as datapath
