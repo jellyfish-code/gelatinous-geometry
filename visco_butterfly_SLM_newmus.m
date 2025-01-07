@@ -1,6 +1,6 @@
 %{
 ======================================================================
-    Main function evolving jellyfish butterfly mesh.  
+    Main function evolving jellyfish butterfly mesh. Without simplifications in viscoelastic edge, as stated in Supplementary Text. 
 ======================================================================
 
 INPUT:
