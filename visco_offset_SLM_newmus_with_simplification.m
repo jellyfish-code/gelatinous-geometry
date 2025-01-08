@@ -165,8 +165,8 @@ function visco_offset_SLM_newmus_with_simplification(time_step, time_end, elast0
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
     
-    % With the simplifications, it's not necessary to explicitly track the strain across the viscous dashpot.
-    % jelly.Edges.strainviscous = jelly.Edges.strain0 - jelly.Edges.strain1; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
+    % With the simplifications, it's not necessary to explicitly track the strain across the viscous dashpot. The variable is initialised anyways to not break inheritance rules during remeshing.
+    jelly.Edges.strainviscous = jelly.Edges.strain0 - jelly.Edges.strain1; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
     
     outcount = 1;
     incount = 1;
