@@ -12,7 +12,7 @@ INPUT:
         damping_coefficient (double):    Damping coefficient of jellyfish (n Newton*seconds/meter).
         bulk_modulus (double):           Bulk modulus of jellyfish (in Pascals).
         area0 (double):                  Relaxed area as a percentage of jellyfish area. Greater than 1.
-        muscle_strain (double):          Strain of jellyfish in ? (dimensionless quantity).
+        muscle_strain (double):          Strain of jellyfish in (dimensionless quantity).
         contraction_rate (double):       Number of jellyfish contractions per minute.
         max_dR (double):                 Maximum change in radius during contraction.
         dR_rate (double):                Increase in radius change with distance from anchored end (Figure S6c in paper).
