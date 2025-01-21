@@ -1,6 +1,6 @@
 %{
 ======================================================================
-    Main function evolving jellyfish offset mesh. With simplifications in viscoelastic edge, as stated in Supplementary Text.
+    Main function evolving jellyfish offset mesh. 
 ======================================================================
 
 INPUT:
@@ -100,7 +100,6 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
     %nodes.
 
     %% Start with uncut jellyfish, find the balance of elastic and pressure forces
-    %%This function assumes that maxwell completely relaxes, i.e. the Kelvin-Voigt model
     [jelly_eq, ~, d_uncut] = equilibrium_initial_KV(elast0, vis, damping_coefficient, bulk_modulus, 100, 1200, area0, contraction_strength);
 
     %% Make a matrix with the right shape for offset graft
@@ -154,8 +153,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
     area_relax = area0*j_area;
 
     %% Initialise relaxed lengths of springs and calculate initial strains
-    jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
-    % %before equilibrium is found. So I'm just initializing another offset graft
+    jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %Set the relaxed spring 0 length to initial edge length before equilibrium is found.
 
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %Spring 1 is assumed to be fully relaxed.
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
@@ -289,7 +287,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
         stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
 
 	%% Estimate force from stress  
-	edge_crossectional_area = 1e-3*1e-3;                    % Characteristic cross-ectional area, use initial mesh size. Units in meters squared.
+	edge_crossectional_area = 1e-3*1e-3;                    % Characteristic cross-sectional area, use initial mesh size. Units in meters squared.
         jelly.Nodes.F_net = stress_net*edge_crossectional_area; % Force in Newtons.
 	
 
