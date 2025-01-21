@@ -157,16 +157,9 @@ function visco_offset_SLM_newmus_with_simplification(time_step, time_end, elast0
     jelly.Edges.d_rel0 = jelly_off_i.Edges.d_current; %This is a weird one. The relaxed length is the length
     % %before equilibrium is found. So I'm just initializing another offset graft
 
-    % % IF IGNORING KV INITIALISATION, test initializing the simulation with zero stresses 
-    % jelly.Edges.d_current = jelly_off_i.Edges.d_current; 
-    % jelly.Edges.d_rel0 = jelly.Edges.d_current; % No stress across spring 0.
-
     jelly.Edges.d_rel1 = jelly.Edges.d_current; %Spring 1 is assumed to be fully relaxed.
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
-    
-    % With the simplifications, it's not necessary to explicitly track the strain across the viscous dashpot. The variable is initialised anyways to not break inheritance rules during remeshing.
-    jelly.Edges.strainviscous = jelly.Edges.strain0 - jelly.Edges.strain1; % If spring 1 is assumed to be completely relaxed, then strain1 is zero, and all of the strain in the maxwell arm is across the viscous dashpot.
     
     outcount = 1;
     incount = 1;
@@ -312,7 +305,6 @@ function visco_offset_SLM_newmus_with_simplification(time_step, time_end, elast0
        
         
         %% Remesh every 5 hours OR if constraints are met
-        %% TODO: remove requirements of every 5 hours?
         [trash, idx] = sortrows(jelly.Nodes, {'edges'});
         edge_idx = idx(trash.edges~=0);
         new_con = [];
@@ -370,7 +362,7 @@ function visco_offset_SLM_newmus_with_simplification(time_step, time_end, elast0
             saveas(figure_graft, [num2str(i) '.jpg'])   
             pause(0.001)
             
-            % Uncomment code below for other plots.
+            % Uncomment code below to plot vectors for elastic stress, contraction stress, pressure, or net stress
             % % Contraction Stress
             % figure(2)
             % figure_contraction = plot(jelly, 'XData', jelly.Nodes.x_coord, 'YData', jelly.Nodes.y_coord, 'EdgeCData', jelly.Edges.strain0, 'LineWidth', 1, 'NodeLabel', {});
