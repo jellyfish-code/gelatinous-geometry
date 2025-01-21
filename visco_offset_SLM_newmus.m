@@ -23,7 +23,7 @@ OUTPUT:
         None. 
 %}
 
-function visco_offset_SLM_newmus_with_simplification(time_step, time_end, elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
+function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, damping_coefficient, bulk_modulus, area0, muscle_strain, contraction_rate, max_dR, dR_rate, offset, folder_save, datapath)
     %% Set up parameters, everything in Pa(N/m^2) and s
 
     %Measured parameters
