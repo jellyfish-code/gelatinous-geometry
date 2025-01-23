@@ -28,11 +28,6 @@ new_mus_piece = [];
 mus_lengths = [];
 mus_length_true = 0;
 mus_anchor = [];
-% prev_slope = 1;
-% prev_inf = 0;
-% prev_infcos = 0;
-% prev_tan = 0;
-% prev_cot = 0;
 done = 1;
 %% Need to find inflection point for butterfly
 for i = 1:length(mus_idx)-1
@@ -42,20 +37,6 @@ for i = 1:length(mus_idx)-1
         return 
     end
 
-%     if length(new_mus_piece) > 1
-%         side_a = sqrt((6 - jelly.Nodes.y_coord(mus_idx(i)))^2 + (6.5 - jelly.Nodes.x_coord(mus_idx(i)))^2);
-%         side_b = sqrt((mean([jelly.Nodes.y_coord(mus_idx(i+1)), jelly.Nodes.y_coord(mus_idx(i-1))]) - jelly.Nodes.y_coord(mus_idx(i)))^2 + ...
-%             (mean([jelly.Nodes.x_coord(mus_idx(i+1)), jelly.Nodes.x_coord(mus_idx(i-1))]) - jelly.Nodes.x_coord(mus_idx(i)))^2);
-%         side_c = sqrt((6 - mean([jelly.Nodes.y_coord(mus_idx(i+1)), jelly.Nodes.y_coord(mus_idx(i-1))]))^2 + (6.5 - mean([jelly.Nodes.x_coord(mus_idx(i+1)), jelly.Nodes.x_coord(mus_idx(i-1))]))^2);
-%         cur_ang = acos((side_c^2 - side_a^2 - side_b^2)/(-2*side_a*side_b));
-%     else
-%         cur_ang = 0;
-%     end
-%     slope = (jelly.Nodes.y_coord(mus_idx(i+1)) - jelly.Nodes.y_coord(mus_idx(i)))/(jelly.Nodes.x_coord(mus_idx(i+1)) - jelly.Nodes.x_coord(mus_idx(i)));
-%     inf = (slope - prev_slope)/abs(slope-prev_slope);
-%     inf_cos = (acot(1/slope) - acot(1/prev_slope))/abs(acot(1/slope) - acot(1/prev_slope));
-%     cur_tan = atan(slope);
-%     cur_cot = acot(1/slope);
     %node i gets added to the current muscle 
     new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
     
@@ -96,13 +77,10 @@ for i = 1:length(mus_idx)-1
         edge1 = i+1;
         new_mus_piece = [];
         mus_length_true = 0;
-%         prev_inf = 0;
-%         prev_tan =0;
         
         
     %yes if inflection changed, then i is in the current muscle and also in
     %the next muscle
-%     elseif prev_inf~=0 && inf~=prev_inf && inf_cos~=prev_infcos
     elseif jelly.Nodes.mus_num(mus_idx(i+1)) ~= jelly.Nodes.mus_num(mus_idx(i)) && jelly.Nodes.mus_num(mus_idx(i+1)) == ceil(jelly.Nodes.mus_num(mus_idx(i)))
         %then, i is the last node in this muscle piece and the first node
         %in the next
@@ -139,18 +117,9 @@ for i = 1:length(mus_idx)-1
         edge1 = i;
         new_mus_piece = [];
         mus_length_true = 0;
-%         prev_inf = 0;
         new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
         mus_length_true = mus_length_true + jelly.Edges.d_current(a);
-%         %prev_tan=0;
      else
-%         if length(new_mus_piece) > 1
-%             prev_inf = inf;
-%             prev_infcos = inf_cos;
-%         end
-%         prev_slope = slope;
-%         prev_cot = cur_cot;
-        %prev_tan = cur_tan;
         mus_length_true = mus_length_true + jelly.Edges.d_current(a);
     end
     
@@ -205,118 +174,15 @@ mus_tab = table(mus_lengths, mus_anchor, mus_piece, radius, theta, center, 'Vari
 if height(mus_tab)>5
     pause(0.001)
 end
-%% Yay, all muscle info is extracted! Now to find the contracted valueeee
+%% Yay, all muscle info is extracted! Now to find the contracted value
 %new muscle contraction
-%function F_muscle = ThreeDcontract(jelly, theta, radius, mus_idx)
 
-%muscle_strain = 0.15;
 contracted_nodes = zeros(height(mus_tab), length(mus_tab.Nodes(i,:)),2);
 
-%%structure for each muscle piece as a table...?
 %Find the new "contracted" position of muscle pieces
 for i = 1:height(mus_tab)
     if mus_tab.anchored(i) == 1
-%         O = mus_tab.center(i,:);
-%         actual = find(mus_tab.Nodes(i,:));
-%         
-%         %% rotate by d_current*musclestrain first
-%         % what theta is an arclength = d_current*musstrain about the
-%         % center? shift all nodes that theta 
-%         edge = findedge(jelly, mus_tab.Nodes(i,1), mus_tab.Nodes(i,2));
-%         d_theta = jelly.Edges.d_current(edge)*muscle_strain/mus_tab.radius(i);
-%         if mus_tab.theta(i,2) < mus_tab.theta(i,1)
-%             if abs(mus_tab.theta(i,2) - mus_tab.theta(i,1)) < pi 
-%                 d_theta = -1*d_theta;
-%             end
-%         elseif mus_tab.theta(i,2) - mus_tab.theta(i,1) > pi
-%             d_theta = -1*d_theta;
-%         end
-%         
-% 
-%         Ax = cos(mus_tab.theta(i,1)+d_theta)*mus_tab.radius(i) + O(1);
-%         Ay = sin(mus_tab.theta(i,1)+d_theta)*mus_tab.radius(i) + O(2);
-% 
-%         contracted_nodes(i,1,1) = Ax;
-%         contracted_nodes(i,1,2) = Ay;
-%      
-%         F_muscle(mus_tab.Nodes(i,1),1) = F_muscle(mus_tab.Nodes(i,1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,1)));
-%         F_muscle(mus_tab.Nodes(i,1),2) = F_muscle(mus_tab.Nodes(i,1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,1)));
-%         
-%         for j = 1:length(actual)-1
-% 
-%             edge = findedge(jelly, mus_tab.Nodes(i,j), mus_tab.Nodes(i,j+1));
-%             L = jelly.Edges.d_current(edge);
-%             
-%             %Define new mus, new R
-%             new_R =mus_tab.radius(i) - min(max_dR, dR_rate*j);
-%             new_m =L*(1-muscle_strain);
-% 
-%             %define the center of circle Ox, Oy
-%             
-%             C1 = new_m^2 - new_R^2 + O(1)^2 + O(2)^2 - Ax^2 - Ay^2;
-%             C2 = O(2) - Ay;
-%             C3 = O(1) - Ax;
-%             
-%             p = [C2^2/C3^2+1, -1*C2*C1/C3^2+2*Ax*C2/C3-2*Ay, (C1/(2*C3))^2-Ax*C1/C3+Ax^2+Ay^2-new_m^2];
-%             
-%             if any(isinf(p)==1) || any(isnan(p)==1)
-%                 done = 0;
-%             else
-%                 y1 = roots(p);
-%                 x1 = (C1 - 2*y1*C2)/(2*C3);
-%             end
-%             
-%             %% Check!
-% %             check = [new_m, sqrt((x1(1)-Ax)^2 + (y1(1)-Ay)^2)]
-% %             check = [new_m, sqrt((x1(2)-Ax)^2 + (y1(2)-Ay)^2)]
-% %             check = [new_R, sqrt((x1(1)-O(1))^2 + (y1(1)-O(2))^2)]
-% %             check = [new_R, sqrt((x1(2)-O(1))^2 + (y1(2)-O(2))^2)]
-%             %test which point is the correct one with theta
-%             t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
-%             if abs(t1) > pi
-%                 t1 = mod(atan2(y1(1) - O(2), x1(1) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
-%             end
-%             t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi)-mod(atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1)), 2*pi);
-%             if abs(t2) > pi
-%                 t2 = mod(atan2(y1(2) - O(2), x1(2) - O(1)),2*pi) - atan2(contracted_nodes(i,j,2) - O(2), contracted_nodes(i,j,1)-O(1));
-%             end
-%             if d_theta > 0
-%                 if t1 > 0
-%                     Ax = x1(1); Ay = y1(1);
-%                 elseif t2 > 0
-%                     Ax = x1(2); Ay = y1(2);
-%                 end
-%             else
-%                 if t1 < 0
-%                     Ax = x1(1); Ay = y1(1);
-%                 elseif t2 < 0
-%                     Ax = x1(2); Ay = y1(2);
-%                 end
-%             end
-            
-%        
-% %             v1 = [x1(1)-Ax, y1(1)-Ay];
-% %             v2 = [x1(2)-Ax, y1(2)-Ay];
-% %             v0 = [mus_temp(1,j+1) - mus_temp(1,j), mus_temp(2,j+1)-mus_temp(2,j)];
-% %             d1 = sqrt(sum((v0-v1).^2));
-% %             d2 = sqrt(sum((v0-v2).^2));
-% %             if d1 < d2
-% %                 Ax = x1(1);
-% %                 Ay = y1(1);
-% %             else
-% %                 Ax = x1(2);
-% %                 Ay = y1(2);
-% %             end
-%             
-%             F_muscle(mus_tab.Nodes(i,j+1),1) = F_muscle(mus_tab.Nodes(i,j+1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j+1)));
-%             F_muscle(mus_tab.Nodes(i,j+1),2) = F_muscle(mus_tab.Nodes(i,j+1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j+1)));
-%             %save the points
-%             contracted_nodes(i,j+1,1) = Ax;
-%             contracted_nodes(i,j+1,2) = Ay;
-%             
-%             
-%             %save points as Ax, Ay
-%         end
+
         %% which way is the muscle facing? pos theta or neg theta?
         edge = findedge(jelly, mus_tab.Nodes(i,1), mus_tab.Nodes(i,2));
         d_theta1 = jelly.Edges.d_current(edge)*muscle_strain/mus_tab.radius(i);
@@ -328,9 +194,6 @@ for i = 1:height(mus_tab)
             d_theta1 = -1*d_theta1;
         end
         
-        %prioritize dR
-        %priority = 'dR';
-        %muscle_strain = 0.15;
         O = mus_tab.center(i,:);
         actual = find(mus_tab.Nodes(i,:));
         midpt = ceil(length(actual)/2);
@@ -417,89 +280,7 @@ for i = 1:height(mus_tab)
         
 
     elseif mus_tab.anchored(i) == 2
-%         %prioritize dR
-%         %priority = 'dR';
-%         %muscle_strain = 0.15;
-%         O = mus_tab.center(i,:);
-%         actual = find(mus_tab.Nodes(i,:));
-% 
-%         %% first move anchors inward by mus_strain. first anchor:
-%         edge = findedge(jelly, mus_tab.Nodes(i,1), mus_tab.Nodes(i,2));
-%         d_theta1 = jelly.Edges.d_current(edge)*muscle_strain/mus_tab.radius(i);
-%         if mus_tab.theta(i,2) < mus_tab.theta(i,1)
-%             if abs(mus_tab.theta(i,2) - mus_tab.theta(i,1)) < pi 
-%                 d_theta1 = -1*d_theta1;
-%             end
-%         elseif mus_tab.theta(i,2) - mus_tab.theta(i,1) > pi
-%             d_theta1 = -1*d_theta1;
-%         end
-%         Ax = cos(mus_tab.theta(i,1)+d_theta1)*mus_tab.radius(i) + O(1);
-%         Ay = sin(mus_tab.theta(i,1)+d_theta1)*mus_tab.radius(i) + O(2);
-%         contracted_nodes(i,1,1) = Ax;
-%         contracted_nodes(i,1,2) = Ay;
-%         F_muscle(mus_tab.Nodes(i,1),1) = F_muscle(mus_tab.Nodes(i,1),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,1)));
-%         F_muscle(mus_tab.Nodes(i,1),2) = F_muscle(mus_tab.Nodes(i,1),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,1)));
-%         anc1_t = atan2(Ay - O(2), Ax-O(1));
-%         
-%         %second anchor
-%         edge = findedge(jelly, mus_tab.Nodes(i,length(actual)), mus_tab.Nodes(i,length(actual)-1));
-%         d_theta = jelly.Edges.d_current(edge)*muscle_strain/mus_tab.radius(i);
-%         if mus_tab.theta(i,length(actual)-1) < mus_tab.theta(i,length(actual))
-%             if abs(mus_tab.theta(i,length(actual)-1) - mus_tab.theta(i,length(actual))) < pi 
-%                 d_theta = -1*d_theta;
-%             end
-%         elseif mus_tab.theta(i,length(actual)-1) - mus_tab.theta(i,length(actual)) > pi
-%             d_theta = -1*d_theta;
-%         end        
-%         Ax = cos(mus_tab.theta(i,length(actual))+d_theta)*mus_tab.radius(i) + O(1);
-%         Ay = sin(mus_tab.theta(i,length(actual))+d_theta)*mus_tab.radius(i) + O(2);
-%         contracted_nodes(i,length(actual),1) = Ax;
-%         contracted_nodes(i,length(actual),2) = Ay;
-%         F_muscle(mus_tab.Nodes(i,length(actual)),1) = F_muscle(mus_tab.Nodes(i,length(actual)),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,length(actual))));
-%         F_muscle(mus_tab.Nodes(i,length(actual)),2) = F_muscle(mus_tab.Nodes(i,length(actual)),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,length(actual))));
-%         anc2_t = atan2(Ay - O(2), Ax - O(1));
-%         
-%         %%now for nodes between the anchors
-%         d_theta = (mod(anc2_t,2*pi) - mod(anc1_t,2*pi))/(length(actual)-1);
-%         if d_theta1 < 0
-%             d_theta = -1*abs(d_theta);
-%         end
-%         for j = 2:length(actual)-1
-%             %each node moves toward the center by dR*distance from anchors
-%             d = min(length(actual)-j, j-1);
-% 
-%             Ax = (mus_tab.radius(i) - d*dR_rate)*cos(anc1_t + d_theta*(j-1)) + O(1);
-%             Ay = (mus_tab.radius(i) - d*dR_rate)*sin(anc1_t + d_theta*(j-1)) + O(2);
-% %         %vector is center - current
-% %         vx = (O(1) - jelly.Nodes.x_coord(mus_tab.Nodes(i,j)))/mus_tab.radius(i);
-% %         vy = (O(2) - jelly.Nodes.y_coord(mus_tab.Nodes(i,j)))/mus_tab.radius(i);
-% % 
-% %         Ax = jelly.Nodes.x_coord(mus_tab.Nodes(i,j)) + d*dR_rate*vx;
-% %         Ay = jelly.Nodes.y_coord(mus_tab.Nodes(i,j)) + d*dR_rate*vy;
-% 
-%         F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-%         F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
-%         %save the points
-%         contracted_nodes(i,j,1) = Ax;
-%         contracted_nodes(i,j,2) = Ay;
-%         end
-%         
-%         %check strain
-% %         for j = 1:length(actual)-1
-% %             edge = findedge(jelly, mus_tab.Nodes(i,j), mus_tab.Nodes(i,j+1));
-% %             L = jelly.Edges.d_current(edge);
-% %             new_m =L*(1-muscle_strain);
-% % 
-% %             dx = contracted_nodes(i,j+1,1) - contracted_nodes(i,j,1);
-% %             dy = contracted_nodes(i,j+1,2) - contracted_nodes(i,j,2);
-% % 
-% % %             if sqrt((dx^2 + dy^2)) < new_m
-% % %                 %priority = 'strain';
-% % %             end
-% %         end
 
-        %priority = 'dR';
-        %muscle_strain = 0.15;
         O = mus_tab.center(i,:);
         actual = find(mus_tab.Nodes(i,:));
 
@@ -597,7 +378,6 @@ for i = 1:height(mus_tab)
         end
     elseif mus_tab.anchored(i) == 0
         %start in the middle
-        %muscle_strain = 0.15;
         O = mus_tab.center(i,:);
         actual = find(mus_tab.Nodes(i,:));
         midpt = ceil(length(actual)/2);
@@ -715,11 +495,7 @@ new_mus_piece = [];
 mus_lengths = [];
 mus_length_true = 0;
 mus_anchor = [];
-% prev_slope = 1;
-% prev_inf = 0;
-% prev_infcos = 0;
-% prev_tan = 0;
-% prev_cot = 0;
+
 %% Need to find inflection point for butterfly
 for i = 1:length(mus_idx)-1
     a = findedge(jelly, mus_idx(i), mus_idx(i+1));
@@ -728,19 +504,6 @@ for i = 1:length(mus_idx)-1
         return
     end
         
-%     if length(new_mus_piece) > 1
-%         side_a = sqrt((jelly.Nodes.y_coord(mus_idx(i+1)) - jelly.Nodes.y_coord(mus_idx(i)))^2 + (jelly.Nodes.x_coord(mus_idx(i+1)) - jelly.Nodes.x_coord(mus_idx(i)))^2);
-%         side_b = sqrt((jelly.Nodes.y_coord(mus_idx(i)) - jelly.Nodes.y_coord(mus_idx(i-1)))^2 + (jelly.Nodes.x_coord(mus_idx(i)) - jelly.Nodes.x_coord(mus_idx(i-1)))^2);
-%         side_c = sqrt((jelly.Nodes.y_coord(mus_idx(i+1)) - jelly.Nodes.y_coord(mus_idx(i-1)))^2 + (jelly.Nodes.x_coord(mus_idx(i+1)) - jelly.Nodes.x_coord(mus_idx(i-1)))^2);
-%         cur_ang = acos((side_c^2 - side_a^2 - side_b^2)/(-2*side_a*side_b));
-%     else
-%         cur_ang = 0;
-%     end
-%     slope = (jelly.Nodes.y_coord(mus_idx(i+1)) - jelly.Nodes.y_coord(mus_idx(i)))/(jelly.Nodes.x_coord(mus_idx(i+1)) - jelly.Nodes.x_coord(mus_idx(i)));
-%     inf = (slope - prev_slope)/abs(slope-prev_slope);
-%     inf_cos = (acot(1/slope) - acot(1/prev_slope))/abs(acot(1/slope) - acot(1/prev_slope));
-%     cur_tan = atan(slope);
-%     cur_cot = acot(1/slope);
     %node i gets added to the current muscle 
     new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
     
@@ -782,8 +545,6 @@ for i = 1:length(mus_idx)-1
         edge1 = i+1;
         new_mus_piece = [];
         mus_length_true = 0;
-%         prev_inf = 0;
-%         prev_tan =0;
         
         
     %yes if inflection changed, then i is in the current muscle and also in
@@ -823,18 +584,10 @@ for i = 1:length(mus_idx)-1
         edge1 = i;
         new_mus_piece = [];
         mus_length_true = 0;
-%         prev_inf = 0;
         new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
         mus_length_true = mus_length_true + jelly.Edges.d_current(a);
         %prev_tan=0;
     else
-%         if length(new_mus_piece) > 1
-%             prev_inf = inf;
-%             prev_infcos = inf_cos;
-%         end
-%         prev_slope = slope;
-%         prev_cot = cur_cot;
-        %prev_tan = cur_tan;
         mus_length_true = mus_length_true + jelly.Edges.d_current(a);
     end
     
@@ -889,9 +642,7 @@ mus_tab = table(mus_lengths, mus_anchor, mus_piece, radius, theta, center, 'Vari
 
 %% Yay, all muscle info is extracted! Now to find the contracted valueeee
 %new muscle contraction
-%function F_muscle = ThreeDcontract(jelly, theta, radius, mus_idx)
 
-%muscle_strain = 0.15;
 contracted_nodes = zeros(height(mus_tab), length(mus_tab.Nodes(i,:)),2);
 
 %%structure for each muscle piece as a table...?
