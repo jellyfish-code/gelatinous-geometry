@@ -30,7 +30,7 @@ mus_length_true = 0;
 mus_anchor = [];
 
 done = 1;
-%% Need to find inflection point for butterfly
+
 for i = 1:length(mus_idx)-1
     a = findedge(jelly, mus_idx(i), mus_idx(i+1));   
     new_mus_piece = cat(2, new_mus_piece, mus_idx(i));
@@ -137,12 +137,9 @@ mus_tab = table(mus_lengths, mus_anchor, mus_piece, radius, theta, center, 'Vari
 
 %% Yay, all muscle info is extracted! Now to find the contracted value
 %new muscle contraction
-%function F_muscle = ThreeDcontract(jelly, theta, radius, mus_idx)
 
-%muscle_strain = 0.15;
 contracted_nodes = zeros(height(mus_tab), length(mus_tab.Nodes(i,:)),2);
 
-%%structure for each muscle piece as a table...?
 %Find the new "contracted" position of muscle pieces
 for i = 1:height(mus_tab)
     if mus_tab.anchored(i) == 1             
@@ -341,7 +338,6 @@ for i = 1:height(mus_tab)
         end
     elseif mus_tab.anchored(i) == 0
         %start in the middle
-        %muscle_strain = 0.15;
         O = mus_tab.center(i,:);
         actual = find(mus_tab.Nodes(i,:));
         midpt = ceil(length(actual)/2);
@@ -351,6 +347,8 @@ for i = 1:height(mus_tab)
         
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
+        F_muscle(mus_tab.Nodes(i,midpt),1) = F_muscle(mus_tab.Nodes(i,midpt),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        F_muscle(mus_tab.Nodes(i,midpt),2) = F_muscle(mus_tab.Nodes(i,midpt),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
         
         
         for j = midpt:length(actual)-1
@@ -575,9 +573,8 @@ mus_tab = table(mus_lengths, mus_anchor, mus_piece, radius, theta, center, 'Vari
 
 %% Yay, all muscle info is extracted! Now to find the contracted value
 %new muscle contraction
-%function F_muscle = ThreeDcontract(jelly, theta, radius, mus_idx)
 
-%muscle_strain = 0.15;
+
 contracted_nodes = zeros(height(mus_tab), length(mus_tab.Nodes(i,:)),2);
 
 %%structure for each muscle piece as a table...?
@@ -793,6 +790,8 @@ for i = 1:height(mus_tab)
         
         contracted_nodes(i,midpt,1) = Ax;
         contracted_nodes(i,midpt,2) = Ay;
+        F_muscle(mus_tab.Nodes(i,midpt),1) = F_muscle(mus_tab.Nodes(i,midpt),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,midpt)));
+        F_muscle(mus_tab.Nodes(i,midpt),2) = F_muscle(mus_tab.Nodes(i,midpt),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,midpt)));
         
         
         for j = midpt:length(actual)-1
@@ -892,8 +891,8 @@ for i = 1:height(mus_tab)
             Ax = O(1) + new_R*(jelly.Nodes.x_coord(mus_tab.Nodes(i,j))-O(1))/mus_tab.radius(i);
             Ay = O(2) + new_R*(jelly.Nodes.y_coord(mus_tab.Nodes(i,j))-O(2))/mus_tab.radius(i);
             
-            F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
-            F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
+            F_muscle(mus_tab.Nodes(i,j),1) = F_muscle(mus_tab.Nodes(i,j),1) + 0.5*contraction_strength*(Ax-jelly.Nodes.x_coord(mus_tab.Nodes(i,j)));
+            F_muscle(mus_tab.Nodes(i,j),2) = F_muscle(mus_tab.Nodes(i,j),2) + 0.5*contraction_strength*(Ay-jelly.Nodes.y_coord(mus_tab.Nodes(i,j)));
         end
         
     end
