@@ -12,7 +12,7 @@ INPUT:
         damping_coefficient (double):    Damping coefficient of jellyfish (n Newton*seconds/meter).
         bulk_modulus (double):           Bulk modulus of jellyfish (in Pascals).
         area0 (double):                  Relaxed area as a percentage of jellyfish area. Greater than 1.
-        muscle_strain (double):          Strain of jellyfish in ? (dimensionless quantity).
+        muscle_strain (double):          Strain of jellyfish in during muscle contraction (dimensionless quantity).
         contraction_rate (double):       Number of jellyfish contractions per minute.
         max_dR (double):                 Maximum change in radius during contraction.
         dR_rate (double):                Increase in radius change with distance from anchored end (Figure S6c in paper).
@@ -39,8 +39,6 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
     end
 
     %time
-    % time_step = 15; %minutes
-    % time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     a_r = [];
     vel = [];
@@ -282,8 +280,7 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
         %% Estimate elastic stress arising from springs for each node 
 	% and direction of elastic force 
 	% Elastic force is function of the dashpot viscosity  
- 	% jelly = SLM_elastic(jelly, elast0, elast1);
-        jelly = SLM_viscoelastic(jelly, elast0, elast1, vis, time_step); 
+        jelly = SLM_elastic2(jelly, elast0, elast1, vis, time_step); 
         
 	%% Estimate stress from pressure for each node 
  	% and direction of pressure force   
@@ -313,7 +310,6 @@ function visco_offset_SLM_newmus(time_step, time_end, elast0, elast1, vis, dampi
        
         
         %% Remesh every 5 hours OR if constraints are met
-        %% TODO: remove requirements of every 5 hours?
         [trash, idx] = sortrows(jelly.Nodes, {'edges'});
         edge_idx = idx(trash.edges~=0);
         new_con = [];
