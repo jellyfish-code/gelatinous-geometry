@@ -12,7 +12,7 @@ OUTPUT:
         jelly (graph):         Graph containing information on Nodes and Edges of jellyfish. Contains updated elastic stress.
 %}
 
-function jelly = SLM_viscoelastic(jelly, elast0, elast1, eta, dt)
+function jelly = SLM_elastic2(jelly, elast0, elast1, eta, dt)
 
     %% Update the strain across springs and dashpot.
     
