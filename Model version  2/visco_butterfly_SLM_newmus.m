@@ -11,8 +11,8 @@ INPUT:
         vis (double):                    Viscosity of dashpot (in Pascal*seconds).
         damping_coefficient (double):    Damping coefficient of jellyfish (n Newton*seconds/meter).
         bulk_modulus (double):           Bulk modulus of jellyfish (in Pascals).
-        area0 (double):                  Initial area of jellyfish (in ?).
-        muscle_strain (double):          Strain of jellyfish (in ?).
+        area0 (double):                  Relaxed area as a percentage of jellyfish area. Greater than 1.
+        muscle_strain (double):          Strain of jellyfish (dimensionless).
         contraction_rate (double):       Number of jellyfish contractions per minute.
         max_dR (double):                 Maximum change in radius during contraction.
         dR_rate (double):                Increase in radius change with distance from anchored end (Figure S6c in paper).
@@ -40,8 +40,6 @@ function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, da
     end
 
     %time
-    % time_step = 15; %minutes
-    % time_end = 2000; %hours
     time_steps = time_end*60/time_step;
     
     % relax_param = (1-exp(-1*elast1/vis * (time_step * 60)));
@@ -79,7 +77,7 @@ function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, da
     %nodes.
     
     %% Start with uncut jellyfish, find the balance of elastic and pressure forces
-    %%This function sets the "relaxed area" at 105% of the initial area,
+    %%This function sets the "relaxed area" at area0*the initial area,
     %%and allows the jellyfish F_elastic and F_pressure to find equilibrium
     %%over 120 hours
     [jelly_eq, ~, ~] = equilibrium_initial_KV(elast0, vis, damping_coefficient, bulk_modulus, 100, 1200, area0, contraction_strength);
@@ -112,15 +110,6 @@ function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, da
     end
     %% Convert array to graph
     jelly = convert_jelly_graph(jelly_initial, row_start, row_end);
-    % %%Add additional parameters
-    % jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
-    % jelly.Nodes.F_net = zeros(numnodes(jelly), 2);
-    % jelly.Nodes.F_elastic = jelly.Nodes.F_net;
-    % jelly.Nodes.F_pressure = jelly.Nodes.F_net;
-    % jelly.Nodes.F_muscle = jelly.Nodes.F_net;
-    % jelly.Nodes.outmus = zeros(numnodes(jelly),1);
-    % jelly.Nodes.inmus = zeros(numnodes(jelly),1);
-    % jelly.Nodes.mus_num = zeros(numnodes(jelly),1);
 
     %%Add additional parameters
     jelly.Nodes.velocity = zeros(numnodes(jelly), 2);
@@ -152,8 +141,7 @@ function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, da
     jelly_but_i.Nodes.edges = j_edges;
     [j_area, ~] = area(jelly_but_i);
     area_relax = area0*j_area;
-    jelly.Edges.d_rel0 = jelly_but_i.Edges.d_current; %This is a weird one. The relaxed length is the length
-    %before equilibrium is found. So I'm just initializing another graft
+    jelly.Edges.d_rel0 = jelly_but_i.Edges.d_current;%Set the relaxed spring 0 length to initial edge length before equilibrium is found.
     jelly.Edges.d_rel1 = jelly.Edges.d_rel0;
     jelly.Edges.strain0 = (jelly.Edges.d_current - jelly.Edges.d_rel0)./jelly.Edges.d_rel0;
     jelly.Edges.strain1 = (jelly.Edges.d_current - jelly.Edges.d_rel1)./jelly.Edges.d_rel1;
@@ -326,24 +314,19 @@ function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, da
             return
         end
         
-        % jelly = SLM_elastic(jelly, elast0, elast1);
-        jelly = SLM_viscoelastic(jelly, elast0, elast1, vis, time_step); 
+        jelly = SLM_elastic2(jelly, elast0, elast1, vis, time_step); 
 
         %% pressure force
         jelly.Nodes.pressure = find_f_pressure(jelly, area_relax, bulk_modulus);  
-        % F_contract = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure + jelly.Nodes.F_muscle;
-        % F_relax = jelly.Nodes.F_elastic + jelly.Nodes.F_pressure;
         stress_contract = jelly.Nodes.stress_elastic + jelly.Nodes.pressure + jelly.Nodes.stress_muscle;
         stress_relax = jelly.Nodes.stress_elastic + jelly.Nodes.pressure;
         
         %% Instead of separating out by contraction and relaxation phases, we are just finding the average F_net over the time step
-        % jelly.Nodes.F_net = (F_contract*contraction_rate*contraction_duration + F_relax*relax_duration*(contraction_rate+1))/60;
         stress_net = (stress_contract*contraction_rate*contraction_duration + stress_relax*relax_duration*(contraction_rate+1))/60;
-        edge_area = 1e-3*1e-3;                    % Crossectional area of an edge (?). Units in meters squared.
+        edge_area = 1e-3*1e-3;                    % Crossectional area of an edge. Units in meters squared.
         jelly.Nodes.F_net = stress_net*edge_area; % Force in Newtons.
 
         %% Update the position of each node
-        % jelly.Nodes.velocity = jelly.Nodes.F_net./vis;
         jelly.Nodes.velocity = 1e3*jelly.Nodes.F_net./damping_coefficient; % Converts meters per second to millimeters per second.
         contraction_displacement = jelly.Nodes.velocity*time_step*60;
         jelly.Nodes.x_coord = jelly.Nodes.x_coord + contraction_displacement(:,1);
@@ -359,7 +342,7 @@ function visco_butterfly_SLM_newmus(time_step, time_end, elast0, elast1, vis, da
         end
        
 
-        %% Remesh every 10 hours
+        %% Remesh every 5 hours
         if mod(hours, 5) == 0 || min(jelly.Edges.d_current) < 0.35
             [jelly, lim_reached] = remesh_SLM_butterfly(jelly, muscle_length);
             if lim_reached == 1
