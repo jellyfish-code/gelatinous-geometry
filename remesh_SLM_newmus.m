@@ -106,17 +106,14 @@ count = 0;
                     s0 = (jelly.Edges.strain0(found) + jelly.Edges.strain0(found2))/2;
                     s1 = (jelly.Edges.strain1(found) + jelly.Edges.strain1(found2))/2;
                     %s_viscous = (jelly.Edges.strainviscous(found) + jelly.Edges.strainviscous(found2))/2;
-%                     thick = (jelly.Edges.thickness(found) + jelly.Edges.thickness(found2))/2;
                 elseif found ~= 0
                     s0 = jelly.Edges.strain0(found);
                     s1 = jelly.Edges.strain1(found);
                     %s_viscous = jelly.Edges.strainviscous(found);
-%                     thick = jelly.Edges.thickness(found);
                 else
                     s0 = jelly.Edges.strain0(found2);
                     s1 = jelly.Edges.strain1(found2);
                     %s_viscous = jelly.Edges.strainviscous(found2);
-%                     thick = jelly.Edges.thickness(found2);
                 end
                     
                 if found ~= 0 && jelly.Edges.muscle(found) ~= 0
@@ -130,10 +127,6 @@ count = 0;
                 %%What should the strain on these new edges be?
                 props = table([node_search, newid], 1, d, d/(s0+1), d/(s1+1), s0, s1, m, ...
                     'VariableNames', {'EndNodes', 'Weight', 'd_current', 'd_rel0', 'd_rel1', 'strain0', 'strain1', 'muscle'});
-                %% new stuff
-%                   props = table([node_search, newid], 1, d, d/(s0+1), s0, m, thick, ...
-%                       'VariableNames', {'EndNodes', 'Weight', 'd_current', 'd_rel0', 'strain0', 'muscle', 'thickness'});
-                %% end new stuff
                 jelly_temp = addedge(jelly_temp, props); 
             end
         end
