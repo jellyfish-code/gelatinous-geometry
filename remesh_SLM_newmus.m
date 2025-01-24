@@ -321,8 +321,6 @@ count = 0;
                         jelly_temp.Edges.muscle(findedge(jelly_temp, a(1), co_neighs(squashed==max(squashed)))) = jelly.Edges.muscle(i);
                         jelly_temp.Edges.muscle(findedge(jelly_temp, a(2), co_neighs(squashed==max(squashed)))) = jelly.Edges.muscle(i);
                         
-%                         jelly_temp.Nodes.inmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.inmus(a(1)), jelly.Nodes.inmus(a(2))]);
-%                         jelly_temp.Nodes.outmus(co_neighs(squashed==max(squashed))) = mean([jelly.Nodes.outmus(a(1)), jelly.Nodes.outmus(a(2))]);
                     end
                     %%Now kill the old edge
                     jelly_temp = rmedge(jelly_temp, a(1), a(2));
@@ -334,7 +332,7 @@ count = 0;
 jelly = jelly_temp;
     
 %% If two edge nodes get close enough to each other, connect them
-    %%How do I make sure this is a concavity?? o.O
+
     [trash, idx] = sortrows(jelly.Nodes, {'edges'});
     edge_idx = idx(trash.edges~=0);
     new_con = [];
