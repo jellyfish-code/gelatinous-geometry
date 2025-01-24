@@ -45,8 +45,6 @@ function edges = find_edges_butterfly(row_start, row_end)
     end
     
     edges(2,length(edges)) = 1;
-    %made a dumb mistake, the row number is the first row and column number
-    %is the second row
     edge = edges;
     edge(1,:) = edges(2,:);
     edge(2,:) = edges(1,:);
