@@ -6,9 +6,9 @@
         offset (double):                Distance between two grafts. 
 
     OUTPUT: 
-        [CHECK]jelly (array of doubles):  A 3-dimensional matrix storing positions of jellyfish nodes. Last dimension can be indexed to access x-axis position (index = 1) and y-axis positions (index = 2).
-        [CHECK]row_start (array of doubles): For each row of the jellyfish, position in jellyfish mesh where row starts.  
-        [CHECK]row_end (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row ends.
+        jelly (array of doubles):       A 3-dimensional matrix storing positions of jellyfish nodes. Last dimension can be indexed to access x-axis position (index = 1) and y-axis positions (index = 2).
+        row_start (array of doubles):   For each row of the jellyfish, position in jellyfish mesh where row starts.  
+        row_end (array of doubles):     For each row of the jellyfish, position in jellyfish mesh where row ends.
 %}
 
 function [jelly, row_start, row_end] = offset_mesh(offset)
